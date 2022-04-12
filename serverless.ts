@@ -4,7 +4,7 @@ import { getAllBusinesses, createBusiness } from "@functions/businesses";
 import dotenv from "dotenv";
 
 dotenv.config({
-  path: "./config/.env",
+  path: "./config/.env.dev",
 });
 console.log("process.env.DB_URL:  ", process.env.DB_URL);
 
@@ -16,6 +16,7 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
+
     vpc: {
       securityGroupIds: ["sg-083dfda18e37b6f16"],
       subnetIds: [
@@ -32,6 +33,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
     },
   },
   // import the function via paths

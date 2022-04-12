@@ -2,7 +2,7 @@ import { handlerPath } from "@libs/handler-resolver";
 
 //consider removing handlerPath and using relative URL instead..
 export const getAllBusinesses = {
-  handler: `./handler.getAllBusinesses`,
+  handler: `${handlerPath(__dirname)}/handler.getAllBusinesses`,
   events: [
     {
       http: {

@@ -1,0 +1,4 @@
+{"DB_URL":"mongodb+srv://lemonpay:lemonpay12345@lemonpaydb.6kgmm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "DB_NAME":"lemonPayDB",
+    "DB_BUSINESSES_COLLECTION":"businesses",
+    "DB_USER_COLLECTION":"users"}
