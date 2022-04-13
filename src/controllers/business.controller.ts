@@ -16,11 +16,10 @@ export class BusinessesController extends BusinessesService {
     context.callbackWaitsForEmptyEventLoop = false;
     try {
       const result = await this.getAllBusinesses();
-
       return result;
     } catch (err) {
       console.error(err);
-
+      console.log("error:", err);
       return MessageUtil.error(err.code, err.message);
     }
   }

@@ -17,15 +17,15 @@ const serverlessConfiguration: AWS = {
     name: "aws",
     runtime: "nodejs14.x",
 
-    vpc: {
-      securityGroupIds: ["sg-083dfda18e37b6f16"],
-      subnetIds: [
-        "subnet-0057d89a2e6d126f4",
-        "subnet-042ef0140a82af9cd",
-        "subnet-0e1e25edcf598f0a5",
-        "subnet-09b199a4edcdc72a3",
-      ],
-    },
+    // vpc: {
+    //   securityGroupIds: ["sg-083dfda18e37b6f16"],
+    //   subnetIds: [
+    //     "subnet-0057d89a2e6d126f4",
+    //     "subnet-042ef0140a82af9cd",
+    //     "subnet-0e1e25edcf598f0a5",
+    //     "subnet-09b199a4edcdc72a3",
+    //   ],
+    // },
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,

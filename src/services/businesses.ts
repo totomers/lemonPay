@@ -43,10 +43,15 @@ export class BusinessesService {
    * Get businesses
    */
   protected async getAllBusinesses() {
-    await connectToDatabase();
-    console.log("trying to get all from service..");
+    try {
+      console.log("trying to get all from service..");
 
-    return this.businesses.find();
+      await connectToDatabase();
+
+      return this.businesses.find();
+    } catch (error) {
+      console.log("Business Service Error: ", error);
+    }
   }
 
   // /**
