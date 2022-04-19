@@ -1,6 +1,15 @@
 import type { AWS } from "@serverless/typescript";
 import hello from "@functions/hello";
-import { getAllBusinesses, createBusiness } from "@functions/businesses";
+import { getAllBusinesses, createBusiness } from "@functions/business";
+import {
+  createBusinessAccount,
+  verifyUserDetails,
+  getVerifiedOnlySecret,
+  signInUser,
+  signUpUser,
+  confirmSignUp,
+  addUserToGroup,
+} from "@functions/account";
 import dotenv from "dotenv";
 
 dotenv.config({
@@ -37,7 +46,18 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { hello, getAllBusinesses, createBusiness },
+  functions: {
+    hello,
+    getAllBusinesses,
+    createBusiness,
+    createBusinessAccount,
+    verifyUserDetails,
+    getVerifiedOnlySecret,
+    signInUser,
+    signUpUser,
+    confirmSignUp,
+    addUserToGroup,
+  },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -51,6 +71,18 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
   },
+  // resources: {
+  //   Resources: {
+  //     cognitoUserPool: {
+  //       Type: "AWS::Cognito::UserPool",
+  //       Properties: {
+  //         UserPoolName: "${opt:stage, 'dev'}-user-pool",
+  //         UsernameAttributes: "email",
+  //         AutoVerifiedAttributes: "email",
+  //       },
+  // },
+  // },
+  // },
 };
 
 module.exports = serverlessConfiguration;

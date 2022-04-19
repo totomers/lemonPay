@@ -15,6 +15,7 @@
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
     "@types/mongoose": "^5.11.97",
+    "aws-sdk": "^2.1114.0",
     "dotenv": "^16.0.0",
     "mongoose": "^6.2.10"
   },

@@ -8,6 +8,10 @@ export const getAllBusinesses = {
       http: {
         method: "get",
         path: "businesses/getAll",
+        authorizer: {
+          // name: "LemonPayCognitoAuthorizer",
+          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+        },
       },
     },
   ],
@@ -20,6 +24,10 @@ export const createBusiness = {
       http: {
         method: "post",
         path: "businesses/create",
+        authorizer: {
+          // name: "LemonPayCognitoAuthorizer",
+          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+        },
       },
     },
   ],
