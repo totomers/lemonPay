@@ -9,6 +9,8 @@ import {
   signUpUser,
   confirmSignUp,
   addUserToGroup,
+  setInitialPassword,
+  resendConfirmationCode,
 } from "@functions/account";
 import dotenv from "dotenv";
 
@@ -57,6 +59,8 @@ const serverlessConfiguration: AWS = {
     signUpUser,
     confirmSignUp,
     addUserToGroup,
+    setInitialPassword,
+    resendConfirmationCode,
   },
   package: { individually: true },
   custom: {

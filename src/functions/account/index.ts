@@ -30,7 +30,18 @@ export const signUpUser = {
     {
       http: {
         method: "post",
-        path: "account/signUp",
+        path: "account/register",
+      },
+    },
+  ],
+};
+export const resendConfirmationCode = {
+  handler: `${handlerPath(__dirname)}/handler.resendConfirmationCode`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/resendotp",
       },
     },
   ],
@@ -41,7 +52,18 @@ export const confirmSignUp = {
     {
       http: {
         method: "post",
-        path: "account/confirmSignUp",
+        path: "account/submitotp",
+      },
+    },
+  ],
+};
+export const setInitialPassword = {
+  handler: `${handlerPath(__dirname)}/handler.setInitialPassword`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/setInitialPassword",
       },
     },
   ],

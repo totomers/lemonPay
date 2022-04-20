@@ -4,6 +4,7 @@ import { IBusinessDocument } from "src/types/business.interface";
 import { Business } from "src/models/business";
 import { User } from "src/models/user";
 import AWS from "aws-sdk";
+import { CognitoService } from "./cognito.service";
 AWS.config.update({ region: "us-east-1" });
 /**
  * Create new user
@@ -34,36 +35,19 @@ export async function createBusinessAccountHandler(params: {
 
 export async function verifyUserDetailsHandler(params: {
   user: Partial<IUserDocument>;
-  userPoolId: string;
-  userName: string;
+  email: string;
 }): Promise<{ isVerified: any }> {
   try {
-    // await connectToDatabase();
-    const { user, userPoolId, userName } = params;
-    console.log("verifying user");
+    const { user, email } = params;
 
+    //Inject third party service for user identification and await for the response (assume response time is 10 minutes).
     const isVerified = await _verify(user);
-    //change custom attribute
 
-    const cognitoidentityserviceprovider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-      });
-    cognitoidentityserviceprovider.adminUpdateUserAttributes(
-      {
-        UserAttributes: [
-          {
-            Name: "name",
-            Value: "Tomer",
-          },
-        ],
-        UserPoolId: userPoolId,
-        Username: userName,
-      },
-      (data) => {
-        console.log("data recieved from AWS Cognito SDK call", data);
-      }
-    );
+    //Add user to "verified" group if verficiation results were successful.
+    CognitoService.addUserToGroupCognitoHandler({
+      groupName: "verified",
+      email,
+    });
 
     return { isVerified };
   } catch (err) {
@@ -86,81 +70,3 @@ export const AccountService = {
   createBusinessAccountHandler,
   verifyUserDetailsHandler,
 };
-
-// export class AccountService {
-//   private User: Model<IUserDocument>;
-//   private Business: Model<IBusinessDocument>;
-//   constructor(User: Model<IUserDocument>, Business: Model<IBusinessDocument>) {
-//     this.User = User;
-//     this.Business = Business;
-//   }
-
-//   /**
-//    * Create new user
-//    * @param params
-//    */
-
-//   protected async createBusinessAccountDB(params: {
-//     user: Partial<IUserDocument>;
-//     business: Partial<IBusinessDocument>;
-//   }): Promise<{ user: IUserDocument; business: IBusinessDocument }> {
-//     try {
-//       console.log("Reached server & trying to connect to database");
-//       const { user, business } = params;
-//       await connectToDatabase();
-//       // const newBusiness = this.businessService.createBusiness(business);
-//       const newBusiness = await this.Business.create(business);
-//       const newUser = await this.User.create(user);
-
-//       return { user: newUser, business: newBusiness };
-//     } catch (err) {
-//       console.error(err);
-
-//       throw err;
-//     }
-//   }
-
-//   /**
-//    * Get businesses
-//    */
-//   //   protected async getAllBusinesses() {
-//   //     try {
-//   //       console.log("trying to get all from service..");
-
-//   //       await connectToDatabase();
-
-//   //       return this.businesses.find();
-//   //     } catch (error) {
-//   //       console.log("Business Service Error: ", error);
-//   //     }
-//   //   }
-
-//   // /**
-//   //  * Update a business by id
-//   //  * @param _id
-//   //  * @param update
-//   //  */
-//   // protected updateBusiness(_id: number, update: object) {
-//   //   return this.businesses.findOneAndUpdate(
-//   //     { _id },
-//   //     { $set: update },
-//   //     { new: true }
-//   //   );
-//   // }
-
-//   // /**
-//   //  * Query business by id
-//   //  * @param _id
-//   //  */
-//   // protected getOneBusinessById(_id: string) {
-//   //   return this.businesses.findOne({ _id });
-//   // }
-
-//   // /**
-//   //  * Delete business by id
-//   //  * @param id
-//   //  */
-//   // protected deleteOneBusinessById(_id: string) {
-//   //   return this.businesses.deleteOne({ _id });
-//   // }
-// }

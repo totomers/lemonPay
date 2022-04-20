@@ -2,6 +2,7 @@ import { Context } from "aws-lambda";
 import { MessageUtil } from "../utils/message";
 import { AccountService } from "../services/account.service";
 import { CognitoService } from "src/services/cognito.service";
+import { CustomError } from "@libs/customError";
 
 /**
  * Create Business Account
@@ -13,15 +14,13 @@ export async function createBusinessAccount(event?: any, context?: Context) {
   const user = event.body.user;
   const business = event.body.business;
   try {
-    const result = await AccountService.createBusinessAccountHandler({
+    const data = await AccountService.createBusinessAccountHandler({
       user,
       business,
     });
-    return result;
+    return { data };
   } catch (err) {
-    console.error(err);
-    console.log("error:", err);
-    return MessageUtil.error(err.code, err.message);
+    return { err, statusCode: err.code };
   }
 }
 
@@ -31,24 +30,17 @@ export async function createBusinessAccount(event?: any, context?: Context) {
 export async function verifyUserDetails(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  //extract business and user details from event
-  const user = event.body.user;
-  const userPoolId = event.body.userPoolId;
-  const userName = event.body.userName;
-
-  console.log(user, userPoolId, userName);
-
   try {
-    const result = await AccountService.verifyUserDetailsHandler({
+    //extract business and user details from event
+    const { email, user } = event.body;
+    console.log(user, email);
+    const data = await AccountService.verifyUserDetailsHandler({
       user,
-      userPoolId,
-      userName,
+      email,
     });
-    return result;
+    return { data };
   } catch (err) {
-    console.error(err);
-    console.log("error:", err);
-    return MessageUtil.error(err.code, err.message);
+    return { err, statusCode: err.code };
   }
 }
 
@@ -57,35 +49,84 @@ export async function verifyUserDetails(event?: any, context?: Context) {
  */
 export async function signUpUser(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
-  const { name, email, password } = event.body;
-  console.log(password, email, name);
+  const { name, email } = event.body;
+  console.log(email, name);
   try {
-    const result = await CognitoService.signUpCognitoHandler({
+    const data = await CognitoService.signUpCognitoHandler({
       name,
       email,
-      password,
     });
-    return result;
+    return { data };
   } catch (err) {
-    return err;
+    return { err, statusCode: err.code };
+  }
+}
+/**
+ * Sign Up User To Cognito DB
+ */
+export async function resendConfirmationCode(event?: any, context?: Context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  const { email } = event.body;
+
+  try {
+    const data = await CognitoService.resendConfirmationCodeHandler({
+      email,
+    });
+    return { data };
+  } catch (err) {
+    return { err, statusCode: err.code };
   }
 }
 
 /**
- * Sign Up User To Cognito DB
+ * Send Email With OTP To Confirm Users Email & Add User To Cognito DB If Successful.
+ * @returns accessToken,refreshToken,idToken
  */
 export async function confirmSignUpUser(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   const { email, confirmationCode } = event.body;
   console.log(email, confirmationCode);
   try {
-    const result = await CognitoService.confirmSignUpCognitoHandler({
-      confirmationCode,
+    const confirmationResult = await CognitoService.confirmSignUpCognitoHandler(
+      {
+        confirmationCode,
+        email,
+      }
+    );
+    console.log("Dummy Password: ", process.env.COGNITO_USER_DUMMY_PASSWORD);
+
+    const signInResult = await CognitoService.signInCognitoHandler({
       email,
+      password: process.env.COGNITO_USER_DUMMY_PASSWORD,
     });
-    return result;
+    return { data: signInResult.AuthenticationResult };
   } catch (err) {
-    return err;
+    return { err };
+  }
+}
+
+/**
+ * Change Users Dummy Password Given Upon Sign-Up
+ */
+export async function setUsersInitialPassword(event?: any, context?: Context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { password, accessToken, email } = event.body;
+    // const accessToken = event["Authorization"];
+
+    if (!accessToken)
+      throw new CustomError("No authorization Token was found ", 400);
+
+    console.log(password);
+    const result = await CognitoService.setInitialUserPasswordHandler({
+      accessToken,
+      email,
+      password,
+    });
+    return { data: result };
+  } catch (err) {
+    return { err };
   }
 }
 
@@ -97,13 +138,13 @@ export async function signInUser(event?: any, context?: Context) {
   const { email, password } = event.body;
   console.log(email, password);
   try {
-    const result = await CognitoService.signInCognitoHandler({
+    const data = await CognitoService.signInCognitoHandler({
       password,
       email,
     });
-    return result;
+    return { data };
   } catch (err) {
-    return err;
+    return { err };
   }
 }
 /**
@@ -114,13 +155,13 @@ export async function addUserToGroup(event?: any, context?: Context) {
   const { email, groupName } = event.body;
   console.log(email, groupName);
   try {
-    const result = await CognitoService.addUserToGroupCognitoHandler({
+    const data = await CognitoService.addUserToGroupCognitoHandler({
       groupName,
       email,
     });
-    return result;
+    return { data };
   } catch (err) {
-    return err;
+    return { err };
   }
 }
 export const AccountController = {
@@ -130,4 +171,6 @@ export const AccountController = {
   confirmSignUpUser,
   signInUser,
   addUserToGroup,
+  setUsersInitialPassword,
+  resendConfirmationCode,
 };

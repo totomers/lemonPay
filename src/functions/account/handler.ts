@@ -5,21 +5,22 @@ import { accountController } from "../../controllers";
 
 export const createBusinessAccount = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const businesses = await accountController.createBusinessAccount(
+    const result = await accountController.createBusinessAccount(
       event,
       context
     );
-    return formatJSONResponse(businesses);
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
 
 export const verifyUserDetails = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const isVerified = await accountController.verifyUserDetails(
-      event,
-      context
-    );
-    return formatJSONResponse(isVerified);
+    const result = await accountController.verifyUserDetails(event, context);
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
 
@@ -33,25 +34,55 @@ export const getVerifiedOnlySecret = middyfy(
 export const signInUser = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
     const result = await accountController.signInUser(event, context);
-    return formatJSONResponse(result);
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
 export const signUpUser = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
     const result = await accountController.signUpUser(event, context);
-    return formatJSONResponse(result);
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
+  }
+);
+export const resendConfirmationCode = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.resendConfirmationCode(
+      event,
+      context
+    );
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
 export const confirmSignUp = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
     const result = await accountController.confirmSignUpUser(event, context);
-    if (result) return formatJSONResponse(result);
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
+  }
+);
+export const setInitialPassword = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.setUsersInitialPassword(
+      event,
+      context
+    );
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
 export const addUserToGroup = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
     const result = await accountController.addUserToGroup(event, context);
-    if (result) return formatJSONResponse(result);
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
 
