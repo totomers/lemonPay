@@ -1,7 +1,0 @@
-{"DB_URL":"mongodb+srv://lemonpay:lemonpay12345@lemonpaydb.6kgmm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    "DB_NAME":"lemonPayDB",
-    "DB_BUSINESSES_COLLECTION":"businesses",
-    "DB_USER_COLLECTION":"users",
-    "COGNITO_USER_POOL_ID":"us-east-1_ijKvraZeK",
-    "COGNITO_CLIENT_ID":"1u9gv0k7mjgls8p1i2rpm41ko3"
-}
