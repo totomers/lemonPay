@@ -304,27 +304,26 @@ export async function addUserToGroupCognitoHandler(params: {
  * @param params
  */
 
-export async function getVerificationStatus(params: {
-  groupName: "verified" | "unverified";
+export async function getVerificationStatusHandler(params: {
   email: string;
-}): Promise<{ addToGroup: boolean }> {
+}): Promise<{ status: "Verified" | "Pending" }> {
   try {
     //HERE WE WILL CHECK IF THE USER IS IN THE GROUP "VERIFIED" OR "UNVERIFIED" AD RETURN EITHER "PENDING" OR "CREATED"
 
-    const { email, groupName } = params;
+    const { email } = params;
+    const AdminListGroupsForUserRequest: AWS.CognitoIdentityServiceProvider.AdminListGroupsForUserRequest =
+      { Username: email, UserPoolId: userPoolId };
 
-    const cognitoidentityserviceprovider =
-      new AWS.CognitoIdentityServiceProvider();
-
-    await cognitoidentityserviceprovider
-      .adminAddUserToGroup({
-        UserPoolId: userPoolId,
-        GroupName: groupName,
-        Username: email,
-      })
+    const userGroups = await cognitoidentityserviceprovider
+      .adminListGroupsForUser(AdminListGroupsForUserRequest)
       .promise();
 
-    return { addToGroup: true };
+    console.log("user groups", userGroups.Groups);
+    const isUserVerified = userGroups.Groups.find(
+      (g) => g.GroupName === "verified"
+    );
+
+    return { status: isUserVerified ? "Verified" : "Pending" };
   } catch (err) {
     console.error(err);
     throw err;
@@ -338,4 +337,5 @@ export const CognitoService = {
   signInCognitoHandler,
   addUserToGroupCognitoHandler,
   setInitialUserPasswordHandler,
+  getVerificationStatusHandler,
 };

@@ -8,6 +8,9 @@ export const createBusinessAccount = {
       http: {
         method: "post",
         path: "account/createBusinessAccount",
+        authorizer: {
+          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+        },
       },
     },
   ],
@@ -20,6 +23,9 @@ export const verifyUserDetails = {
       http: {
         method: "post",
         path: "account/verifyUser",
+        authorizer: {
+          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+        },
       },
     },
   ],
@@ -64,6 +70,9 @@ export const setInitialPassword = {
       http: {
         method: "post",
         path: "account/setInitialPassword",
+        authorizer: {
+          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+        },
       },
     },
   ],
@@ -79,6 +88,20 @@ export const signInUser = {
     },
   ],
 };
+export const getVerificationStatus = {
+  handler: `${handlerPath(__dirname)}/handler.getVerificationStatus`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/status",
+        authorizer: {
+          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+        },
+      },
+    },
+  ],
+};
 
 export const getVerifiedOnlySecret = {
   handler: `${handlerPath(__dirname)}/handler.getVerifiedOnlySecret`,
@@ -88,7 +111,6 @@ export const getVerifiedOnlySecret = {
         method: "post",
         path: "account/getSecret",
         authorizer: {
-          name: "LemonPayUserOnly",
           arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
         },
       },

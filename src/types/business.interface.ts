@@ -2,14 +2,20 @@ import mongoose from "mongoose";
 import { IRole } from "./role.interface";
 
 export type IBusinessDocument = mongoose.Document & {
-  name: string;
-  trade_name: string;
+  businessName: string;
+  businessTradeName: string;
   users: { user: mongoose.Schema.Types.ObjectId; role: IRole }[];
-  legal_type: string;
+  businessType:
+    | "SoleTrader"
+    | "CommercialPartnership"
+    | "LimitedPartnership"
+    | "PublicPartnership";
   industry: string;
-  address: string;
-  merchant_id: string;
-  bank_account_name: string;
-  IBAN: string;
-  BIC: string;
+  businessAddress: string;
+  businessHouseNumber: string;
+  businessZipCode: string;
+  businessRegistrationNumber: string;
+  bankAccountHolderName: string;
+  bankAccountIban: string;
+  bankAccountSwift: string;
 };

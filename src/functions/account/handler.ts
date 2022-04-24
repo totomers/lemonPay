@@ -85,6 +85,17 @@ export const addUserToGroup = middyfy(
       return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
+export const getVerificationStatus = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.getVerificationStatus(
+      event,
+      context
+    );
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
+  }
+);
 
 // export const createBusiness = middyfy(
 //   async (event, context): Promise<APIGatewayProxyResult> => {

@@ -62,7 +62,7 @@ async function _verify(user) {
     setTimeout(() => {
       console.log("is verified");
       resolve({ isVerified: true });
-    }, 1000);
+    }, 15000);
   });
 }
 

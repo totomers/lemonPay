@@ -2,18 +2,18 @@ import { Context } from "aws-lambda";
 import { MessageUtil } from "../utils/message";
 import { AccountService } from "../services/account.service";
 import { CognitoService } from "src/services/cognito.service";
-import { CustomError } from "@libs/customError";
+import { CustomError } from "src/models/custom/customError";
 
 /**
  * Create Business Account
  */
-export async function createBusinessAccount(event?: any, context?: Context) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  //extract business and user details from event
-  const user = event.body.user;
-  const business = event.body.business;
+export async function createBusinessAccount(event?, context?: Context) {
   try {
+    context.callbackWaitsForEmptyEventLoop = false;
+    const { email, name } = event.requestContext.authorizer.claims;
+    //extract business and user details from event
+    const user = { ...event.body.user, email, name };
+    const business = event.body.business;
     const data = await AccountService.createBusinessAccountHandler({
       user,
       business,
@@ -29,10 +29,11 @@ export async function createBusinessAccount(event?: any, context?: Context) {
  */
 export async function verifyUserDetails(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
-
   try {
     //extract business and user details from event
-    const { email, user } = event.body;
+    const { email } = event.requestContext.authorizer.claims;
+
+    const { user } = event.body;
     console.log(user, email);
     const data = await AccountService.verifyUserDetailsHandler({
       user,
@@ -148,7 +149,7 @@ export async function signInUser(event?: any, context?: Context) {
   }
 }
 /**
- * Private- For Testing Only - add user to a group with different access control
+ * Private- add user to a group with different access control -For Testing Only Make Public
  */
 export async function addUserToGroup(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -157,6 +158,23 @@ export async function addUserToGroup(event?: any, context?: Context) {
   try {
     const data = await CognitoService.addUserToGroupCognitoHandler({
       groupName,
+      email,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+/**
+ * Get Confirmation Status If User Is Verified Or Not
+ */
+export async function getVerificationStatus(event?: any, context?: Context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { email } = event.requestContext.authorizer.claims;
+
+    const data = await CognitoService.getVerificationStatusHandler({
       email,
     });
     return { data };
@@ -173,4 +191,5 @@ export const AccountController = {
   addUserToGroup,
   setUsersInitialPassword,
   resendConfirmationCode,
+  getVerificationStatus,
 };

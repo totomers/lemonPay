@@ -11,6 +11,7 @@ import {
   addUserToGroup,
   setInitialPassword,
   resendConfirmationCode,
+  getVerificationStatus,
 } from "@functions/account";
 import dotenv from "dotenv";
 
@@ -61,6 +62,7 @@ const serverlessConfiguration: AWS = {
     addUserToGroup,
     setInitialPassword,
     resendConfirmationCode,
+    getVerificationStatus,
   },
   package: { individually: true },
   custom: {
