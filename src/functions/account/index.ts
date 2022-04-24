@@ -1,4 +1,7 @@
-import { handlerPath } from "@libs/handler-resolver";
+import { CONFIG } from "src/config";
+import { handlerPath } from "src/utils/handler-resolver";
+
+console.log("CONFIG.COGNITO.USER_POOL_ARN: ", CONFIG.COGNITO.USER_POOL_ARN);
 
 //consider removing handlerPath and using relative URL instead..
 export const createBusinessAccount = {
@@ -9,7 +12,7 @@ export const createBusinessAccount = {
         method: "post",
         path: "account/createBusinessAccount",
         authorizer: {
-          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
       },
     },
@@ -24,7 +27,7 @@ export const verifyUserDetails = {
         method: "post",
         path: "account/verifyUser",
         authorizer: {
-          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
       },
     },
@@ -71,7 +74,7 @@ export const setInitialPassword = {
         method: "post",
         path: "account/setInitialPassword",
         authorizer: {
-          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
       },
     },
@@ -96,7 +99,7 @@ export const getVerificationStatus = {
         method: "post",
         path: "account/status",
         authorizer: {
-          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
       },
     },
@@ -111,7 +114,7 @@ export const getVerifiedOnlySecret = {
         method: "post",
         path: "account/getSecret",
         authorizer: {
-          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
       },
     },

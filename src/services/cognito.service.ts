@@ -1,8 +1,10 @@
 import AWS from "aws-sdk";
+import { CONFIG } from "src/config";
+console.log(CONFIG.SERVERLESS.REGION);
 
-AWS.config.update({ region: "us-east-1" });
-const userPoolId = process.env.COGNITO_USER_POOL_ID;
-const clientId = process.env.COGNITO_CLIENT_ID;
+AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
+const userPoolId = CONFIG.COGNITO.USER_POOL_ID;
+const clientId = CONFIG.COGNITO.CLIENT_ID;
 
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
   apiVersion: "2016-04-18",
@@ -278,11 +280,10 @@ export async function addUserToGroupCognitoHandler(params: {
   email: string;
 }): Promise<{ addToGroup: boolean }> {
   try {
-    // await connectToDatabase();
     const { email, groupName } = params;
 
-    const cognitoidentityserviceprovider =
-      new AWS.CognitoIdentityServiceProvider();
+    // const cognitoidentityserviceprovider =
+    //   new AWS.CognitoIdentityServiceProvider();
 
     await cognitoidentityserviceprovider
       .adminAddUserToGroup({

@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { formatJSONResponse } from "@libs/api-gateway";
-import { middyfy } from "@libs/lambda";
+import { formatJSONResponse } from "src/utils/api-gateway";
+import { middyfy } from "src/utils/lambda";
 import { accountController } from "../../controllers";
 
 export const createBusinessAccount = middyfy(

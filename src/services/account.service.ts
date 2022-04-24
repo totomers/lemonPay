@@ -5,7 +5,8 @@ import { Business } from "src/models/business";
 import { User } from "src/models/user";
 import AWS from "aws-sdk";
 import { CognitoService } from "./cognito.service";
-AWS.config.update({ region: "us-east-1" });
+import { CONFIG } from "src/config";
+AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 /**
  * Create new user
  * @param params

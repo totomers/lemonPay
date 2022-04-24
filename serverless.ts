@@ -13,22 +13,22 @@ import {
   resendConfirmationCode,
   getVerificationStatus,
 } from "@functions/account";
+import { sendClientEmailAfterTransaction } from "@functions/transaction";
 import dotenv from "dotenv";
 
 dotenv.config({
   path: "./config/.env.dev",
 });
-console.log("process.env.DB_URL:  ", process.env.DB_URL);
 
 const serverlessConfiguration: AWS = {
-  service: "server",
+  service: "lemonPay",
   frameworkVersion: "3",
   plugins: ["serverless-esbuild", "serverless-offline"],
 
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
-
+    region: "eu-central-1",
     // vpc: {
     //   securityGroupIds: ["sg-083dfda18e37b6f16"],
     //   subnetIds: [
@@ -46,6 +46,7 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
+      USER_POOL_ARN: "${file(./config.${opt:stage, 'dev'}.json):USER_POOL_ARN}",
     },
   },
   // import the function via paths
@@ -63,6 +64,7 @@ const serverlessConfiguration: AWS = {
     setInitialPassword,
     resendConfirmationCode,
     getVerificationStatus,
+    sendClientEmailAfterTransaction,
   },
   package: { individually: true },
   custom: {

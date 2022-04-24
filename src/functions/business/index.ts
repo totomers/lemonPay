@@ -1,4 +1,5 @@
-import { handlerPath } from "@libs/handler-resolver";
+import { CONFIG } from "src/config";
+import { handlerPath } from "src/utils/handler-resolver";
 
 //consider removing handlerPath and using relative URL instead..
 export const getAllBusinesses = {
@@ -10,7 +11,7 @@ export const getAllBusinesses = {
         path: "businesses/getAll",
         authorizer: {
           // name: "LemonPayCognitoAuthorizer",
-          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
       },
     },
@@ -26,7 +27,7 @@ export const createBusiness = {
         path: "businesses/create",
         authorizer: {
           // name: "LemonPayCognitoAuthorizer",
-          arn: "arn:aws:cognito-idp:us-east-1:164864435727:userpool/us-east-1_ijKvraZeK",
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
       },
     },

@@ -1,50 +1,37 @@
 import AWS from "aws-sdk";
+import { CONFIG } from "src/config";
 
-AWS.config.update({ region: "us-east-1" });
-const userPoolId = process.env.COGNITO_USER_POOL_ID;
-const clientId = process.env.COGNITO_CLIENT_ID;
+AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 
-const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
-  apiVersion: "2016-04-18",
-});
+const SES = new AWS.SES();
 
 /**
- * Create new user
+ * Sends client an email after a successful transaction.
  * @param params
  */
 
-export async function sendEmailAfterTransaction(params: {
-  name: string;
-  email: string;
+export async function sendTextEmailHandler(params: {
+  text: string;
+  subject: string;
+  to: string;
+  from?: string;
 }): Promise<{} | AWS.AWSError> {
   try {
-    // await connectToDatabase();
-    const { email, name } = params;
-
-    await { email };
-
-    const signUpRequest: AWS.CognitoIdentityServiceProvider.SignUpRequest = {
-      Username: email,
-      Password: process.env.COGNITO_USER_DUMMY_PASSWORD,
-      ClientId: clientId,
-      UserAttributes: [
-        {
-          Name: "name",
-          Value: name,
+    const { to, from = "no-reply@lemonpayapp.com", text, subject } = params;
+    const sendEmailRequest: AWS.SES.SendEmailRequest = {
+      Source: from,
+      Destination: { ToAddresses: [to] },
+      Message: {
+        Subject: { Data: subject },
+        Body: {
+          Text: {
+            Data: text,
+          },
         },
-        {
-          Name: "email",
-          Value: email,
-        },
-        {
-          Name: "custom:isInitiated",
-          Value: "0",
-        },
-      ],
+      },
     };
-    const result = await cognitoidentityserviceprovider
-      .signUp(signUpRequest)
-      .promise();
+
+    const result = await SES.sendEmail(sendEmailRequest).promise();
 
     return result;
   } catch (err) {
@@ -52,6 +39,6 @@ export async function sendEmailAfterTransaction(params: {
   }
 }
 
-export const CognitoService = {
-  sendEmailAfterTransaction,
+export const EmailService = {
+  sendTextEmailHandler,
 };
