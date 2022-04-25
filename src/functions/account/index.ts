@@ -80,6 +80,34 @@ export const setInitialPassword = {
     },
   ],
 };
+export const resetUserPassword = {
+  handler: `${handlerPath(__dirname)}/handler.resetUserPassword`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/resetPassword",
+        authorizer: {
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
+        },
+      },
+    },
+  ],
+};
+export const confirmResetUserPassword = {
+  handler: `${handlerPath(__dirname)}/handler.confirmResetUserPassword`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/confirmResetPassword",
+        authorizer: {
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
+        },
+      },
+    },
+  ],
+};
 export const signInUser = {
   handler: `${handlerPath(__dirname)}/handler.signInUser`,
   events: [

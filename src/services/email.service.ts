@@ -23,9 +23,13 @@ export async function sendTextEmailHandler(params: {
       Destination: { ToAddresses: [to] },
       Message: {
         Subject: { Data: subject },
+
         Body: {
           Text: {
             Data: text,
+          },
+          Html: {
+            Data: `<html><head><title>Your Token</title><style>h1{color:#f00;}</style></head><body><h1>Hello </h1><div>Your Device Validation Token is YYY<br/>Simply copy this token and paste it into the device validation input field.</div></body></html>`,
           },
         },
       },

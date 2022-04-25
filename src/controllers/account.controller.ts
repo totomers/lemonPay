@@ -132,6 +132,42 @@ export async function setUsersInitialPassword(event?: any, context?: Context) {
 }
 
 /**
+ * Reset User's Password
+ */
+export async function resetUserPassword(event?: any, context?: Context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { email } = event.requestContext.authorizer.claims;
+    const data = await CognitoService.resetUserPasswordHandler({
+      email,
+    });
+    return { data };
+  } catch (err) {
+    return { err, statusCode: err.code };
+  }
+}
+/**
+ * Confirm Reset User's Password
+ */
+export async function confirmResetUserPassword(event?: any, context?: Context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { email } = event.requestContext.authorizer.claims;
+    const { password, confirmationCode } = event.body;
+    const data = await CognitoService.confirmUserPasswordResetHandler({
+      email,
+      password,
+      confirmationCode,
+    });
+    return { data };
+  } catch (err) {
+    return { err, statusCode: err.code };
+  }
+}
+
+/**
  * Sign Up User To Cognito DB
  */
 export async function signInUser(event?: any, context?: Context) {
@@ -192,4 +228,6 @@ export const AccountController = {
   setUsersInitialPassword,
   resendConfirmationCode,
   getVerificationStatus,
+  resetUserPassword,
+  confirmResetUserPassword,
 };

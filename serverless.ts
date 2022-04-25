@@ -12,6 +12,8 @@ import {
   setInitialPassword,
   resendConfirmationCode,
   getVerificationStatus,
+  resetUserPassword,
+  confirmResetUserPassword,
 } from "@functions/account";
 import { sendClientEmailAfterTransaction } from "@functions/transaction";
 import dotenv from "dotenv";
@@ -65,6 +67,8 @@ const serverlessConfiguration: AWS = {
     resendConfirmationCode,
     getVerificationStatus,
     sendClientEmailAfterTransaction,
+    resetUserPassword,
+    confirmResetUserPassword,
   },
   package: { individually: true },
   custom: {

@@ -15,6 +15,7 @@ export async function sendClientEmailAfterTransactionHandler(params: {
       Destination: { ToAddresses: [email] },
       Message: {
         Subject: { Data: "Successful Transction" },
+
         Body: {
           Text: {
             Data: `Hi ${name}, your transction with XXX has been successful`,

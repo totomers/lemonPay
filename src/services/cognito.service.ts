@@ -173,6 +173,60 @@ export async function resendConfirmationCodeHandler(params: {
 }
 
 /**
+ *  Initiates password reset process. Sends confirmation email to user to get permission to reset users password
+ * @param params
+ */
+
+export async function resetUserPasswordHandler(params: {
+  email: string;
+}): Promise<AWS.CognitoIdentityServiceProvider.ForgotPasswordResponse> {
+  try {
+    const { email } = params;
+    const ForgotPasswordRequest: AWS.CognitoIdentityServiceProvider.ForgotPasswordRequest =
+      {
+        Username: email,
+        ClientId: clientId,
+      };
+    const result = await cognitoidentityserviceprovider
+      .forgotPassword(ForgotPasswordRequest)
+      .promise();
+
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+
+/**
+ *  Initiates password reset process. Sends confirmation email to user to get permission to reset users password
+ * @param params
+ */
+
+export async function confirmUserPasswordResetHandler(params: {
+  email: string;
+  password: string;
+  confirmationCode: string;
+}): Promise<AWS.CognitoIdentityServiceProvider.ConfirmForgotPasswordResponse> {
+  try {
+    const { email, password, confirmationCode } = params;
+    const ConfirmForgotPasswordRequest: AWS.CognitoIdentityServiceProvider.ConfirmForgotPasswordRequest =
+      {
+        Username: email,
+        ClientId: clientId,
+        Password: password,
+        ConfirmationCode: confirmationCode,
+      };
+    const result = await cognitoidentityserviceprovider
+      .confirmForgotPassword(ConfirmForgotPasswordRequest)
+      .promise();
+
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+
+/**
  * Confirm new users email
  * @param params
  */
@@ -339,4 +393,6 @@ export const CognitoService = {
   addUserToGroupCognitoHandler,
   setInitialUserPasswordHandler,
   getVerificationStatusHandler,
+  resetUserPasswordHandler,
+  confirmUserPasswordResetHandler,
 };

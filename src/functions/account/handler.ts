@@ -77,6 +77,26 @@ export const setInitialPassword = middyfy(
       return formatJSONResponse(result.err.message, result.err.statusCode);
   }
 );
+
+export const resetUserPassword = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.resetUserPassword(event, context);
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
+  }
+);
+export const confirmResetUserPassword = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.confirmResetUserPassword(
+      event,
+      context
+    );
+    if (result.data) return formatJSONResponse(result.data);
+    if (result.err)
+      return formatJSONResponse(result.err.message, result.err.statusCode);
+  }
+);
 export const addUserToGroup = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
     const result = await accountController.addUserToGroup(event, context);
