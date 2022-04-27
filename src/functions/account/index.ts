@@ -1,8 +1,6 @@
 import { CONFIG } from "src/config";
 import { handlerPath } from "src/utils/handler-resolver";
 
-console.log("CONFIG.COGNITO.USER_POOL_ARN: ", CONFIG.COGNITO.USER_POOL_ARN);
-
 //consider removing handlerPath and using relative URL instead..
 export const createBusinessAccount = {
   handler: `${handlerPath(__dirname)}/handler.createBusinessAccount`,
@@ -119,13 +117,38 @@ export const signInUser = {
     },
   ],
 };
+export const refreshTokenSignInUser = {
+  handler: `${handlerPath(__dirname)}/handler.refreshTokenSignInUser`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/refreshTokenSignIn",
+      },
+    },
+  ],
+};
 export const getVerificationStatus = {
   handler: `${handlerPath(__dirname)}/handler.getVerificationStatus`,
   events: [
     {
       http: {
         method: "post",
-        path: "account/status",
+        path: "account/getVerificationStatus",
+        authorizer: {
+          arn: CONFIG.COGNITO.USER_POOL_ARN,
+        },
+      },
+    },
+  ],
+};
+export const getUserStatus = {
+  handler: `${handlerPath(__dirname)}/handler.getUserStatus`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/userStatus",
         authorizer: {
           arn: CONFIG.COGNITO.USER_POOL_ARN,
         },
@@ -148,26 +171,3 @@ export const getVerifiedOnlySecret = {
     },
   ],
 };
-export const addUserToGroup = {
-  handler: `${handlerPath(__dirname)}/handler.addUserToGroup`,
-  events: [
-    {
-      http: {
-        method: "post",
-        path: "account/addUserToGroup",
-      },
-    },
-  ],
-};
-
-// export const createBusiness = {
-//   handler: `${handlerPath(__dirname)}/handler.createBusiness`,
-//   events: [
-//     {
-//       http: {
-//         method: "post",
-//         path: "businesses/create",
-//       },
-//     },
-//   ],
-// };

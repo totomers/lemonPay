@@ -1,5 +1,6 @@
-import AWS from "aws-sdk";
+import AWS, { AWSError } from "aws-sdk";
 import { CONFIG } from "src/config";
+import { CustomError, ERROR_TYPES } from "src/utils/customError";
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 
@@ -39,7 +40,13 @@ export async function sendTextEmailHandler(params: {
 
     return result;
   } catch (err) {
-    throw err;
+    const error: AWSError = err;
+    throw new CustomError(
+      error.message,
+      error.statusCode,
+      error.code,
+      ERROR_TYPES.AWS_SES
+    );
   }
 }
 

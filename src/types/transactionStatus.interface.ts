@@ -1,5 +1,1 @@
-export type ITransactionInterface =
-  | "PENDING"
-  | "FAILED"
-  | "CHARGED"
-  | "CANCELED";
+export type ITransactionStatus = "PENDING" | "FAILED" | "CHARGED" | "CANCELED";

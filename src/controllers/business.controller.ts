@@ -2,11 +2,15 @@ import { Context } from "aws-lambda";
 import { MessageUtil } from "../utils/message";
 import { BusinessService } from "../services/business.service";
 import { IBusinessDocument } from "src/types/business.interface";
+import { ParsedAPIGatewayProxyEvent } from "src/utils/api-gateway";
 
 /**
  * Get business list
  */
-export async function getAll(event?: any, context?: Context) {
+export async function getAll(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     const result = await BusinessService.getAllBusinessesHandler();
@@ -21,7 +25,10 @@ export async function getAll(event?: any, context?: Context) {
 /**
  * Create business
  */
-export async function create(event?: any, context?: Context) {
+export async function create(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     const params: Partial<IBusinessDocument> = event?.body;

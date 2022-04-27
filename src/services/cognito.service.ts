@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import { CONFIG } from "src/config";
+import { AWSCognitoError } from "src/utils/customError";
 console.log(CONFIG.SERVERLESS.REGION);
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
@@ -18,10 +19,8 @@ const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
 export async function signUpCognitoHandler(params: {
   name: string;
   email: string;
-  // password: string;
 }): Promise<AWS.CognitoIdentityServiceProvider.SignUpResponse | AWS.AWSError> {
   try {
-    // await connectToDatabase();
     const { email, name } = params;
 
     await overrideUninitiatedUser({ email });
@@ -43,6 +42,14 @@ export async function signUpCognitoHandler(params: {
           Name: "custom:isInitiated",
           Value: "0",
         },
+        {
+          Name: "custom:isKnownDetails",
+          Value: "0",
+        },
+        {
+          Name: "custom:isVerified",
+          Value: "0",
+        },
       ],
     };
     const result = await cognitoidentityserviceprovider
@@ -51,12 +58,12 @@ export async function signUpCognitoHandler(params: {
 
     return result;
   } catch (err) {
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
 /**
- *
+ * Delete user if he has not changed his dummy password and attempts to sign up with the same email
  * @param params
  * @returns null
  */
@@ -65,15 +72,9 @@ export async function overrideUninitiatedUser(params: { email: string }) {
   try {
     const { email } = params;
 
-    const getUserRequest: AWS.CognitoIdentityServiceProvider.AdminGetUserRequest =
-      {
-        Username: email,
-        UserPoolId: userPoolId,
-      };
-    const user = await cognitoidentityserviceprovider
-      .adminGetUser(getUserRequest)
-      .promise();
-    if (!user) return;
+    const user = await _getUserFromCognito(email);
+
+    if (!user || !user.UserAttributes) return;
     console.log("found an exisiting user", user);
 
     const isUninitiatedAttr = _getCustomAttribute(
@@ -82,7 +83,6 @@ export async function overrideUninitiatedUser(params: { email: string }) {
     );
 
     if (isUninitiatedAttr.Value === "0") {
-      console.log("USER IS NOT INITIATED!");
       const adminDeleteUserRequest: AWS.CognitoIdentityServiceProvider.AdminDeleteUserRequest =
         { UserPoolId: userPoolId, Username: email };
       await cognitoidentityserviceprovider
@@ -90,8 +90,62 @@ export async function overrideUninitiatedUser(params: { email: string }) {
         .promise();
     }
   } catch (err) {
-    return err;
-    // throw err;
+    throw new AWSCognitoError(err);
+  }
+}
+
+/**
+ * Delete user if he has not changed his dummy password and attempts to sign up with the same email
+ * @param params
+ * @returns null
+ */
+
+export async function getUserStatusHandler(params: { email: string }) {
+  try {
+    const { email } = params;
+    const user = await _getUserFromCognito(email);
+
+    if (!user || !user.UserAttributes) return;
+    console.log("found an exisiting user", user);
+
+    const isUninitiatedAttr = _getCustomAttribute(
+      user.UserAttributes,
+      "custom:isInitiated"
+    );
+    const isKnownDetails = _getCustomAttribute(
+      user.UserAttributes,
+      "custom:isKnownDetails"
+    );
+    const isVerified = _getCustomAttribute(
+      user.UserAttributes,
+      "custom:isVerified"
+    );
+
+    return {
+      isInitiated: isUninitiatedAttr.Value === "1",
+      isKnownDetails: isKnownDetails.Value === "1",
+      isVerified: isVerified.Value === "1",
+    };
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+async function _getUserFromCognito(
+  email: string
+): Promise<AWS.CognitoIdentityServiceProvider.AdminGetUserResponse> {
+  try {
+    const getUserRequest: AWS.CognitoIdentityServiceProvider.AdminGetUserRequest =
+      {
+        Username: email,
+        UserPoolId: userPoolId,
+      };
+    const user = await cognitoidentityserviceprovider
+      .adminGetUser(getUserRequest)
+      .promise();
+    return user;
+  } catch (error) {
+    return error;
   }
 }
 
@@ -142,7 +196,7 @@ export async function updateUserAttribute(params: {
 
     return result;
   } catch (err) {
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -168,7 +222,7 @@ export async function resendConfirmationCodeHandler(params: {
 
     return result;
   } catch (err) {
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -193,7 +247,7 @@ export async function resetUserPasswordHandler(params: {
 
     return result;
   } catch (err) {
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -222,7 +276,7 @@ export async function confirmUserPasswordResetHandler(params: {
 
     return result;
   } catch (err) {
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -236,7 +290,6 @@ export async function confirmSignUpCognitoHandler(params: {
   confirmationCode: string;
 }): Promise<AWS.CognitoIdentityServiceProvider.ConfirmSignUpResponse> {
   try {
-    // await connectToDatabase();
     const { email, confirmationCode } = params;
 
     const confirmSignUpRequest: AWS.CognitoIdentityServiceProvider.ConfirmSignUpRequest =
@@ -254,9 +307,7 @@ export async function confirmSignUpCognitoHandler(params: {
 
     return result;
   } catch (err) {
-    console.error(err);
-
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -289,7 +340,7 @@ export async function setInitialUserPasswordHandler(params: {
     });
     return result;
   } catch (err) {
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -303,10 +354,9 @@ export async function signInCognitoHandler(params: {
   password: string;
 }): Promise<AWS.CognitoIdentityServiceProvider.InitiateAuthResponse> {
   try {
-    // await connectToDatabase();
     const { email, password } = params;
 
-    const result = cognitoidentityserviceprovider
+    const result = await cognitoidentityserviceprovider
       .initiateAuth({
         AuthFlow: "USER_PASSWORD_AUTH",
         ClientId: clientId,
@@ -319,8 +369,34 @@ export async function signInCognitoHandler(params: {
 
     return result;
   } catch (err) {
-    console.error(err);
-    throw err;
+    throw new AWSCognitoError(err);
+  }
+}
+
+/**
+ * Sign in existing user with refresh token
+ * @param params
+ */
+
+export async function refreshTokenSignInCognitoHandler(params: {
+  refreshToken: string;
+}): Promise<AWS.CognitoIdentityServiceProvider.InitiateAuthResponse> {
+  try {
+    const { refreshToken } = params;
+
+    const result = await cognitoidentityserviceprovider
+      .initiateAuth({
+        AuthFlow: "REFRESH_TOKEN_AUTH",
+        ClientId: clientId,
+        AuthParameters: {
+          REFRESH_TOKEN: refreshToken,
+        },
+      })
+      .promise();
+
+    return result;
+  } catch (err) {
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -349,8 +425,7 @@ export async function addUserToGroupCognitoHandler(params: {
 
     return { addToGroup: true };
   } catch (err) {
-    console.error(err);
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -380,8 +455,7 @@ export async function getVerificationStatusHandler(params: {
 
     return { status: isUserVerified ? "Verified" : "Pending" };
   } catch (err) {
-    console.error(err);
-    throw err;
+    throw new AWSCognitoError(err);
   }
 }
 
@@ -390,9 +464,12 @@ export const CognitoService = {
   resendConfirmationCodeHandler,
   confirmSignUpCognitoHandler,
   signInCognitoHandler,
+  refreshTokenSignInCognitoHandler,
   addUserToGroupCognitoHandler,
   setInitialUserPasswordHandler,
   getVerificationStatusHandler,
   resetUserPasswordHandler,
   confirmUserPasswordResetHandler,
+  updateUserAttribute,
+  getUserStatusHandler,
 };

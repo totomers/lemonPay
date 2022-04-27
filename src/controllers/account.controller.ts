@@ -1,81 +1,96 @@
 import { Context } from "aws-lambda";
-import { MessageUtil } from "../utils/message";
 import { AccountService } from "../services/account.service";
 import { CognitoService } from "src/services/cognito.service";
-import { CustomError } from "src/models/custom/customError";
+import { MissingParamsError } from "src/utils/customError";
+import { ParsedAPIGatewayProxyEvent } from "src/utils/api-gateway";
 
 /**
  * Create Business Account
  */
-export async function createBusinessAccount(event?, context?: Context) {
+export async function createBusinessAccount(
+  event: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   try {
     context.callbackWaitsForEmptyEventLoop = false;
     const { email, name } = event.requestContext.authorizer.claims;
-    //extract business and user details from event
     const user = { ...event.body.user, email, name };
     const business = event.body.business;
+
     const data = await AccountService.createBusinessAccountHandler({
       user,
       business,
     });
+
     return { data };
   } catch (err) {
-    return { err, statusCode: err.code };
+    return { err };
   }
 }
 
 /**
  * Verify User Details
  */
-export async function verifyUserDetails(event?: any, context?: Context) {
+export async function verifyUserDetails(
+  event: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     //extract business and user details from event
     const { email } = event.requestContext.authorizer.claims;
 
-    const { user } = event.body;
-    console.log(user, email);
+    if (!email) throw new MissingParamsError("email");
     const data = await AccountService.verifyUserDetailsHandler({
-      user,
       email,
     });
     return { data };
   } catch (err) {
-    return { err, statusCode: err.code };
+    return { err };
   }
 }
 
 /**
  * Sign Up User To Cognito DB
  */
-export async function signUpUser(event?: any, context?: Context) {
+export async function signUpUser(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
-  const { name, email } = event.body;
-  console.log(email, name);
+
   try {
+    const { name, email } = event.body;
+
+    if (!name || !email) throw new MissingParamsError("name, email");
+
     const data = await CognitoService.signUpCognitoHandler({
       name,
       email,
     });
     return { data };
   } catch (err) {
-    return { err, statusCode: err.code };
+    return { err };
   }
 }
 /**
  * Sign Up User To Cognito DB
  */
-export async function resendConfirmationCode(event?: any, context?: Context) {
+export async function resendConfirmationCode(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
-  const { email } = event.body;
 
   try {
+    const { email } = event.body;
+    if (!email) throw new MissingParamsError("email");
     const data = await CognitoService.resendConfirmationCodeHandler({
       email,
     });
     return { data };
   } catch (err) {
-    return { err, statusCode: err.code };
+    return { err };
   }
 }
 
@@ -83,18 +98,22 @@ export async function resendConfirmationCode(event?: any, context?: Context) {
  * Send Email With OTP To Confirm Users Email & Add User To Cognito DB If Successful.
  * @returns accessToken,refreshToken,idToken
  */
-export async function confirmSignUpUser(event?: any, context?: Context) {
+export async function confirmSignUpUser(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
-  const { email, confirmationCode } = event.body;
-  console.log(email, confirmationCode);
+
   try {
+    const { email, confirmationCode } = event.body;
+    if (!confirmationCode || !email)
+      throw new MissingParamsError("confirmationCode, email");
     const confirmationResult = await CognitoService.confirmSignUpCognitoHandler(
       {
         confirmationCode,
         email,
       }
     );
-    console.log("Dummy Password: ", process.env.COGNITO_USER_DUMMY_PASSWORD);
 
     const signInResult = await CognitoService.signInCognitoHandler({
       email,
@@ -109,17 +128,18 @@ export async function confirmSignUpUser(event?: any, context?: Context) {
 /**
  * Change Users Dummy Password Given Upon Sign-Up
  */
-export async function setUsersInitialPassword(event?: any, context?: Context) {
+export async function setUsersInitialPassword(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     const { password, accessToken, email } = event.body;
-    // const accessToken = event["Authorization"];
 
-    if (!accessToken)
-      throw new CustomError("No authorization Token was found ", 400);
+    if (!password || !accessToken || !email)
+      throw new MissingParamsError("password, accessToken, email");
 
-    console.log(password);
     const result = await CognitoService.setInitialUserPasswordHandler({
       accessToken,
       email,
@@ -134,11 +154,17 @@ export async function setUsersInitialPassword(event?: any, context?: Context) {
 /**
  * Reset User's Password
  */
-export async function resetUserPassword(event?: any, context?: Context) {
+export async function resetUserPassword(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     const { email } = event.requestContext.authorizer.claims;
+
+    if (!email) throw new MissingParamsError("email");
+
     const data = await CognitoService.resetUserPasswordHandler({
       email,
     });
@@ -150,12 +176,19 @@ export async function resetUserPassword(event?: any, context?: Context) {
 /**
  * Confirm Reset User's Password
  */
-export async function confirmResetUserPassword(event?: any, context?: Context) {
+export async function confirmResetUserPassword(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     const { email } = event.requestContext.authorizer.claims;
     const { password, confirmationCode } = event.body;
+
+    if (!password || !confirmationCode || !email)
+      throw new MissingParamsError("password, confirmationCode, email");
+
     const data = await CognitoService.confirmUserPasswordResetHandler({
       email,
       password,
@@ -170,11 +203,16 @@ export async function confirmResetUserPassword(event?: any, context?: Context) {
 /**
  * Sign Up User To Cognito DB
  */
-export async function signInUser(event?: any, context?: Context) {
+export async function signInUser(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
-  const { email, password } = event.body;
-  console.log(email, password);
+
   try {
+    const { email, password } = event.body;
+
+    if (!password || !email) throw new MissingParamsError("password, email");
     const data = await CognitoService.signInCognitoHandler({
       password,
       email,
@@ -185,13 +223,39 @@ export async function signInUser(event?: any, context?: Context) {
   }
 }
 /**
+ * Sign Up User With Refresh Token
+ */
+export async function refreshTokenSignIn(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { refreshToken } = event.body;
+
+    if (!refreshToken) throw new MissingParamsError("refreshToken");
+    const data = await CognitoService.refreshTokenSignInCognitoHandler({
+      refreshToken,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+/**
  * Private- add user to a group with different access control -For Testing Only Make Public
  */
-export async function addUserToGroup(event?: any, context?: Context) {
+export async function addUserToGroup(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
-  const { email, groupName } = event.body;
-  console.log(email, groupName);
+
   try {
+    const { email, groupName } = event.body;
+
+    if (!groupName || !email) throw new MissingParamsError("groupName, email");
     const data = await CognitoService.addUserToGroupCognitoHandler({
       groupName,
       email,
@@ -204,13 +268,38 @@ export async function addUserToGroup(event?: any, context?: Context) {
 /**
  * Get Confirmation Status If User Is Verified Or Not
  */
-export async function getVerificationStatus(event?: any, context?: Context) {
+export async function getVerificationStatus(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     const { email } = event.requestContext.authorizer.claims;
 
+    if (!email) throw new MissingParamsError("email");
     const data = await CognitoService.getVerificationStatusHandler({
+      email,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * Get User Status If User Is Has Changed Password, Has Registered Business & Personal Details */
+export async function getUserStatus(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { email } = event.requestContext.authorizer.claims;
+
+    if (!email) throw new MissingParamsError("email");
+    const data = await CognitoService.getUserStatusHandler({
       email,
     });
     return { data };
@@ -224,10 +313,11 @@ export const AccountController = {
   signUpUser,
   confirmSignUpUser,
   signInUser,
-  addUserToGroup,
+  refreshTokenSignIn,
   setUsersInitialPassword,
   resendConfirmationCode,
   getVerificationStatus,
   resetUserPassword,
   confirmResetUserPassword,
+  getUserStatus,
 };

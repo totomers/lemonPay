@@ -8,12 +8,13 @@ import {
   signInUser,
   signUpUser,
   confirmSignUp,
-  addUserToGroup,
   setInitialPassword,
   resendConfirmationCode,
   getVerificationStatus,
   resetUserPassword,
   confirmResetUserPassword,
+  getUserStatus,
+  refreshTokenSignInUser,
 } from "@functions/account";
 import { sendClientEmailAfterTransaction } from "@functions/transaction";
 import dotenv from "dotenv";
@@ -62,13 +63,14 @@ const serverlessConfiguration: AWS = {
     signInUser,
     signUpUser,
     confirmSignUp,
-    addUserToGroup,
     setInitialPassword,
     resendConfirmationCode,
     getVerificationStatus,
     sendClientEmailAfterTransaction,
     resetUserPassword,
     confirmResetUserPassword,
+    getUserStatus,
+    refreshTokenSignInUser,
   },
   package: { individually: true },
   custom: {

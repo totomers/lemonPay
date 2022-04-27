@@ -1,4 +1,4 @@
-import { CustomResponse } from "../models/custom/response";
+import { CustomResponse } from "./response";
 
 enum StatusCode {
   success = 200,
