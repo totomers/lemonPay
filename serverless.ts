@@ -15,8 +15,11 @@ import {
   confirmResetUserPassword,
   getUserStatus,
   refreshTokenSignInUser,
+  defineAuthChallenge,
+  createAuthChallenge,
+  verifyAuthChallenge,
 } from "@functions/account";
-import { sendClientEmailAfterTransaction } from "@functions/transaction";
+import { emailClientInvoice } from "@functions/transaction";
 import dotenv from "dotenv";
 
 dotenv.config({
@@ -66,11 +69,14 @@ const serverlessConfiguration: AWS = {
     setInitialPassword,
     resendConfirmationCode,
     getVerificationStatus,
-    sendClientEmailAfterTransaction,
+    emailClientInvoice,
     resetUserPassword,
     confirmResetUserPassword,
     getUserStatus,
     refreshTokenSignInUser,
+    defineAuthChallenge,
+    createAuthChallenge,
+    verifyAuthChallenge,
   },
   package: { individually: true },
   custom: {

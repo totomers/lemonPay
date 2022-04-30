@@ -16,9 +16,17 @@ export async function sendTextEmailHandler(params: {
   subject: string;
   to: string;
   from?: string;
+  html?: string;
 }): Promise<{} | AWS.AWSError> {
   try {
-    const { to, from = "no-reply@lemonpayapp.com", text, subject } = params;
+    const defaultHTML = `<html><head><title>Your Token</title><style>h1{color:#f00;}</style></head><body><h1>Hello </h1><div>Your Device Validation Token is YYY<br/>Simply copy this token and paste it into the device validation input field.</div></body></html>`;
+    const {
+      to,
+      from = "no-reply@lemonpayapp.com",
+      text,
+      subject,
+      html = defaultHTML,
+    } = params;
     const sendEmailRequest: AWS.SES.SendEmailRequest = {
       Source: from,
       Destination: { ToAddresses: [to] },
@@ -30,7 +38,7 @@ export async function sendTextEmailHandler(params: {
             Data: text,
           },
           Html: {
-            Data: `<html><head><title>Your Token</title><style>h1{color:#f00;}</style></head><body><h1>Hello </h1><div>Your Device Validation Token is YYY<br/>Simply copy this token and paste it into the device validation input field.</div></body></html>`,
+            Data: html,
           },
         },
       },

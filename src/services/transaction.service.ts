@@ -1,11 +1,36 @@
-import { CustomError } from "src/utils/customError";
+import { connectToDatabase } from "src/db";
+import { Transaction } from "src/models/transaction";
+import { ITransactionDocument } from "src/types/transaction.interface";
+import {
+  AWSSESError,
+  CustomError,
+  MongoCustomError,
+} from "src/utils/customError";
 import { EmailService } from "./email.service";
+
+/**
+ * Save transaction in DB.
+ * @param params
+ */
+
+export async function createTransactionHandler(
+  params: Partial<ITransactionDocument>
+): Promise<ITransactionDocument> {
+  try {
+    await connectToDatabase();
+    const result = await Transaction.create(params);
+    return result;
+  } catch (err) {
+    throw new MongoCustomError(err);
+  }
+}
+
 /**
  * Sends client an email after a successful transaction.
  * @param params
  */
 
-export async function sendClientEmailAfterTransactionHandler(params: {
+export async function emailClientInvoiceHandler(params: {
   name: string;
   email: string;
 }): Promise<{} | CustomError> {
@@ -36,10 +61,11 @@ export async function sendClientEmailAfterTransactionHandler(params: {
 
     return result;
   } catch (err) {
-    throw err;
+    throw new AWSSESError(err);
   }
 }
 
 export const TransactionService = {
-  sendClientEmailAfterTransactionHandler,
+  emailClientInvoiceHandler,
+  createTransactionHandler,
 };

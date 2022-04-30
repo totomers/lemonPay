@@ -1,6 +1,13 @@
+import {
+  APIGatewayProxyEvent,
+  CreateAuthChallengeTriggerEvent,
+  DefineAuthChallengeTriggerEvent,
+  VerifyAuthChallengeResponseTriggerEvent,
+} from "aws-lambda";
 import AWS from "aws-sdk";
 import { CONFIG } from "src/config";
 import { AWSCognitoError } from "src/utils/customError";
+import { EmailService } from "./email.service";
 console.log(CONFIG.SERVERLESS.REGION);
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
@@ -459,6 +466,137 @@ export async function getVerificationStatusHandler(params: {
   }
 }
 
+/**
+ *  Defining Auth Challange Handler To Send OTP For User Auth.
+ * @param params
+ */
+
+export async function defineAuthChallengeHandler(params: {
+  event: DefineAuthChallengeTriggerEvent;
+}): Promise<DefineAuthChallengeTriggerEvent> {
+  try {
+    const { event } = params;
+    console.log(event);
+
+    // If user is not registered
+    if (event.request.userNotFound) {
+      event.response.issueTokens = false;
+      event.response.failAuthentication = true;
+      throw new Error("User does not exist");
+    }
+
+    if (
+      event.request.session.length >= 3 &&
+      event.request.session.slice(-1)[0].challengeResult === false
+    ) {
+      // wrong OTP even After 3 sessions?
+      event.response.issueTokens = false;
+      event.response.failAuthentication = true;
+      throw new Error("Invalid OTP");
+    } else if (
+      event.request.session.length > 0 &&
+      event.request.session.slice(-1)[0].challengeResult === true
+    ) {
+      // Correct OTP!
+      event.response.issueTokens = true;
+      event.response.failAuthentication = false;
+    } else {
+      // not yet received correct OTP
+      event.response.issueTokens = false;
+      event.response.failAuthentication = false;
+      event.response.challengeName = "CUSTOM_CHALLENGE";
+    }
+
+    return event;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+/**
+ *  Verify Auth Challange Handler To Send OTP For User Auth.
+ * @param params
+ */
+
+export async function verifyAuthChallengeHandler(params: {
+  event: VerifyAuthChallengeResponseTriggerEvent;
+}): Promise<VerifyAuthChallengeResponseTriggerEvent> {
+  try {
+    const { event } = params;
+    console.log(event.request);
+
+    const expectedAnswer =
+      event.request.privateChallengeParameters.secretLoginCode;
+    if (event.request.challengeAnswer === expectedAnswer) {
+      event.response.answerCorrect = true;
+    } else {
+      event.response.answerCorrect = false;
+    }
+
+    return event;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+/**
+ *  Creating Auth Challange Handler To Send OTP For User Auth.
+ * @param params
+ */
+
+export async function createAuthChallengeHandler(params: {
+  event: CreateAuthChallengeTriggerEvent;
+}): Promise<CreateAuthChallengeTriggerEvent> {
+  try {
+    const { event } = params;
+    let secretLoginCode;
+    if (!event.request.session || !event.request.session.length) {
+      // Generate a new secret login code and send it to the user
+      secretLoginCode = Date.now().toString().slice(-4);
+      console.log("OTP / Secret Password Reset Code: " + secretLoginCode);
+      try {
+        const html = `<html><body><p>This is your secret password reset code:</p>
+        <h3>${secretLoginCode}</h3></body></html>`;
+        const text = `Your secret password reset code: ${secretLoginCode}`;
+        const subject = "Your secret password reset code";
+        const to = event.request.userAttributes.email;
+
+        const emailResult = EmailService.sendTextEmailHandler({
+          text,
+          subject,
+          to,
+          html,
+        });
+
+        console.log(emailResult);
+        console.log("EMAIL DELIVERED");
+      } catch (error) {
+        // Handle SMS Failure
+        console.log(error);
+      }
+    } else {
+      // re-use code generated in previous challenge
+      const previousChallenge = event.request.session.slice(-1)[0];
+      secretLoginCode =
+        previousChallenge.challengeMetadata.match(/CODE-(\d*)/)[1];
+    }
+
+    console.log(event.request.userAttributes);
+
+    // Add the secret login code to the private challenge parameters
+    // so it can be verified by the "Verify Auth Challenge Response" trigger
+    event.response.privateChallengeParameters = { secretLoginCode };
+
+    // Add the secret login code to the session so it is available
+    // in a next invocation of the "Create Auth Challenge" trigger
+    event.response.challengeMetadata = `CODE-${secretLoginCode}`;
+
+    return event;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
 export const CognitoService = {
   signUpCognitoHandler,
   resendConfirmationCodeHandler,
@@ -472,4 +610,7 @@ export const CognitoService = {
   confirmUserPasswordResetHandler,
   updateUserAttribute,
   getUserStatusHandler,
+  defineAuthChallengeHandler,
+  createAuthChallengeHandler,
+  verifyAuthChallengeHandler,
 };

@@ -171,3 +171,18 @@ export const getVerifiedOnlySecret = {
     },
   ],
 };
+
+export const defineAuthChallenge = {
+  handler: `${handlerPath(__dirname)}/handler.defineAuthChallenge`,
+  events: [],
+};
+
+export const createAuthChallenge = {
+  handler: `${handlerPath(__dirname)}/handler.createAuthChallenge`,
+  events: [],
+};
+
+export const verifyAuthChallenge = {
+  handler: `${handlerPath(__dirname)}/handler.verifyAuthChallenge`,
+  events: [],
+};

@@ -1,4 +1,9 @@
-import { Context } from "aws-lambda";
+import {
+  Context,
+  CreateAuthChallengeTriggerEvent,
+  DefineAuthChallengeTriggerEvent,
+  VerifyAuthChallengeResponseTriggerEvent,
+} from "aws-lambda";
 import { AccountService } from "../services/account.service";
 import { CognitoService } from "src/services/cognito.service";
 import { MissingParamsError } from "src/utils/customError";
@@ -307,6 +312,60 @@ export async function getUserStatus(
     return { err };
   }
 }
+
+/**
+ * Define Custom Auth Challenge
+ */
+export async function defineCustomChallenge(
+  event?: DefineAuthChallengeTriggerEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    if (!event) throw new MissingParamsError("event");
+    const data = await CognitoService.defineAuthChallengeHandler({ event });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * Create Custom Auth Challenge
+ */
+export async function createAuthChallenge(
+  event?: CreateAuthChallengeTriggerEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    if (!event) throw new MissingParamsError("event");
+    const data = await CognitoService.createAuthChallengeHandler({ event });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+/**
+ * Verify Custom Auth Challenge
+ */
+export async function verifyAuthChallenge(
+  event?: VerifyAuthChallengeResponseTriggerEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    if (!event) throw new MissingParamsError("event");
+    const data = await CognitoService.verifyAuthChallengeHandler({ event });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
 export const AccountController = {
   createBusinessAccount,
   verifyUserDetails,
@@ -320,4 +379,7 @@ export const AccountController = {
   resetUserPassword,
   confirmResetUserPassword,
   getUserStatus,
+  defineCustomChallenge,
+  createAuthChallenge,
+  verifyAuthChallenge,
 };
