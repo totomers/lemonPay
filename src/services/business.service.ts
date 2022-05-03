@@ -1,7 +1,7 @@
 import { Model } from "mongoose";
 import { IBusinessDocument } from "src/types/business.interface";
-import { connectToDatabase } from "src/db";
-import { Business } from "../models/business";
+import { connectToDatabase } from "src/database/db";
+import { Business } from "../database/models/business";
 
 export async function getAllBusinessesHandler() {
   try {

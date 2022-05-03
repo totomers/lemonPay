@@ -1,8 +1,8 @@
 import { IUserDocument } from "src/types/user.interface";
-import { connectToDatabase } from "src/db";
+import { connectToDatabase } from "src/database/db";
 import { IBusinessDocument } from "src/types/business.interface";
-import { Business } from "src/models/business";
-import { User } from "src/models/user";
+import { Business } from "src/database/models/business";
+import { User } from "src/database/models/user";
 import AWS from "aws-sdk";
 import { CognitoService } from "./cognito.service";
 import { CONFIG } from "src/config";

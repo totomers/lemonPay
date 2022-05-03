@@ -14,7 +14,6 @@ import {
 import { CONFIG } from "src/config";
 import { AWSCognitoError, CustomError } from "src/utils/customError";
 import { EmailService } from "./email.service";
-console.log(CONFIG.SERVERLESS.REGION);
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 const userPoolId = CONFIG.COGNITO.USER_POOL_ID;

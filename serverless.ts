@@ -1,6 +1,6 @@
 import type { AWS } from "@serverless/typescript";
-import hello from "@functions/hello";
-import { getAllBusinesses, createBusiness } from "@functions/business";
+import hello from "src/lambdas/hello";
+import { getAllBusinesses, createBusiness } from "src/lambdas/business";
 import {
   createBusinessAccount,
   verifyUserDetails,
@@ -20,8 +20,8 @@ import {
   verifyAuthChallenge,
   initiateCustomAuthChallenge,
   respondToCustomAuthChallenge,
-} from "@functions/account";
-import { emailClientInvoice } from "@functions/transaction";
+} from "src/lambdas/account";
+import { emailClientInvoice } from "src/lambdas/transaction";
 // import dotenv from "dotenv";
 
 // dotenv.config({
@@ -59,11 +59,14 @@ const serverlessConfiguration: AWS = {
       DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
       SERVERLESS_REGION:
         "${file(./config.${opt:stage, 'dev'}.json):SERVERLESS_REGION}",
-      USER_POOL_ARN: "${file(./config.${opt:stage, 'dev'}.json):USER_POOL_ARN}",
+      COGNITO_USER_POOL_ARN:
+        "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ARN}",
       COGNITO_USER_POOL_ID:
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ID}",
       COGNITO_CLIENT_ID:
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_CLIENT_ID}",
+      COGNITO_USER_DUMMY_PASSWORD:
+        "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
     },
   },
 
@@ -92,7 +95,7 @@ const serverlessConfiguration: AWS = {
     initiateCustomAuthChallenge,
     respondToCustomAuthChallenge,
   },
-  package: { individually: true, include: ["config/.env.dev"] },
+  package: { individually: true },
   custom: {
     esbuild: {
       bundle: true,

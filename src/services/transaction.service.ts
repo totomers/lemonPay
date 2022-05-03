@@ -1,5 +1,5 @@
-import { connectToDatabase } from "src/db";
-import { Transaction } from "src/models/transaction";
+import { connectToDatabase } from "src/database/db";
+import { Transaction } from "src/database/models/transaction";
 import { ITransactionDocument } from "src/types/transaction.interface";
 import {
   AWSSESError,

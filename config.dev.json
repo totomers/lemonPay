@@ -2,6 +2,7 @@
     "DB_NAME":"lemonPayDB",
     "SERVERLESS_REGION":"eu-central-1",
     "COGNITO_USER_POOL_ID":"eu-central-1_0Mt67WiIq",
-    "USER_POOL_ARN": "arn:aws:cognito-idp:eu-central-1:164864435727:userpool/eu-central-1_0Mt67WiIq",
-    "COGNITO_CLIENT_ID":"9kv0cedj4ilrbpgo4sttn4k4t"
+    "COGNITO_USER_POOL_ARN": "arn:aws:cognito-idp:eu-central-1:164864435727:userpool/eu-central-1_0Mt67WiIq",
+    "COGNITO_CLIENT_ID":"9kv0cedj4ilrbpgo4sttn4k4t",
+    "COGNITO_USER_DUMMY_PASSWORD":"Az11Bb22Cc33LemonPay!"
 }
