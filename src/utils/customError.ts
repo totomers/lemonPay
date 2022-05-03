@@ -34,7 +34,7 @@ export class MissingParamsError extends CustomError {
     super(
       `Missing one of the following: [${params}] in the request's params. Please check request.`,
       400,
-      400,
+      ERROR_TYPES.FAULTY_PARAMS + "01",
       ERROR_TYPES.FAULTY_PARAMS
     );
   }
@@ -61,9 +61,6 @@ export class MongoCustomError extends CustomError {
 
 export class AWSCognitoError extends CustomError {
   constructor(error: AWSError) {
-    // const code = error.code === "NotAuthorizedException" ? "101" : error.code;
-    console.log(error);
-
     const code = mapCognitoErrorCode(error);
     super(error.message, 500, code, ERROR_TYPES.AWS_COGNITO);
   }
