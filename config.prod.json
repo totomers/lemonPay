@@ -1,7 +1,0 @@
-{"DB_URL":"",
-    "DB_NAME":"",
-    "SERVERLESS_REGION":"eu-central-1",
-    "COGNITO_USER_POOL_ID":"",
-    "USER_POOL_ARN": "",
-    "COGNITO_CLIENT_ID":""
-}
