@@ -5,8 +5,14 @@ import {
   VerifyAuthChallengeResponseTriggerEvent,
 } from "aws-lambda";
 import AWS from "aws-sdk";
+import {
+  InitiateAuthRequest,
+  InitiateAuthResponse,
+  RespondToAuthChallengeRequest,
+  RespondToAuthChallengeResponse,
+} from "aws-sdk/clients/cognitoidentityserviceprovider";
 import { CONFIG } from "src/config";
-import { AWSCognitoError } from "src/utils/customError";
+import { AWSCognitoError, CustomError } from "src/utils/customError";
 import { EmailService } from "./email.service";
 console.log(CONFIG.SERVERLESS.REGION);
 
@@ -55,6 +61,10 @@ export async function signUpCognitoHandler(params: {
         },
         {
           Name: "custom:isVerified",
+          Value: "0",
+        },
+        {
+          Name: "custom:isPasswordMutable",
           Value: "0",
         },
       ],
@@ -152,7 +162,7 @@ async function _getUserFromCognito(
       .promise();
     return user;
   } catch (error) {
-    return error;
+    throw new AWSCognitoError(error);
   }
 }
 
@@ -239,18 +249,49 @@ export async function resendConfirmationCodeHandler(params: {
  */
 
 export async function resetUserPasswordHandler(params: {
-  email: string;
-}): Promise<AWS.CognitoIdentityServiceProvider.ForgotPasswordResponse> {
+  password: string;
+  accessToken: string;
+}): Promise<AWS.CognitoIdentityServiceProvider.AdminSetUserPasswordResponse> {
   try {
-    const { email } = params;
-    const ForgotPasswordRequest: AWS.CognitoIdentityServiceProvider.ForgotPasswordRequest =
+    const { accessToken, password } = params;
+
+    const GetUserRequest: AWS.CognitoIdentityServiceProvider.GetUserRequest = {
+      AccessToken: accessToken,
+    };
+
+    const user = await cognitoidentityserviceprovider
+      .getUser(GetUserRequest)
+      .promise();
+
+    if (
+      _getCustomAttribute(user.UserAttributes, "custom:isPasswordMutable")
+        .Value === "0"
+    ) {
+      throw new CustomError(
+        "Password is currently not mutable for this user",
+        400,
+        "233"
+      );
+    }
+    const email = user.Username;
+    console.log("email:", email);
+
+    const AdminSetUserPasswordRequest: AWS.CognitoIdentityServiceProvider.AdminSetUserPasswordRequest =
       {
+        UserPoolId: userPoolId,
+        Permanent: true,
+        Password: password,
         Username: email,
-        ClientId: clientId,
       };
     const result = await cognitoidentityserviceprovider
-      .forgotPassword(ForgotPasswordRequest)
+      .adminSetUserPassword(AdminSetUserPasswordRequest)
       .promise();
+
+    await updateUserAttribute({
+      name: "custom:isPasswordMutable",
+      value: "0",
+      email,
+    });
 
     return result;
   } catch (err) {
@@ -407,7 +448,7 @@ export async function refreshTokenSignInCognitoHandler(params: {
   }
 }
 
-/**
+/***
  *  Add User To Group With Unique Permissions
  * @param params
  */
@@ -523,13 +564,21 @@ export async function verifyAuthChallengeHandler(params: {
 }): Promise<VerifyAuthChallengeResponseTriggerEvent> {
   try {
     const { event } = params;
-    console.log(event.request);
+    console.log("Verifing Auth Challenge! event.request:", event.request);
 
     const expectedAnswer =
       event.request.privateChallengeParameters.secretLoginCode;
+
+    console.log("expected answer is:", expectedAnswer);
+    console.log("the received answer is:", event.request.challengeAnswer);
+
     if (event.request.challengeAnswer === expectedAnswer) {
+      console.log("CORRECT ANSWER!");
+
       event.response.answerCorrect = true;
     } else {
+      console.log("INCORRECT ANSWER!");
+
       event.response.answerCorrect = false;
     }
 
@@ -550,9 +599,12 @@ export async function createAuthChallengeHandler(params: {
   try {
     const { event } = params;
     let secretLoginCode;
+    console.log("session:", event.request.session);
+    console.log(event);
+
     if (!event.request.session || !event.request.session.length) {
       // Generate a new secret login code and send it to the user
-      secretLoginCode = Date.now().toString().slice(-4);
+      secretLoginCode = Date.now().toString().slice(-6);
       console.log("OTP / Secret Password Reset Code: " + secretLoginCode);
       try {
         const html = `<html><body><p>This is your secret password reset code:</p>
@@ -561,7 +613,7 @@ export async function createAuthChallengeHandler(params: {
         const subject = "Your secret password reset code";
         const to = event.request.userAttributes.email;
 
-        const emailResult = EmailService.sendTextEmailHandler({
+        const emailResult = await EmailService.sendTextEmailHandler({
           text,
           subject,
           to,
@@ -597,6 +649,69 @@ export async function createAuthChallengeHandler(params: {
   }
 }
 
+/**
+ *  Initiate sign in with OTP.
+ * @param params
+ */
+
+export async function initiateCustomAuthHandler(params: {
+  email: string;
+}): Promise<InitiateAuthResponse> {
+  try {
+    const { email } = params;
+
+    const InitiateCustomAuthRequest: InitiateAuthRequest = {
+      AuthFlow: "CUSTOM_AUTH",
+      ClientId: clientId,
+      AuthParameters: { USERNAME: email },
+    };
+
+    const data = await cognitoidentityserviceprovider
+      .initiateAuth(InitiateCustomAuthRequest)
+      .promise();
+
+    return data;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+/**
+ *  Respond to custom auth challenge sign in with OTP.
+ * @param params
+ */
+
+export async function respondToAuthChallengeHandler(params: {
+  confirmationCode: string;
+  session: string;
+  username: string;
+}): Promise<RespondToAuthChallengeResponse> {
+  try {
+    const { confirmationCode, session, username } = params;
+
+    const RespondToAuthChallengeRequest: RespondToAuthChallengeRequest = {
+      ChallengeName: "CUSTOM_CHALLENGE",
+      ClientId: clientId,
+      ChallengeResponses: { ANSWER: confirmationCode, USERNAME: username },
+      Session: session,
+    };
+
+    const data = await cognitoidentityserviceprovider
+      .respondToAuthChallenge(RespondToAuthChallengeRequest)
+      .promise();
+
+    await updateUserAttribute({
+      name: "custom:isPasswordMutable",
+      value: "1",
+      email: username,
+    });
+
+    return data;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
 export const CognitoService = {
   signUpCognitoHandler,
   resendConfirmationCodeHandler,
@@ -605,12 +720,14 @@ export const CognitoService = {
   refreshTokenSignInCognitoHandler,
   addUserToGroupCognitoHandler,
   setInitialUserPasswordHandler,
-  getVerificationStatusHandler,
   resetUserPasswordHandler,
+  getVerificationStatusHandler,
   confirmUserPasswordResetHandler,
   updateUserAttribute,
   getUserStatusHandler,
   defineAuthChallengeHandler,
   createAuthChallengeHandler,
   verifyAuthChallengeHandler,
+  initiateCustomAuthHandler,
+  respondToAuthChallengeHandler,
 };

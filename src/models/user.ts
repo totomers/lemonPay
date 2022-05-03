@@ -17,8 +17,4 @@ const UserSchema = new mongoose.Schema(
 // Note: OverwriteModelError: Cannot overwrite `User` model once compiled. error
 export const User =
   mongoose.models.users ||
-  mongoose.model<IUserDocument>(
-    "user",
-    UserSchema,
-    process.env.DB_USER_COLLECTION
-  );
+  mongoose.model<IUserDocument>("user", UserSchema, "users");

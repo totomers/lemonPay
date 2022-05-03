@@ -3,7 +3,9 @@ import { TransactionService } from "src/services/transaction.service";
 import { ITransactionDocument } from "src/types/transaction.interface";
 
 /**
+ * =======================================================================================================
  * Add Transaction Details To DB.
+ * =======================================================================================================
  */
 export async function addTransaction(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -25,7 +27,9 @@ export async function addTransaction(event?: any, context?: Context) {
 }
 
 /**
+ * =======================================================================================================
  * Send client email with text after successful transaction has been made.
+ * =======================================================================================================
  */
 export async function emailClientInvoice(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;

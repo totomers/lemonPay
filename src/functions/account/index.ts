@@ -2,6 +2,7 @@ import { CONFIG } from "src/config";
 import { handlerPath } from "src/utils/handler-resolver";
 
 //consider removing handlerPath and using relative URL instead..
+
 export const createBusinessAccount = {
   handler: `${handlerPath(__dirname)}/handler.createBusinessAccount`,
   events: [
@@ -92,20 +93,20 @@ export const resetUserPassword = {
     },
   ],
 };
-export const confirmResetUserPassword = {
-  handler: `${handlerPath(__dirname)}/handler.confirmResetUserPassword`,
-  events: [
-    {
-      http: {
-        method: "post",
-        path: "account/confirmResetPassword",
-        authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
-        },
-      },
-    },
-  ],
-};
+// export const confirmResetUserPassword = {
+//   handler: `${handlerPath(__dirname)}/handler.confirmResetUserPassword`,
+//   events: [
+//     {
+//       http: {
+//         method: "post",
+//         path: "account/confirmResetPassword",
+//         authorizer: {
+//           arn: CONFIG.COGNITO.USER_POOL_ARN,
+//         },
+//       },
+//     },
+//   ],
+// };
 export const signInUser = {
   handler: `${handlerPath(__dirname)}/handler.signInUser`,
   events: [
@@ -117,6 +118,7 @@ export const signInUser = {
     },
   ],
 };
+
 export const refreshTokenSignInUser = {
   handler: `${handlerPath(__dirname)}/handler.refreshTokenSignInUser`,
   events: [
@@ -179,10 +181,34 @@ export const defineAuthChallenge = {
 
 export const createAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.createAuthChallenge`,
+  role: "arn:aws:iam::164864435727:role/lambda-email-ses",
   events: [],
 };
 
 export const verifyAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.verifyAuthChallenge`,
   events: [],
+};
+export const initiateCustomAuthChallenge = {
+  handler: `${handlerPath(__dirname)}/handler.initiateCustomAuthChallenge`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/initiateAuthChallenge",
+      },
+    },
+  ],
+};
+
+export const respondToCustomAuthChallenge = {
+  handler: `${handlerPath(__dirname)}/handler.respondToCustomAuthChallenge`,
+  events: [
+    {
+      http: {
+        method: "post",
+        path: "account/respondToAuthChallenge",
+      },
+    },
+  ],
 };

@@ -40,8 +40,4 @@ const BusinessSchema = new mongoose.Schema(
 // Note: OverwriteModelError: Cannot overwrite `Books` model once compiled. error
 export const Business =
   mongoose.models.businesses ||
-  mongoose.model<IBusinessDocument>(
-    "business",
-    BusinessSchema,
-    process.env.DB_BUSINESSES_COLLECTION
-  );
+  mongoose.model<IBusinessDocument>("business", BusinessSchema, "businesses");

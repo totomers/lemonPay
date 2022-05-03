@@ -55,6 +55,8 @@ export const signInUser = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
+    // console.log("process.env: ", process.env);
+
     const result = await accountController.signInUser(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
@@ -130,20 +132,20 @@ export const resetUserPassword = middyfy(
     return formatJSONResponse(result.data);
   }
 );
-export const confirmResetUserPassword = middyfy(
-  async (
-    event: ParsedAPIGatewayProxyEvent,
-    context
-  ): Promise<APIGatewayProxyResult> => {
-    const result = await accountController.confirmResetUserPassword(
-      event,
-      context
-    );
+// export const confirmResetUserPassword = middyfy(
+//   async (
+//     event: ParsedAPIGatewayProxyEvent,
+//     context
+//   ): Promise<APIGatewayProxyResult> => {
+//     const result = await accountController.respondToCustomAuthChallenge(
+//       event,
+//       context
+//     );
 
-    if (result.err) return formatErrorResponse(result.err);
-    return formatJSONResponse(result.data);
-  }
-);
+//     if (result.err) return formatErrorResponse(result.err);
+//     return formatJSONResponse(result.data);
+//   }
+// );
 
 export const getVerificationStatus = middyfy(
   async (
@@ -203,6 +205,33 @@ export const verifyAuthChallenge = middyfy(
     const result = await accountController.verifyAuthChallenge(event, context);
     // if (result.err) return formatErrorResponse(result.err);
     return result.data;
+  }
+);
+
+export const initiateCustomAuthChallenge = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult | CustomError> => {
+    const result = await accountController.initiateCustomAuthChallenge(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+export const respondToCustomAuthChallenge = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult | CustomError> => {
+    const result = await accountController.respondToCustomAuthChallenge(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
   }
 );
 

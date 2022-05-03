@@ -1,6 +1,6 @@
 import AWS, { AWSError } from "aws-sdk";
 import { CONFIG } from "src/config";
-import { CustomError, ERROR_TYPES } from "src/utils/customError";
+import { AWSSESError, CustomError, ERROR_TYPES } from "src/utils/customError";
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 
@@ -43,18 +43,13 @@ export async function sendTextEmailHandler(params: {
         },
       },
     };
+    console.log("sending an emaill");
 
     const result = await SES.sendEmail(sendEmailRequest).promise();
 
     return result;
   } catch (err) {
-    const error: AWSError = err;
-    throw new CustomError(
-      error.message,
-      error.statusCode,
-      error.code,
-      ERROR_TYPES.AWS_SES
-    );
+    throw new AWSSESError(err);
   }
 }
 

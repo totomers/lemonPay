@@ -10,7 +10,9 @@ import { MissingParamsError } from "src/utils/customError";
 import { ParsedAPIGatewayProxyEvent } from "src/utils/api-gateway";
 
 /**
+ * =======================================================================================================
  * Create Business Account
+ * =======================================================================================================
  */
 export async function createBusinessAccount(
   event: ParsedAPIGatewayProxyEvent,
@@ -34,7 +36,9 @@ export async function createBusinessAccount(
 }
 
 /**
+ * =======================================================================================================
  * Verify User Details
+ * =======================================================================================================
  */
 export async function verifyUserDetails(
   event: ParsedAPIGatewayProxyEvent,
@@ -43,6 +47,8 @@ export async function verifyUserDetails(
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     //extract business and user details from event
+    // console.log("event.body", event);
+    getFile(event);
     const { email } = event.requestContext.authorizer.claims;
 
     if (!email) throw new MissingParamsError("email");
@@ -54,9 +60,29 @@ export async function verifyUserDetails(
     return { err };
   }
 }
+function getFile(event: ParsedAPIGatewayProxyEvent) {
+  const body = event.body;
+  console.log("event: ", event);
+
+  const fileName = body
+    .split("\r\n")[1]
+    .split(";")[2]
+    .split("=")[1]
+    .replace(/^"|"$/g, "")
+    .trim();
+  const fileType = fileName.split(".")[1];
+  const fileContent = body.split("\r\n")[5].trim();
+
+  console.log("file name", fileName);
+  console.log("file type", fileType);
+  // console.log("file content", fileContent);
+  return fileContent;
+}
 
 /**
+ * =======================================================================================================
  * Sign Up User To Cognito DB
+ * =======================================================================================================
  */
 export async function signUpUser(
   event?: ParsedAPIGatewayProxyEvent,
@@ -79,7 +105,9 @@ export async function signUpUser(
   }
 }
 /**
+ * =======================================================================================================
  * Sign Up User To Cognito DB
+ * =======================================================================================================
  */
 export async function resendConfirmationCode(
   event?: ParsedAPIGatewayProxyEvent,
@@ -100,8 +128,10 @@ export async function resendConfirmationCode(
 }
 
 /**
+ * =======================================================================================================
  * Send Email With OTP To Confirm Users Email & Add User To Cognito DB If Successful.
  * @returns accessToken,refreshToken,idToken
+ * =======================================================================================================
  */
 export async function confirmSignUpUser(
   event?: ParsedAPIGatewayProxyEvent,
@@ -113,12 +143,10 @@ export async function confirmSignUpUser(
     const { email, confirmationCode } = event.body;
     if (!confirmationCode || !email)
       throw new MissingParamsError("confirmationCode, email");
-    const confirmationResult = await CognitoService.confirmSignUpCognitoHandler(
-      {
-        confirmationCode,
-        email,
-      }
-    );
+    await CognitoService.confirmSignUpCognitoHandler({
+      confirmationCode,
+      email,
+    });
 
     const signInResult = await CognitoService.signInCognitoHandler({
       email,
@@ -131,7 +159,9 @@ export async function confirmSignUpUser(
 }
 
 /**
+ * =======================================================================================================
  * Change Users Dummy Password Given Upon Sign-Up
+ * =======================================================================================================
  */
 export async function setUsersInitialPassword(
   event?: ParsedAPIGatewayProxyEvent,
@@ -140,7 +170,8 @@ export async function setUsersInitialPassword(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    const { password, accessToken, email } = event.body;
+    const { password, accessToken } = event.body;
+    const { email } = event.requestContext.authorizer.claims;
 
     if (!password || !accessToken || !email)
       throw new MissingParamsError("password, accessToken, email");
@@ -157,7 +188,9 @@ export async function setUsersInitialPassword(
 }
 
 /**
+ * =======================================================================================================
  * Reset User's Password
+ * =======================================================================================================
  */
 export async function resetUserPassword(
   event?: ParsedAPIGatewayProxyEvent,
@@ -166,53 +199,59 @@ export async function resetUserPassword(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    const { email } = event.requestContext.authorizer.claims;
+    const { password, accessToken } = event.body;
 
-    if (!email) throw new MissingParamsError("email");
+    if (!password || !accessToken)
+      throw new MissingParamsError("password, accessToken");
 
     const data = await CognitoService.resetUserPasswordHandler({
-      email,
-    });
-    return { data };
-  } catch (err) {
-    return { err, statusCode: err.code };
-  }
-}
-/**
- * Confirm Reset User's Password
- */
-export async function confirmResetUserPassword(
-  event?: ParsedAPIGatewayProxyEvent,
-  context?: Context
-) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  try {
-    const { email } = event.requestContext.authorizer.claims;
-    const { password, confirmationCode } = event.body;
-
-    if (!password || !confirmationCode || !email)
-      throw new MissingParamsError("password, confirmationCode, email");
-
-    const data = await CognitoService.confirmUserPasswordResetHandler({
-      email,
       password,
-      confirmationCode,
+      accessToken,
     });
     return { data };
   } catch (err) {
     return { err, statusCode: err.code };
   }
 }
+// /**
+//  * Confirm Reset User's Password
+//  */
+// export async function confirmResetUserPassword(
+//   event?: ParsedAPIGatewayProxyEvent,
+//   context?: Context
+// ) {
+//   context.callbackWaitsForEmptyEventLoop = false;
+
+//   try {
+//     const { email } = event.requestContext.authorizer.claims;
+//     const { password, confirmationCode } = event.body;
+
+//     if (!password || !confirmationCode || !email)
+//       throw new MissingParamsError("password, confirmationCode, email");
+
+//     const data = await CognitoService.confirmUserPasswordResetHandler({
+//       email,
+//       password,
+//       confirmationCode,
+//     });
+//     return { data };
+//   } catch (err) {
+//     return { err, statusCode: err.code };
+//   }
+// }
 
 /**
+ * =======================================================================================================
  * Sign Up User To Cognito DB
+ * =======================================================================================================
  */
 export async function signInUser(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
+
+  // console.log("process.env", process.env);
 
   try {
     const { email, password } = event.body;
@@ -228,7 +267,9 @@ export async function signInUser(
   }
 }
 /**
+ * =======================================================================================================
  * Sign Up User With Refresh Token
+ * =======================================================================================================
  */
 export async function refreshTokenSignIn(
   event?: ParsedAPIGatewayProxyEvent,
@@ -249,7 +290,9 @@ export async function refreshTokenSignIn(
   }
 }
 /**
+ * =======================================================================================================
  * Private- add user to a group with different access control -For Testing Only Make Public
+ * =======================================================================================================
  */
 export async function addUserToGroup(
   event?: ParsedAPIGatewayProxyEvent,
@@ -271,7 +314,9 @@ export async function addUserToGroup(
   }
 }
 /**
+ * =======================================================================================================
  * Get Confirmation Status If User Is Verified Or Not
+ * =======================================================================================================
  */
 export async function getVerificationStatus(
   event?: ParsedAPIGatewayProxyEvent,
@@ -293,7 +338,10 @@ export async function getVerificationStatus(
 }
 
 /**
- * Get User Status If User Is Has Changed Password, Has Registered Business & Personal Details */
+ * =======================================================================================================
+ * Get User Status If User Is Has Changed Password, Has Registered Business & Personal Details
+ * =======================================================================================================
+ */
 export async function getUserStatus(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
@@ -314,7 +362,9 @@ export async function getUserStatus(
 }
 
 /**
+ * =======================================================================================================
  * Define Custom Auth Challenge
+ * =======================================================================================================
  */
 export async function defineCustomChallenge(
   event?: DefineAuthChallengeTriggerEvent,
@@ -332,7 +382,9 @@ export async function defineCustomChallenge(
 }
 
 /**
+ * =======================================================================================================
  * Create Custom Auth Challenge
+ * =======================================================================================================
  */
 export async function createAuthChallenge(
   event?: CreateAuthChallengeTriggerEvent,
@@ -349,7 +401,9 @@ export async function createAuthChallenge(
   }
 }
 /**
+ * =======================================================================================================
  * Verify Custom Auth Challenge
+ * =======================================================================================================
  */
 export async function verifyAuthChallenge(
   event?: VerifyAuthChallengeResponseTriggerEvent,
@@ -366,6 +420,54 @@ export async function verifyAuthChallenge(
   }
 }
 
+/**
+ * =======================================================================================================
+ * Initiate Custom Auth Challenge
+ * =======================================================================================================
+ */
+export async function initiateCustomAuthChallenge(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { email } = event.body;
+
+    if (!email) throw new MissingParamsError("email");
+    const data = await CognitoService.initiateCustomAuthHandler({ email });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Respond To Custom Auth Challenge
+ * =======================================================================================================
+ */
+export async function respondToCustomAuthChallenge(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { session, confirmationCode, username } = event.body;
+
+    if (!session || !confirmationCode || !username)
+      throw new MissingParamsError("session, confirmationCode,username");
+    const data = await CognitoService.respondToAuthChallengeHandler({
+      session,
+      confirmationCode,
+      username,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
 export const AccountController = {
   createBusinessAccount,
   verifyUserDetails,
@@ -377,9 +479,11 @@ export const AccountController = {
   resendConfirmationCode,
   getVerificationStatus,
   resetUserPassword,
-  confirmResetUserPassword,
+  // confirmResetUserPassword,
   getUserStatus,
   defineCustomChallenge,
   createAuthChallenge,
   verifyAuthChallenge,
+  initiateCustomAuthChallenge,
+  respondToCustomAuthChallenge,
 };

@@ -12,19 +12,21 @@ import {
   resendConfirmationCode,
   getVerificationStatus,
   resetUserPassword,
-  confirmResetUserPassword,
+  // confirmResetUserPassword,
   getUserStatus,
   refreshTokenSignInUser,
   defineAuthChallenge,
   createAuthChallenge,
   verifyAuthChallenge,
+  initiateCustomAuthChallenge,
+  respondToCustomAuthChallenge,
 } from "@functions/account";
 import { emailClientInvoice } from "@functions/transaction";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
-dotenv.config({
-  path: "./config/.env.dev",
-});
+// dotenv.config({
+//   path: "./config/.env.dev",
+// });
 
 const serverlessConfiguration: AWS = {
   service: "lemonPay",
@@ -47,14 +49,24 @@ const serverlessConfiguration: AWS = {
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
+      //added this to include all types of binary media data types for image / file uploads
+      binaryMediaTypes: ["*/*"],
     },
+
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
+      SERVERLESS_REGION:
+        "${file(./config.${opt:stage, 'dev'}.json):SERVERLESS_REGION}",
       USER_POOL_ARN: "${file(./config.${opt:stage, 'dev'}.json):USER_POOL_ARN}",
+      COGNITO_USER_POOL_ID:
+        "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ID}",
+      COGNITO_CLIENT_ID:
+        "${file(./config.${opt:stage, 'dev'}.json):COGNITO_CLIENT_ID}",
     },
   },
+
   // import the function via paths
   functions: {
     hello,
@@ -71,14 +83,16 @@ const serverlessConfiguration: AWS = {
     getVerificationStatus,
     emailClientInvoice,
     resetUserPassword,
-    confirmResetUserPassword,
+    // confirmResetUserPassword,
     getUserStatus,
     refreshTokenSignInUser,
     defineAuthChallenge,
     createAuthChallenge,
     verifyAuthChallenge,
+    initiateCustomAuthChallenge,
+    respondToCustomAuthChallenge,
   },
-  package: { individually: true },
+  package: { individually: true, include: ["config/.env.dev"] },
   custom: {
     esbuild: {
       bundle: true,

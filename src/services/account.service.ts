@@ -80,7 +80,7 @@ async function _verify(user) {
       setTimeout(() => {
         console.log("is verified");
         resolve({ isVerified: true });
-      }, 15000);
+      }, 130);
     });
   } catch (err) {
     throw new CustomError(err.message, 500, err.code);

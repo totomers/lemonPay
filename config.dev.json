@@ -1,9 +1,6 @@
 {"DB_URL":"mongodb+srv://lemonpay:lemonpay12345@lemonpaydb.6kgmm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "DB_NAME":"lemonPayDB",
-    "DB_BUSINESSES_COLLECTION":"businesses",
     "SERVERLESS_REGION":"eu-central-1",
-    "DB_USER_COLLECTION":"users",
-    "DB_TRANSACTION_COLLECTION":"transactions",
     "COGNITO_USER_POOL_ID":"eu-central-1_0Mt67WiIq",
     "USER_POOL_ARN": "arn:aws:cognito-idp:eu-central-1:164864435727:userpool/eu-central-1_0Mt67WiIq",
     "COGNITO_CLIENT_ID":"9kv0cedj4ilrbpgo4sttn4k4t"

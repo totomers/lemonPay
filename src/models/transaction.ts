@@ -31,5 +31,5 @@ export const Transaction =
   mongoose.model<ITransactionDocument>(
     "transaction",
     TransactionSchema,
-    process.env.DB_TRANSACTION_COLLECTION
+    "transactions"
   );
