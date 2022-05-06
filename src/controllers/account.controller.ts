@@ -21,9 +21,10 @@ export async function createBusinessAccount(
   try {
     context.callbackWaitsForEmptyEventLoop = false;
     const { email, name } = event.requestContext.authorizer.claims;
+
     const user = { ...event.body.user, email, name };
     const business = event.body.business;
-
+    //ADD PARAM VALIDATION FOR USER AND BUSINESS
     const data = await AccountService.createBusinessAccountHandler({
       user,
       business,
@@ -49,8 +50,7 @@ export async function verifyUserDetails(
     //extract business and user details from event
     // console.log("event.body", event);
     getFile(event);
-    const { email } = event.requestContext.authorizer.claims;
-
+    const email = event.requestContext.authorizer?.claims?.email;
     if (!email) throw new MissingParamsError("email");
     const data = await AccountService.verifyUserDetailsHandler({
       email,
@@ -171,8 +171,7 @@ export async function setUsersInitialPassword(
 
   try {
     const { password, accessToken } = event.body;
-    const { email } = event.requestContext.authorizer.claims;
-
+    const email = event.requestContext.authorizer?.claims?.email;
     if (!password || !accessToken || !email)
       throw new MissingParamsError("password, accessToken, email");
 
@@ -223,8 +222,7 @@ export async function resetUserPassword(
 //   context.callbackWaitsForEmptyEventLoop = false;
 
 //   try {
-//     const { email } = event.requestContext.authorizer.claims;
-//     const { password, confirmationCode } = event.body;
+//  const email = event.requestContext.authorizer?.claims?.email;//     const { password, confirmationCode } = event.body;
 
 //     if (!password || !confirmationCode || !email)
 //       throw new MissingParamsError("password, confirmationCode, email");
@@ -325,8 +323,7 @@ export async function getVerificationStatus(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    const { email } = event.requestContext.authorizer.claims;
-
+    const email = event.requestContext.authorizer?.claims?.email;
     if (!email) throw new MissingParamsError("email");
     const data = await CognitoService.getVerificationStatusHandler({
       email,
@@ -349,8 +346,7 @@ export async function getUserStatus(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    const { email } = event.requestContext.authorizer.claims;
-
+    const email = event.requestContext.authorizer?.claims?.email;
     if (!email) throw new MissingParamsError("email");
     const data = await CognitoService.getUserStatusHandler({
       email,

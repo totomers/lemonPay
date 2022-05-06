@@ -15,17 +15,20 @@ export class CustomError {
   statusCode: number;
   code: string | number;
   type: string;
+  name: string;
 
   constructor(
     message: string,
     statusCode: number,
     code: string | number,
-    type?: string
+    type?: string,
+    name?: string
   ) {
     this.message = message;
     this.statusCode = statusCode;
     this.code = code;
     this.type = type || ERROR_TYPES.UNKNOWN;
+    this.name = name;
   }
 }
 
@@ -45,7 +48,7 @@ export class UnprocessableEntityError extends CustomError {
     super(
       `Content type given to request is defined as JSON but an invalid JSON was provided. Please Check Request Body.`,
       400,
-      400,
+      ERROR_TYPES.UNPROCESSABLE_PARAM_FORMAT + "01",
       ERROR_TYPES.UNPROCESSABLE_PARAM_FORMAT
     );
   }
@@ -62,7 +65,7 @@ export class MongoCustomError extends CustomError {
 export class AWSCognitoError extends CustomError {
   constructor(error: AWSError) {
     const code = mapCognitoErrorCode(error);
-    super(error.message, 500, code, ERROR_TYPES.AWS_COGNITO);
+    super(error.message, 500, code, ERROR_TYPES.AWS_COGNITO, error.name);
   }
 }
 
@@ -76,12 +79,16 @@ function mapCognitoErrorCode(error: AWSError) {
   //28-04-2022 Currently an open issue exists : Cognito does not differentiate the codes of login attemps exceeded vs wrong username or password
   //https://github.com/aws-amplify/amplify-js/issues/1234
 
-  if (error.message === "Password attempts exceeded") {
-    return ERROR_TYPES.AWS_COGNITO + "01";
-  }
   switch (error.code) {
     case "NotAuthorizedException":
+      if (error.message === "Password attempts exceeded") {
+        return ERROR_TYPES.AWS_COGNITO + "01";
+      }
       return ERROR_TYPES.AWS_COGNITO + "02";
+    case "UsernameExistsException":
+      return ERROR_TYPES.AWS_COGNITO + "03";
+    case "InvalidParameterException":
+      return ERROR_TYPES.AWS_COGNITO + "04";
     default:
       return error.code;
   }

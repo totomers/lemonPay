@@ -24,8 +24,10 @@ const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
 });
 
 /**
+ * =======================================================================================================
  * Create new user
  * @param params
+ * =======================================================================================================
  */
 
 export async function signUpCognitoHandler(params: {
@@ -79,18 +81,22 @@ export async function signUpCognitoHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  * Delete user if he has not changed his dummy password and attempts to sign up with the same email
  * @param params
  * @returns null
+ * =======================================================================================================
  */
 
 export async function overrideUninitiatedUser(params: { email: string }) {
   try {
     const { email } = params;
 
-    const user = await _getUserFromCognito(email);
+    const result = await _getUserFromCognito(email);
+    if (result instanceof AWSCognitoError) return result;
 
-    if (!user || !user.UserAttributes) return;
+    const user = result;
+    // if (!user || !user.UserAttributes) return;
     console.log("found an exisiting user", user);
 
     const isUninitiatedAttr = _getCustomAttribute(
@@ -111,16 +117,20 @@ export async function overrideUninitiatedUser(params: { email: string }) {
 }
 
 /**
+ * =======================================================================================================
  * Delete user if he has not changed his dummy password and attempts to sign up with the same email
  * @param params
  * @returns null
+ * =======================================================================================================
  */
 
 export async function getUserStatusHandler(params: { email: string }) {
   try {
     const { email } = params;
-    const user = await _getUserFromCognito(email);
+    const result = await _getUserFromCognito(email);
 
+    if (result instanceof AWSCognitoError) throw result;
+    const user = result;
     if (!user || !user.UserAttributes) return;
     console.log("found an exisiting user", user);
 
@@ -147,9 +157,18 @@ export async function getUserStatusHandler(params: { email: string }) {
   }
 }
 
+/**
+ * =======================================================================================================
+ * Gets User From Cognito
+ * @param email
+ * =======================================================================================================
+ */
+
 async function _getUserFromCognito(
   email: string
-): Promise<AWS.CognitoIdentityServiceProvider.AdminGetUserResponse> {
+): Promise<
+  AWS.CognitoIdentityServiceProvider.AdminGetUserResponse | AWSCognitoError
+> {
   try {
     const getUserRequest: AWS.CognitoIdentityServiceProvider.AdminGetUserRequest =
       {
@@ -161,15 +180,16 @@ async function _getUserFromCognito(
       .promise();
     return user;
   } catch (error) {
-    throw new AWSCognitoError(error);
+    return new AWSCognitoError(error);
   }
 }
 
 /**
- *
+ *=======================================================================================================
  * @param userAttributes
  * @param customAttribute
  * @returns AWS User Attribute
+ * =======================================================================================================
  */
 
 function _getCustomAttribute(
@@ -180,8 +200,10 @@ function _getCustomAttribute(
 }
 
 /**
+ * =======================================================================================================
  * Update Cognito Users Attribute
  * @param params
+ * =======================================================================================================
  */
 
 export async function updateUserAttribute(params: {
@@ -217,8 +239,10 @@ export async function updateUserAttribute(params: {
 }
 
 /**
+ * =======================================================================================================
  * Resend OTP to users email for confirmation
  * @param params
+ * =======================================================================================================
  */
 
 export async function resendConfirmationCodeHandler(params: {
@@ -243,8 +267,10 @@ export async function resendConfirmationCodeHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Initiates password reset process. Sends confirmation email to user to get permission to reset users password
  * @param params
+ * =======================================================================================================
  */
 
 export async function resetUserPasswordHandler(params: {
@@ -299,8 +325,10 @@ export async function resetUserPasswordHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Initiates password reset process. Sends confirmation email to user to get permission to reset users password
  * @param params
+ * =======================================================================================================
  */
 
 export async function confirmUserPasswordResetHandler(params: {
@@ -328,8 +356,10 @@ export async function confirmUserPasswordResetHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  * Confirm new users email
  * @param params
+ * =======================================================================================================
  */
 
 export async function confirmSignUpCognitoHandler(params: {
@@ -392,8 +422,10 @@ export async function setInitialUserPasswordHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  * Sign in existing user
  * @param params
+ * =======================================================================================================
  */
 
 export async function signInCognitoHandler(params: {
@@ -421,8 +453,10 @@ export async function signInCognitoHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  * Sign in existing user with refresh token
  * @param params
+ * =======================================================================================================
  */
 
 export async function refreshTokenSignInCognitoHandler(params: {
@@ -448,8 +482,10 @@ export async function refreshTokenSignInCognitoHandler(params: {
 }
 
 /***
+ * =======================================================================================================
  *  Add User To Group With Unique Permissions
  * @param params
+ * =======================================================================================================
  */
 
 export async function addUserToGroupCognitoHandler(params: {
@@ -458,9 +494,6 @@ export async function addUserToGroupCognitoHandler(params: {
 }): Promise<{ addToGroup: boolean }> {
   try {
     const { email, groupName } = params;
-
-    // const cognitoidentityserviceprovider =
-    //   new AWS.CognitoIdentityServiceProvider();
 
     await cognitoidentityserviceprovider
       .adminAddUserToGroup({
@@ -477,8 +510,10 @@ export async function addUserToGroupCognitoHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Add User To Group With Unique Permissions
  * @param params
+ * =======================================================================================================
  */
 
 export async function getVerificationStatusHandler(params: {
@@ -507,8 +542,10 @@ export async function getVerificationStatusHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Defining Auth Challange Handler To Send OTP For User Auth.
  * @param params
+ * =======================================================================================================
  */
 
 export async function defineAuthChallengeHandler(params: {
@@ -554,8 +591,10 @@ export async function defineAuthChallengeHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Verify Auth Challange Handler To Send OTP For User Auth.
  * @param params
+ * =======================================================================================================
  */
 
 export async function verifyAuthChallengeHandler(params: {
@@ -588,8 +627,10 @@ export async function verifyAuthChallengeHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Creating Auth Challange Handler To Send OTP For User Auth.
  * @param params
+ * =======================================================================================================
  */
 
 export async function createAuthChallengeHandler(params: {
@@ -649,8 +690,10 @@ export async function createAuthChallengeHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Initiate sign in with OTP.
  * @param params
+ * =======================================================================================================
  */
 
 export async function initiateCustomAuthHandler(params: {
@@ -676,8 +719,10 @@ export async function initiateCustomAuthHandler(params: {
 }
 
 /**
+ * =======================================================================================================
  *  Respond to custom auth challenge sign in with OTP.
  * @param params
+ * =======================================================================================================
  */
 
 export async function respondToAuthChallengeHandler(params: {

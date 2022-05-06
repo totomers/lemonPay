@@ -13,9 +13,12 @@ import {
 } from "src/utils/customError";
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
+
 /**
+ * ====================================================================================================
  * Create new user
  * @param params
+ * ====================================================================================================
  */
 
 export async function createBusinessAccountHandler(params: {
@@ -46,7 +49,12 @@ export async function createBusinessAccountHandler(params: {
     throw new MongoCustomError(err);
   }
 }
-
+/**
+ * ====================================================================================================
+ * Verify new user
+ * @param params
+ * ====================================================================================================
+ */
 export async function verifyUserDetailsHandler(params: {
   email: string;
 }): Promise<{ isVerified: any } | CustomError> {

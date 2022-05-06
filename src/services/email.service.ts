@@ -7,8 +7,10 @@ AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 const SES = new AWS.SES();
 
 /**
+ *====================================================================================================
  * Sends client an email after a successful transaction.
  * @param params
+ * *====================================================================================================
  */
 
 export async function sendTextEmailHandler(params: {

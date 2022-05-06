@@ -1,6 +1,7 @@
 import { Context } from "aws-lambda";
 import { TransactionService } from "src/services/transaction.service";
 import { ITransactionDocument } from "src/types/transaction.interface";
+import { MissingParamsError } from "src/utils/customError";
 
 /**
  * =======================================================================================================
@@ -22,7 +23,7 @@ export async function addTransaction(event?: any, context?: Context) {
     });
     return { data };
   } catch (err) {
-    return { err, statusCode: err.code };
+    return { err };
   }
 }
 
@@ -35,16 +36,42 @@ export async function emailClientInvoice(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     const { email, name } = event.requestContext.authorizer.claims;
+    if (!email || !name) throw new MissingParamsError("email,name");
     const data = await TransactionService.emailClientInvoiceHandler({
       name,
       email,
     });
     return { data };
   } catch (err) {
-    return { err, statusCode: err.code };
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Get User Transactions History From DB.
+ * =======================================================================================================
+ */
+export async function getUserTransactions(event?: any, context?: Context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    const email = event.requestContext.authorizer?.claims?.email;
+
+    if (!email) throw new MissingParamsError("email");
+
+    const data = await TransactionService.getUserTransactionsHandler({
+      email,
+    });
+    return { data };
+  } catch (err) {
+    console.log("===================================OOPPPSSS");
+
+    return { err };
   }
 }
 
 export const TransactionController = {
   emailClientInvoice,
+  addTransaction,
+  getUserTransactions,
 };

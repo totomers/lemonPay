@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import { connectToDatabase } from "src/database/db";
 import { Transaction } from "src/database/models/transaction";
+import { User } from "src/database/models/user";
 import { ITransactionDocument } from "src/types/transaction.interface";
 import {
   AWSSESError,
@@ -9,8 +11,10 @@ import {
 import { EmailService } from "./email.service";
 
 /**
+ * ====================================================================================================
  * Save transaction in DB.
  * @param params
+ * ====================================================================================================
  */
 
 export async function createTransactionHandler(
@@ -26,8 +30,38 @@ export async function createTransactionHandler(
 }
 
 /**
+ * ====================================================================================================
+ * Get All User Transaction History in DB.
+ * @param params
+ * ====================================================================================================
+ */
+
+export async function getUserTransactionsHandler(params: {
+  email: string;
+}): Promise<ITransactionDocument[]> {
+  try {
+    await connectToDatabase();
+    const { email } = params;
+    // const user = await User.findOne({ email });
+    // if (!user._id) {
+    //   throw new CustomError("No user found", 400, "NOUSERFOUND", "NOUSERFOUND");
+    // }
+    // console.log("userId:", user._id);
+    const userId = new mongoose.Types.ObjectId("62693ba6f0dc49799623d8a5");
+    const result = await Transaction.find({
+      userId,
+    });
+    return result;
+  } catch (err) {
+    throw new MongoCustomError(err);
+  }
+}
+
+/**
+ * ====================================================================================================
  * Sends client an email after a successful transaction.
  * @param params
+ * ====================================================================================================
  */
 
 export async function emailClientInvoiceHandler(params: {
@@ -36,19 +70,6 @@ export async function emailClientInvoiceHandler(params: {
 }): Promise<{} | CustomError> {
   try {
     const { email, name } = params;
-    // const sendEmailRequest: AWS.SES.SendEmailRequest = {
-    //   Source: "no-reply@lemonpayapp.com",
-    //   Destination: { ToAddresses: [email] },
-    //   Message: {
-    //     Subject: { Data: "Successful Transction" },
-
-    //     Body: {
-    //       Text: {
-    //         Data: `Hi ${name}, your transction with XXX has been successful`,
-    //       },
-    //     },
-    //   },
-    // };
     const to = email;
     const subject = "Successful Transction";
     const text = `Hi ${name}, your transction with XXX has been successful`;
@@ -68,4 +89,5 @@ export async function emailClientInvoiceHandler(params: {
 export const TransactionService = {
   emailClientInvoiceHandler,
   createTransactionHandler,
+  getUserTransactionsHandler,
 };

@@ -21,7 +21,11 @@ import {
   initiateCustomAuthChallenge,
   respondToCustomAuthChallenge,
 } from "src/lambdas/account";
-import { emailClientInvoice } from "src/lambdas/transaction";
+import {
+  emailClientInvoice,
+  addTransaction,
+  getUserTransactions,
+} from "src/lambdas/transaction";
 // import dotenv from "dotenv";
 
 // dotenv.config({
@@ -94,6 +98,8 @@ const serverlessConfiguration: AWS = {
     verifyAuthChallenge,
     initiateCustomAuthChallenge,
     respondToCustomAuthChallenge,
+    addTransaction,
+    getUserTransactions,
   },
   package: { individually: true },
   custom: {
