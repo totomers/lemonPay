@@ -13,7 +13,6 @@ export async function getAllBusinessesHandler() {
     await connectToDatabase();
     return Business.find();
   } catch (error) {
-    console.log('Business Service Error: ', error);
     return error;
   }
 }

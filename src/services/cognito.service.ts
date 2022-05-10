@@ -445,11 +445,8 @@ export async function signInCognitoHandler(params: {
       })
       .promise();
 
-    const tokens = cognitoAuthResults.AuthenticationResult as {
-      idToken: string;
-
-      refreshToken: string;
-    };
+    const { IdToken, RefreshToken } = cognitoAuthResults.AuthenticationResult;
+    const tokens = { idToken: IdToken, refreshToken: RefreshToken };
     const user = await AccountService.getUserHandler({ email });
     const { _id, name, defaultBusiness } = user;
 
@@ -469,7 +466,7 @@ export async function signInCognitoHandler(params: {
 export async function refreshTokenSignInCognitoHandler(params: {
   refreshToken: string;
 }): Promise<{
-  tokens: { idToken: string; refreshToken: string };
+  tokens: { idToken: string };
   user: Partial<IUserDocument>;
 }> {
   try {
@@ -484,13 +481,11 @@ export async function refreshTokenSignInCognitoHandler(params: {
         },
       })
       .promise();
-    const tokens = cognitoAuthResults.AuthenticationResult as {
-      idToken: string;
-      refreshToken: string;
-    };
+
+    const { IdToken } = cognitoAuthResults.AuthenticationResult;
+    const tokens = { idToken: IdToken };
 
     const email = (jwt_decode(tokens.idToken) as { email: string }).email;
-    console.log('email: ', email);
 
     const user = await AccountService.getUserHandler({ email });
     const { _id, name, defaultBusiness } = user;
