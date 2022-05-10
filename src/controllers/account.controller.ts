@@ -3,11 +3,11 @@ import {
   CreateAuthChallengeTriggerEvent,
   DefineAuthChallengeTriggerEvent,
   VerifyAuthChallengeResponseTriggerEvent,
-} from "aws-lambda";
-import { AccountService } from "../services/account.service";
-import { CognitoService } from "src/services/cognito.service";
-import { MissingParamsError } from "src/utils/customError";
-import { ParsedAPIGatewayProxyEvent } from "src/utils/api-gateway";
+} from 'aws-lambda';
+import { AccountService } from '../services/account.service';
+import { CognitoService } from 'src/services/cognito.service';
+import { MissingParamsError } from 'src/utils/customError';
+import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 
 /**
  * =======================================================================================================
@@ -51,7 +51,7 @@ export async function verifyUserDetails(
     // console.log("event.body", event);
     getFile(event);
     const email = event.requestContext.authorizer?.claims?.email;
-    if (!email) throw new MissingParamsError("email");
+    if (!email) throw new MissingParamsError('email');
     const data = await AccountService.verifyUserDetailsHandler({
       email,
     });
@@ -62,19 +62,19 @@ export async function verifyUserDetails(
 }
 function getFile(event: ParsedAPIGatewayProxyEvent) {
   const body = event.body;
-  console.log("event: ", event);
+  console.log('event: ', event);
 
   const fileName = body
-    .split("\r\n")[1]
-    .split(";")[2]
-    .split("=")[1]
-    .replace(/^"|"$/g, "")
+    .split('\r\n')[1]
+    .split(';')[2]
+    .split('=')[1]
+    .replace(/^"|"$/g, '')
     .trim();
-  const fileType = fileName.split(".")[1];
-  const fileContent = body.split("\r\n")[5].trim();
+  const fileType = fileName.split('.')[1];
+  const fileContent = body.split('\r\n')[5].trim();
 
-  console.log("file name", fileName);
-  console.log("file type", fileType);
+  console.log('file name', fileName);
+  console.log('file type', fileType);
   // console.log("file content", fileContent);
   return fileContent;
 }
@@ -93,7 +93,7 @@ export async function signUpUser(
   try {
     const { name, email } = event.body;
 
-    if (!name || !email) throw new MissingParamsError("name, email");
+    if (!name || !email) throw new MissingParamsError('name, email');
 
     const data = await CognitoService.signUpCognitoHandler({
       name,
@@ -117,7 +117,7 @@ export async function resendConfirmationCode(
 
   try {
     const { email } = event.body;
-    if (!email) throw new MissingParamsError("email");
+    if (!email) throw new MissingParamsError('email');
     const data = await CognitoService.resendConfirmationCodeHandler({
       email,
     });
@@ -142,7 +142,7 @@ export async function confirmSignUpUser(
   try {
     const { email, confirmationCode } = event.body;
     if (!confirmationCode || !email)
-      throw new MissingParamsError("confirmationCode, email");
+      throw new MissingParamsError('confirmationCode, email');
     await CognitoService.confirmSignUpCognitoHandler({
       confirmationCode,
       email,
@@ -173,7 +173,7 @@ export async function setUsersInitialPassword(
     const { password, accessToken } = event.body;
     const email = event.requestContext.authorizer?.claims?.email;
     if (!password || !accessToken || !email)
-      throw new MissingParamsError("password, accessToken, email");
+      throw new MissingParamsError('password, accessToken, email');
 
     const result = await CognitoService.setInitialUserPasswordHandler({
       accessToken,
@@ -201,7 +201,7 @@ export async function resetUserPassword(
     const { password, accessToken } = event.body;
 
     if (!password || !accessToken)
-      throw new MissingParamsError("password, accessToken");
+      throw new MissingParamsError('password, accessToken');
 
     const data = await CognitoService.resetUserPasswordHandler({
       password,
@@ -254,7 +254,7 @@ export async function signInUser(
   try {
     const { email, password } = event.body;
 
-    if (!password || !email) throw new MissingParamsError("password, email");
+    if (!password || !email) throw new MissingParamsError('password, email');
     const data = await CognitoService.signInCognitoHandler({
       password,
       email,
@@ -278,7 +278,7 @@ export async function refreshTokenSignIn(
   try {
     const { refreshToken } = event.body;
 
-    if (!refreshToken) throw new MissingParamsError("refreshToken");
+    if (!refreshToken) throw new MissingParamsError('refreshToken');
     const data = await CognitoService.refreshTokenSignInCognitoHandler({
       refreshToken,
     });
@@ -301,7 +301,7 @@ export async function addUserToGroup(
   try {
     const { email, groupName } = event.body;
 
-    if (!groupName || !email) throw new MissingParamsError("groupName, email");
+    if (!groupName || !email) throw new MissingParamsError('groupName, email');
     const data = await CognitoService.addUserToGroupCognitoHandler({
       groupName,
       email,
@@ -324,7 +324,7 @@ export async function getVerificationStatus(
 
   try {
     const email = event.requestContext.authorizer?.claims?.email;
-    if (!email) throw new MissingParamsError("email");
+    if (!email) throw new MissingParamsError('email');
     const data = await CognitoService.getVerificationStatusHandler({
       email,
     });
@@ -347,7 +347,7 @@ export async function getUserStatus(
 
   try {
     const email = event.requestContext.authorizer?.claims?.email;
-    if (!email) throw new MissingParamsError("email");
+    if (!email) throw new MissingParamsError('email');
     const data = await CognitoService.getUserStatusHandler({
       email,
     });
@@ -369,7 +369,7 @@ export async function defineCustomChallenge(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    if (!event) throw new MissingParamsError("event");
+    if (!event) throw new MissingParamsError('event');
     const data = await CognitoService.defineAuthChallengeHandler({ event });
     return { data };
   } catch (err) {
@@ -389,7 +389,7 @@ export async function createAuthChallenge(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    if (!event) throw new MissingParamsError("event");
+    if (!event) throw new MissingParamsError('event');
     const data = await CognitoService.createAuthChallengeHandler({ event });
     return { data };
   } catch (err) {
@@ -408,7 +408,7 @@ export async function verifyAuthChallenge(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    if (!event) throw new MissingParamsError("event");
+    if (!event) throw new MissingParamsError('event');
     const data = await CognitoService.verifyAuthChallengeHandler({ event });
     return { data };
   } catch (err) {
@@ -430,7 +430,7 @@ export async function initiateCustomAuthChallenge(
   try {
     const { email } = event.body;
 
-    if (!email) throw new MissingParamsError("email");
+    if (!email) throw new MissingParamsError('email');
     const data = await CognitoService.initiateCustomAuthHandler({ email });
     return { data };
   } catch (err) {
@@ -453,7 +453,7 @@ export async function respondToCustomAuthChallenge(
     const { session, confirmationCode, username } = event.body;
 
     if (!session || !confirmationCode || !username)
-      throw new MissingParamsError("session, confirmationCode,username");
+      throw new MissingParamsError('session, confirmationCode,username');
     const data = await CognitoService.respondToAuthChallengeHandler({
       session,
       confirmationCode,

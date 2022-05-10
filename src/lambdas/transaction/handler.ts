@@ -1,7 +1,7 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { formatErrorResponse, formatJSONResponse } from "src/utils/api-gateway";
-import { middyfy } from "src/utils/lambda";
-import { transactionController } from "../../controllers";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { formatErrorResponse, formatJSONResponse } from 'src/utils/api-gateway';
+import { middyfy } from 'src/utils/lambda';
+import { transactionController } from '../../controllers';
 
 export const emailClientInvoice = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {

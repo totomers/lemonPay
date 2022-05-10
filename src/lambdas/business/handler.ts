@@ -1,10 +1,10 @@
-import { APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyResult } from 'aws-lambda';
 import {
   formatJSONResponse,
   ParsedAPIGatewayProxyEvent,
-} from "src/utils/api-gateway";
-import { middyfy } from "src/utils/lambda";
-import { businessController } from "../../controllers";
+} from 'src/utils/api-gateway';
+import { middyfy } from 'src/utils/lambda';
+import { businessController } from '../../controllers';
 
 export const getAllBusinesses = middyfy(
   async (

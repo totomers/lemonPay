@@ -1,24 +1,22 @@
-import mongoose from "mongoose";
-import { ITransactionDocument } from "src/types/transaction.interface";
+import mongoose from 'mongoose';
+import { ITransactionDocument } from 'src/types/transaction.interface';
 
 const TransactionSchema = new mongoose.Schema(
   {
     businessId: { type: mongoose.Schema.Types.ObjectId, required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, required: true },
-
     amount: {
       type: Number,
       required: true,
     },
     currency: {
       type: String,
-
-      enum: ["EUR"],
+      enum: ['EUR'],
       required: true,
     },
     status: {
       type: String,
-      enum: ["PENDING", "FAILED", "CHARGED", "CANCELED"],
+      enum: ['PENDING', 'FAILED', 'CHARGED', 'CANCELED'],
       required: true,
     },
   },
@@ -29,7 +27,7 @@ const TransactionSchema = new mongoose.Schema(
 export const Transaction =
   mongoose.models.transactions ||
   mongoose.model<ITransactionDocument>(
-    "transaction",
+    'transaction',
     TransactionSchema,
-    "transactions"
+    'transactions'
   );

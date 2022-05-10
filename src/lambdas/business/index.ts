@@ -1,5 +1,5 @@
-import { CONFIG } from "src/config";
-import { handlerPath } from "src/utils/handler-resolver";
+// import { CONFIG } from "src/config";
+import { handlerPath } from 'src/utils/handler-resolver';
 
 //consider removing handlerPath and using relative URL instead..
 export const getAllBusinesses = {
@@ -7,11 +7,11 @@ export const getAllBusinesses = {
   events: [
     {
       http: {
-        method: "get",
-        path: "businesses/getAll",
+        method: 'get',
+        path: 'businesses/getAll',
         authorizer: {
           // name: "LemonPayCognitoAuthorizer",
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -23,11 +23,11 @@ export const createBusiness = {
   events: [
     {
       http: {
-        method: "post",
-        path: "businesses/create",
+        method: 'post',
+        path: 'businesses/create',
         authorizer: {
           // name: "LemonPayCognitoAuthorizer",
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },

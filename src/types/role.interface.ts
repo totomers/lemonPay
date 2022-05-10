@@ -1,1 +1,1 @@
-export type IRole = "ADMIN" | "USER";
+export type IRole = 'ADMIN' | 'USER';

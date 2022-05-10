@@ -1,14 +1,16 @@
-import mongoose from "mongoose";
-import { connectToDatabase } from "src/database/db";
-import { Transaction } from "src/database/models/transaction";
-import { User } from "src/database/models/user";
-import { ITransactionDocument } from "src/types/transaction.interface";
+import mongoose from 'mongoose';
+import { connectToDatabase } from 'src/database/db';
+import { Transaction } from 'src/database/models/transaction';
+import { User } from 'src/database/models/user';
+import { ITransactionDocument } from 'src/types/transaction.interface';
 import {
   AWSSESError,
   CustomError,
+  DataNotFoundError,
+  ERROR_TYPES,
   MongoCustomError,
-} from "src/utils/customError";
-import { EmailService } from "./email.service";
+} from 'src/utils/customError';
+import { EmailService } from './email.service';
 
 /**
  * ====================================================================================================
@@ -42,14 +44,13 @@ export async function getUserTransactionsHandler(params: {
   try {
     await connectToDatabase();
     const { email } = params;
-    // const user = await User.findOne({ email });
-    // if (!user._id) {
-    //   throw new CustomError("No user found", 400, "NOUSERFOUND", "NOUSERFOUND");
-    // }
-    // console.log("userId:", user._id);
-    const userId = new mongoose.Types.ObjectId("62693ba6f0dc49799623d8a5");
+    const user = await User.findOne({ email });
+    if (!user._id) {
+      throw new DataNotFoundError();
+    }
+    // const userId = new mongoose.Types.ObjectId("62693ba6f0dc49799623d8a5");
     const result = await Transaction.find({
-      userId,
+      userId: user._id,
     });
     return result;
   } catch (err) {
@@ -71,7 +72,7 @@ export async function emailClientInvoiceHandler(params: {
   try {
     const { email, name } = params;
     const to = email;
-    const subject = "Successful Transction";
+    const subject = 'Successful Transction';
     const text = `Hi ${name}, your transction with XXX has been successful`;
 
     const result = await EmailService.sendTextEmailHandler({

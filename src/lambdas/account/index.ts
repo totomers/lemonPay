@@ -1,5 +1,5 @@
-import { CONFIG } from "src/config";
-import { handlerPath } from "src/utils/handler-resolver";
+// import { CONFIG } from "src/config";
+import { handlerPath } from 'src/utils/handler-resolver';
 
 //consider removing handlerPath and using relative URL instead..
 
@@ -8,10 +8,10 @@ export const createBusinessAccount = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/createBusinessAccount",
+        method: 'post',
+        path: 'account/createBusinessAccount',
         authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -23,10 +23,10 @@ export const verifyUserDetails = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/verifyUser",
+        method: 'post',
+        path: 'account/verifyUser',
         authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -37,8 +37,8 @@ export const signUpUser = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/register",
+        method: 'post',
+        path: 'account/register',
       },
     },
   ],
@@ -48,8 +48,8 @@ export const resendConfirmationCode = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/resendotp",
+        method: 'post',
+        path: 'account/resendotp',
       },
     },
   ],
@@ -59,8 +59,8 @@ export const confirmSignUp = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/submitotp",
+        method: 'post',
+        path: 'account/submitotp',
       },
     },
   ],
@@ -70,10 +70,10 @@ export const setInitialPassword = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/setInitialPassword",
+        method: 'post',
+        path: 'account/setInitialPassword',
         authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -84,10 +84,10 @@ export const resetUserPassword = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/resetPassword",
+        method: 'post',
+        path: 'account/resetPassword',
         authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -101,7 +101,7 @@ export const resetUserPassword = {
 //         method: "post",
 //         path: "account/confirmResetPassword",
 //         authorizer: {
-//           arn: CONFIG.COGNITO.USER_POOL_ARN,
+//           arn: "${self:custom.COGNITO_USER_POOL_ARN}",
 //         },
 //       },
 //     },
@@ -112,8 +112,8 @@ export const signInUser = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/signIn",
+        method: 'post',
+        path: 'account/signIn',
       },
     },
   ],
@@ -124,8 +124,8 @@ export const refreshTokenSignInUser = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/refreshTokenSignIn",
+        method: 'post',
+        path: 'account/refreshTokenSignIn',
       },
     },
   ],
@@ -135,10 +135,10 @@ export const getVerificationStatus = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/getVerificationStatus",
+        method: 'post',
+        path: 'account/getVerificationStatus',
         authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -149,10 +149,10 @@ export const getUserStatus = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/userStatus",
+        method: 'post',
+        path: 'account/userStatus',
         authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -164,10 +164,10 @@ export const getVerifiedOnlySecret = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/getSecret",
+        method: 'post',
+        path: 'account/getSecret',
         authorizer: {
-          arn: CONFIG.COGNITO.USER_POOL_ARN,
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
     },
@@ -181,7 +181,7 @@ export const defineAuthChallenge = {
 
 export const createAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.createAuthChallenge`,
-  role: "arn:aws:iam::164864435727:role/lambda-email-ses",
+  role: 'arn:aws:iam::164864435727:role/lambda-email-ses',
   events: [],
 };
 
@@ -194,8 +194,8 @@ export const initiateCustomAuthChallenge = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/initiateAuthChallenge",
+        method: 'post',
+        path: 'account/initiateAuthChallenge',
       },
     },
   ],
@@ -206,8 +206,8 @@ export const respondToCustomAuthChallenge = {
   events: [
     {
       http: {
-        method: "post",
-        path: "account/respondToAuthChallenge",
+        method: 'post',
+        path: 'account/respondToAuthChallenge',
       },
     },
   ],

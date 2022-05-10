@@ -3,15 +3,15 @@ import {
   CreateAuthChallengeTriggerEvent,
   DefineAuthChallengeTriggerEvent,
   VerifyAuthChallengeResponseTriggerEvent,
-} from "aws-lambda";
+} from 'aws-lambda';
 import {
   formatErrorResponse,
   formatJSONResponse,
   ParsedAPIGatewayProxyEvent,
-} from "src/utils/api-gateway";
-import { CustomError } from "src/utils/customError";
-import { middyfy } from "src/utils/lambda";
-import { accountController } from "../../controllers";
+} from 'src/utils/api-gateway';
+import { CustomError } from 'src/utils/customError';
+import { middyfy } from 'src/utils/lambda';
+import { accountController } from '../../controllers';
 
 export const createBusinessAccount = middyfy(
   async (
@@ -45,7 +45,7 @@ export const getVerifiedOnlySecret = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const secret = "apples";
+    const secret = 'apples';
     return formatJSONResponse(secret);
   }
 );

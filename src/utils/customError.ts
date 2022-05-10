@@ -1,13 +1,15 @@
-import { AWSError } from "aws-sdk";
-import { MongoError } from "mongodb";
+import { AWSError } from 'aws-sdk';
+import { MongoError } from 'mongodb';
 
 export const ERROR_TYPES = {
-  AWS_COGNITO: "A",
-  AWS_SES: "B",
-  MONGO: "C",
-  FAULTY_PARAMS: "D",
-  UNPROCESSABLE_PARAM_FORMAT: "E",
-  UNKNOWN: "U",
+  AWS_COGNITO: 'A',
+  AWS_SES: 'B',
+  MONGO: 'C',
+  FAULTY_PARAMS: 'D',
+  UNPROCESSABLE_PARAM_FORMAT: 'D',
+  DATA_NOT_FOUND: 'D',
+  ADMIN_ONLY: 'D',
+  UNKNOWN: 'U',
 };
 
 export class CustomError {
@@ -37,7 +39,7 @@ export class MissingParamsError extends CustomError {
     super(
       `Missing one of the following: [${params}] in the request's params. Please check request.`,
       400,
-      ERROR_TYPES.FAULTY_PARAMS + "01",
+      'FaultyParams',
       ERROR_TYPES.FAULTY_PARAMS
     );
   }
@@ -48,16 +50,35 @@ export class UnprocessableEntityError extends CustomError {
     super(
       `Content type given to request is defined as JSON but an invalid JSON was provided. Please Check Request Body.`,
       400,
-      ERROR_TYPES.UNPROCESSABLE_PARAM_FORMAT + "01",
+      'UnprocessableParamFormat',
       ERROR_TYPES.UNPROCESSABLE_PARAM_FORMAT
+    );
+  }
+}
+export class DataNotFoundError extends CustomError {
+  constructor() {
+    super(
+      `Database retrieved empty data when data is needed for function's future use. Please check credentials entered.`,
+      400,
+      'DataNotFound',
+      ERROR_TYPES.DATA_NOT_FOUND
+    );
+  }
+}
+export class AdminOnlyError extends CustomError {
+  constructor() {
+    super(
+      `User attempted to complete an action but is missing admin credentials. Please check your credentials.`,
+      401,
+      'AdminOnly',
+      ERROR_TYPES.ADMIN_ONLY
     );
   }
 }
 
 export class MongoCustomError extends CustomError {
+  //https://github.com/mongodb/mongo/blob/master/src/mongo/base/error_codes.yml
   constructor(error: MongoError) {
-    console.log(error.message);
-
     super(error.message, 500, error.code || error.name, ERROR_TYPES.MONGO);
   }
 }
@@ -80,15 +101,15 @@ function mapCognitoErrorCode(error: AWSError) {
   //https://github.com/aws-amplify/amplify-js/issues/1234
 
   switch (error.code) {
-    case "NotAuthorizedException":
-      if (error.message === "Password attempts exceeded") {
-        return ERROR_TYPES.AWS_COGNITO + "01";
+    case 'NotAuthorizedException':
+      if (error.message === 'Password attempts exceeded') {
+        return ERROR_TYPES.AWS_COGNITO + '01';
       }
-      return ERROR_TYPES.AWS_COGNITO + "02";
-    case "UsernameExistsException":
-      return ERROR_TYPES.AWS_COGNITO + "03";
-    case "InvalidParameterException":
-      return ERROR_TYPES.AWS_COGNITO + "04";
+      return ERROR_TYPES.AWS_COGNITO + '02';
+    case 'UsernameExistsException':
+      return ERROR_TYPES.AWS_COGNITO + '03';
+    case 'InvalidParameterException':
+      return ERROR_TYPES.AWS_COGNITO + '04';
     default:
       return error.code;
   }

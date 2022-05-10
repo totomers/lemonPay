@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "local": "serverless offline",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "prettier": "prettier --write ."
   },
   "engines": {
     "node": ">=14.15.0"
@@ -17,6 +18,7 @@
     "@types/mongoose": "^5.11.97",
     "aws-sdk": "^2.1114.0",
     "dotenv": "^16.0.0",
+    "jwt-decode": "^3.1.2",
     "mongoose": "^6.2.10"
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
     "@types/node": "^14.14.25",
     "esbuild": "^0.14.11",
     "json-schema-to-ts": "^1.5.0",
+    "prettier": "^2.6.2",
     "serverless": "^3.0.0",
     "serverless-esbuild": "^1.23.3",
     "serverless-offline": "^8.5.0",

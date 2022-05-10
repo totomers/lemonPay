@@ -1,15 +1,15 @@
-import mongoose from "mongoose";
-import { IRole } from "./role.interface";
+import mongoose from 'mongoose';
+import { IRole } from './role.interface';
 
 export type IBusinessDocument = mongoose.Document & {
   businessName: string;
   businessTradeName: string;
   users: { user: mongoose.Schema.Types.ObjectId; role: IRole }[];
   businessType:
-    | "SoleTrader"
-    | "CommercialPartnership"
-    | "LimitedPartnership"
-    | "PublicPartnership";
+    | 'SoleTrader'
+    | 'CommercialPartnership'
+    | 'LimitedPartnership'
+    | 'PublicPartnership';
   industry: string;
   businessAddress: string;
   businessHouseNumber: string;

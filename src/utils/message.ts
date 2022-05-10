@@ -1,4 +1,4 @@
-import { CustomResponse } from "./response";
+import { CustomResponse } from './response';
 
 enum StatusCode {
   success = 200,
@@ -34,7 +34,7 @@ class Result {
 
 export class MessageUtil {
   static success(data: object): CustomResponse {
-    const result = new Result(StatusCode.success, 0, "success", data);
+    const result = new Result(StatusCode.success, 0, 'success', data);
 
     return result.bodyToString();
   }

@@ -1,1 +1,1 @@
-export type ICurrencyCodes = "EUR";
+export type ICurrencyCodes = 'EUR';

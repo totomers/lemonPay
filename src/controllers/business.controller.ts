@@ -1,8 +1,8 @@
-import { Context } from "aws-lambda";
-import { MessageUtil } from "../utils/message";
-import { BusinessService } from "../services/business.service";
-import { IBusinessDocument } from "src/types/business.interface";
-import { ParsedAPIGatewayProxyEvent } from "src/utils/api-gateway";
+import { Context } from 'aws-lambda';
+import { MessageUtil } from '../utils/message';
+import { BusinessService } from '../services/business.service';
+import { IBusinessDocument } from 'src/types/business.interface';
+import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 
 /**
  * =======================================================================================================
@@ -19,7 +19,7 @@ export async function getAll(
     return result;
   } catch (err) {
     console.error(err);
-    console.log("error:", err);
+    console.log('error:', err);
     return MessageUtil.error(err.code, err.message);
   }
 }
@@ -40,7 +40,7 @@ export async function create(
     return result;
   } catch (err) {
     console.error(err);
-    console.log("error:", err);
+    console.log('error:', err);
     return MessageUtil.error(err.code, err.message);
   }
 }

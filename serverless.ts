@@ -1,6 +1,6 @@
-import type { AWS } from "@serverless/typescript";
-import hello from "src/lambdas/hello";
-import { getAllBusinesses, createBusiness } from "src/lambdas/business";
+import type { AWS } from '@serverless/typescript';
+import hello from 'src/lambdas/hello';
+import { getAllBusinesses, createBusiness } from 'src/lambdas/business';
 import {
   createBusinessAccount,
   verifyUserDetails,
@@ -20,12 +20,12 @@ import {
   verifyAuthChallenge,
   initiateCustomAuthChallenge,
   respondToCustomAuthChallenge,
-} from "src/lambdas/account";
+} from 'src/lambdas/account';
 import {
   emailClientInvoice,
   addTransaction,
   getUserTransactions,
-} from "src/lambdas/transaction";
+} from 'src/lambdas/transaction';
 // import dotenv from "dotenv";
 
 // dotenv.config({
@@ -33,14 +33,15 @@ import {
 // });
 
 const serverlessConfiguration: AWS = {
-  service: "lemonPay",
-  frameworkVersion: "3",
-  plugins: ["serverless-esbuild", "serverless-offline"],
+  service: 'lemonPay',
+  frameworkVersion: '3',
+  plugins: ['serverless-esbuild', 'serverless-offline'],
 
   provider: {
-    name: "aws",
-    runtime: "nodejs14.x",
-    region: "eu-central-1",
+    name: 'aws',
+    runtime: 'nodejs14.x',
+    region: 'eu-central-1',
+
     // vpc: {
     //   securityGroupIds: ["sg-083dfda18e37b6f16"],
     //   subnetIds: [
@@ -53,13 +54,14 @@ const serverlessConfiguration: AWS = {
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
+
       //added this to include all types of binary media data types for image / file uploads
-      binaryMediaTypes: ["*/*"],
+      binaryMediaTypes: ['*/*'],
     },
 
     environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
-      NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
       SERVERLESS_REGION:
         "${file(./config.${opt:stage, 'dev'}.json):SERVERLESS_REGION}",
@@ -103,14 +105,16 @@ const serverlessConfiguration: AWS = {
   },
   package: { individually: true },
   custom: {
+    COGNITO_USER_POOL_ARN:
+      "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ARN}",
     esbuild: {
       bundle: true,
       minify: false,
       sourcemap: true,
-      exclude: ["aws-sdk"],
-      target: "node14",
-      define: { "require.resolve": undefined },
-      platform: "node",
+      exclude: ['aws-sdk'],
+      target: 'node14',
+      define: { 'require.resolve': undefined },
+      platform: 'node',
       concurrency: 10,
     },
   },
