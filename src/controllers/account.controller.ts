@@ -143,16 +143,12 @@ export async function confirmSignUpUser(
     const { email, confirmationCode } = event.body;
     if (!confirmationCode || !email)
       throw new MissingParamsError('confirmationCode, email');
-    await CognitoService.confirmSignUpCognitoHandler({
+    const data = await CognitoService.confirmSignUpCognitoHandler({
       confirmationCode,
       email,
     });
 
-    const signInResult = await CognitoService.signInCognitoHandler({
-      email,
-      password: process.env.COGNITO_USER_DUMMY_PASSWORD,
-    });
-    return { data: signInResult.AuthenticationResult };
+    return { data };
   } catch (err) {
     return { err };
   }

@@ -361,7 +361,7 @@ export async function confirmUserPasswordResetHandler(params: {
 export async function confirmSignUpCognitoHandler(params: {
   email: string;
   confirmationCode: string;
-}): Promise<AWS.CognitoIdentityServiceProvider.ConfirmSignUpResponse> {
+}): Promise<{ idToken: string; accessToken: string }> {
   try {
     const { email, confirmationCode } = params;
 
@@ -371,14 +371,30 @@ export async function confirmSignUpCognitoHandler(params: {
         ConfirmationCode: confirmationCode,
         ClientId: clientId,
       };
-    const result = await cognitoidentityserviceprovider
+    await cognitoidentityserviceprovider
       .confirmSignUp(confirmSignUpRequest)
       .promise();
 
     //validate if confirmation was successful, if so then add the user to the unverified group (limited access)
     await addUserToGroupCognitoHandler({ groupName: 'unverified', email });
 
-    return result;
+    const { AuthenticationResult } = await cognitoidentityserviceprovider
+      .initiateAuth({
+        AuthFlow: 'USER_PASSWORD_AUTH',
+        ClientId: clientId,
+        AuthParameters: {
+          USERNAME: email,
+          PASSWORD: process.env.COGNITO_USER_DUMMY_PASSWORD,
+        },
+      })
+      .promise();
+
+    const { IdToken, AccessToken } = AuthenticationResult;
+    const tokens = {
+      idToken: IdToken,
+      accessToken: AccessToken,
+    };
+    return tokens;
   } catch (err) {
     throw new AWSCognitoError(err);
   }
