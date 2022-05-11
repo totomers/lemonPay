@@ -41,7 +41,22 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs14.x',
     region: 'eu-central-1',
-
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: ['cognito-identity:*'],
+            Resource: '*',
+          },
+          {
+            Effect: 'Allow',
+            Action: ['cognito-idp:*'],
+            Resource: '*',
+          },
+        ],
+      },
+    },
     // vpc: {
     //   securityGroupIds: ["sg-083dfda18e37b6f16"],
     //   subnetIds: [

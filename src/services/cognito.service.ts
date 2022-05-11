@@ -463,10 +463,20 @@ export async function signInCognitoHandler(params: {
 
     const { IdToken, RefreshToken } = cognitoAuthResults.AuthenticationResult;
     const tokens = { idToken: IdToken, refreshToken: RefreshToken };
-    const user = await AccountService.getUserHandler({ email });
-    const { _id, name, defaultBusiness } = user;
 
-    return { tokens, user: { _id, name, defaultBusiness, email } };
+    const decodedToken = jwt_decode(IdToken) as {
+      'custom:isKnownDetails': string;
+    };
+    const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
+    if (isKnownDetails) {
+      const user = await AccountService.getUserHandler({ email });
+      const { _id, name, businesses } = user;
+      return { tokens, user: { _id, name, businesses, email } };
+    } else
+      return {
+        tokens,
+        user: { _id: '', name: '', businesses: [], email: '' },
+      };
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -504,9 +514,9 @@ export async function refreshTokenSignInCognitoHandler(params: {
     const email = (jwt_decode(tokens.idToken) as { email: string }).email;
 
     const user = await AccountService.getUserHandler({ email });
-    const { _id, name, defaultBusiness } = user;
+    const { _id, name, businesses } = user;
 
-    return { tokens, user: { _id, name, defaultBusiness, email } };
+    return { tokens, user: { _id, name, businesses, email } };
   } catch (err) {
     throw new AWSCognitoError(err);
   }

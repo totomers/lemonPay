@@ -56,7 +56,6 @@ export const resendConfirmationCode = {
 };
 export const confirmSignUp = {
   handler: `${handlerPath(__dirname)}/handler.confirmSignUp`,
-  role: '',
   events: [
     {
       http: {
