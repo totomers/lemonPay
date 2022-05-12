@@ -46,7 +46,6 @@ export async function getUserTransactionsHandler(params: {
   try {
     await connectToDatabase();
     const { userId, businessId } = params;
-
     const result = await Transaction.find({
       userId,
       businessId,
@@ -73,7 +72,6 @@ export async function emailClientInvoiceHandler(params: {
     const to = email;
     const subject = 'Successful Transction';
     const text = `Hi ${name}, your transction with XXX has been successful`;
-
     const result = await EmailService.sendTextEmailHandler({
       to,
       subject,

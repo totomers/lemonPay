@@ -2,7 +2,8 @@ import { Context } from 'aws-lambda';
 import { TransactionService } from 'src/services/transaction.service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { ITransactionDocument } from 'src/types/transaction.interface';
-import { MissingParamsError, UnverifiedUserError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/customError';
+import { checkIfVerified } from 'src/utils/validate-if-verified';
 
 /**
  * =======================================================================================================
@@ -15,8 +16,7 @@ export async function addTransaction(event?: any, context?: Context) {
     const tokenClaims = event.requestContext.authorizer
       .claims as IClaimsIdToken;
 
-    if (tokenClaims['custom:isVerified'] === '0')
-      throw new UnverifiedUserError();
+    checkIfVerified(tokenClaims);
 
     const { amount, businessId, currency, status, userId } =
       event.body as Partial<ITransactionDocument>;
@@ -64,9 +64,7 @@ export async function getUserTransactions(event?: any, context?: Context) {
     const tokenClaims = event.requestContext.authorizer
       .claims as IClaimsIdToken;
 
-    if (tokenClaims['custom:isVerified'] === '0')
-      throw new UnverifiedUserError();
-
+    checkIfVerified(tokenClaims);
     const { userId, businessId } = event.body;
 
     if (!userId || !businessId)

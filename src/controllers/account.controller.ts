@@ -47,7 +47,8 @@ export async function verifyUserDetails(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    // getFile(event);
+    // TBD: If verification method will need to use a file/image we will use the getFile(event) method below:
+    // const file = getFile(event);
     const email = event.requestContext.authorizer?.claims?.email;
     if (!email) throw new MissingParamsError('email');
 
@@ -59,6 +60,12 @@ export async function verifyUserDetails(
     return { err };
   }
 }
+
+/**
+ * Extract the file from the lambda event.
+ * @param event
+ * @returns
+ */
 function getFile(event: ParsedAPIGatewayProxyEvent) {
   const body = event.body;
   console.log('event: ', event);
