@@ -35,7 +35,7 @@ export const getUserTransactions = {
   events: [
     {
       http: {
-        method: 'get',
+        method: 'post',
         path: 'transactions/getUserTransactions',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',

@@ -24,6 +24,7 @@ export async function createTransactionHandler(
 ): Promise<ITransactionDocument> {
   try {
     await connectToDatabase();
+
     const result = await Transaction.create(params);
     return result;
   } catch (err) {
@@ -39,18 +40,15 @@ export async function createTransactionHandler(
  */
 
 export async function getUserTransactionsHandler(params: {
-  email: string;
+  userId: string;
+  businessId: string;
 }): Promise<ITransactionDocument[]> {
   try {
     await connectToDatabase();
-    const { email } = params;
-    const user = await User.findOne({ email });
-    if (!user._id) {
-      throw new DataNotFoundError();
-    }
-    // const userId = new mongoose.Types.ObjectId("62693ba6f0dc49799623d8a5");
+    const { userId, businessId } = params;
     const result = await Transaction.find({
-      userId: user._id,
+      userId,
+      businessId,
     });
     return result;
   } catch (err) {
@@ -74,7 +72,6 @@ export async function emailClientInvoiceHandler(params: {
     const to = email;
     const subject = 'Successful Transction';
     const text = `Hi ${name}, your transction with XXX has been successful`;
-
     const result = await EmailService.sendTextEmailHandler({
       to,
       subject,

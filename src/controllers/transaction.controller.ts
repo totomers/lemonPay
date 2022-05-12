@@ -1,7 +1,9 @@
 import { Context } from 'aws-lambda';
 import { TransactionService } from 'src/services/transaction.service';
+import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { ITransactionDocument } from 'src/types/transaction.interface';
 import { MissingParamsError } from 'src/utils/customError';
+import { checkIfVerified } from 'src/utils/validate-if-verified';
 
 /**
  * =======================================================================================================
@@ -11,7 +13,11 @@ import { MissingParamsError } from 'src/utils/customError';
 export async function addTransaction(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    // const { email, name } = event.requestContext.authorizer.claims;
+    const tokenClaims = event.requestContext.authorizer
+      .claims as IClaimsIdToken;
+
+    checkIfVerified(tokenClaims);
+
     const { amount, businessId, currency, status, userId } =
       event.body as Partial<ITransactionDocument>;
     const data = await TransactionService.createTransactionHandler({
@@ -55,17 +61,21 @@ export async function emailClientInvoice(event?: any, context?: Context) {
 export async function getUserTransactions(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const email = event.requestContext.authorizer?.claims?.email;
+    const tokenClaims = event.requestContext.authorizer
+      .claims as IClaimsIdToken;
 
-    if (!email) throw new MissingParamsError('email');
+    checkIfVerified(tokenClaims);
+    const { userId, businessId } = event.body;
+
+    if (!userId || !businessId)
+      throw new MissingParamsError('userId, businessId');
 
     const data = await TransactionService.getUserTransactionsHandler({
-      email,
+      userId,
+      businessId,
     });
     return { data };
   } catch (err) {
-    console.log('===================================OOPPPSSS');
-
     return { err };
   }
 }

@@ -9,6 +9,7 @@ export const ERROR_TYPES = {
   UNPROCESSABLE_PARAM_FORMAT: 'D',
   DATA_NOT_FOUND: 'D',
   ADMIN_ONLY: 'D',
+  UNVERIFIED_USER: 'D',
   UNKNOWN: 'U',
 };
 
@@ -65,6 +66,16 @@ export class DataNotFoundError extends CustomError {
     );
   }
 }
+export class UnverifiedUserError extends CustomError {
+  constructor() {
+    super(
+      `Action is restricted to verified users only. Please verify your details.`,
+      401,
+      'UnverifiedUser',
+      ERROR_TYPES.DATA_NOT_FOUND
+    );
+  }
+}
 export class AdminOnlyError extends CustomError {
   constructor() {
     super(
@@ -103,13 +114,9 @@ function mapCognitoErrorCode(error: AWSError) {
   switch (error.code) {
     case 'NotAuthorizedException':
       if (error.message === 'Password attempts exceeded') {
-        return ERROR_TYPES.AWS_COGNITO + '01';
+        return 'TooManyRequestsException';
       }
-      return ERROR_TYPES.AWS_COGNITO + '02';
-    case 'UsernameExistsException':
-      return ERROR_TYPES.AWS_COGNITO + '03';
-    case 'InvalidParameterException':
-      return ERROR_TYPES.AWS_COGNITO + '04';
+      return error.code;
     default:
       return error.code;
   }
