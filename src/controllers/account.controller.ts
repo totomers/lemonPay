@@ -242,7 +242,7 @@ export async function resetUserPassword(
 
 /**
  * =======================================================================================================
- * Sign Up User To Cognito DB
+ * Sign In User With Cognito DB
  * =======================================================================================================
  */
 export async function signInUser(
@@ -268,7 +268,7 @@ export async function signInUser(
 }
 /**
  * =======================================================================================================
- * Sign Up User With Refresh Token
+ * Sign In User With Refresh Token
  * =======================================================================================================
  */
 export async function refreshTokenSignIn(
@@ -282,6 +282,30 @@ export async function refreshTokenSignIn(
 
     if (!refreshToken) throw new MissingParamsError('refreshToken');
     const data = await CognitoService.refreshTokenSignInCognitoHandler({
+      refreshToken,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Log Out User Cognito DB
+ * =======================================================================================================
+ */
+export async function logoutUser(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { refreshToken } = event.body;
+
+    if (!refreshToken) throw new MissingParamsError('refreshToken');
+    const data = await CognitoService.logoutUserHandler({
       refreshToken,
     });
     return { data };
@@ -473,6 +497,7 @@ export const AccountController = {
   confirmSignUpUser,
   signInUser,
   refreshTokenSignIn,
+  logoutUser,
   setUsersInitialPassword,
   resendConfirmationCode,
   getVerificationStatus,
