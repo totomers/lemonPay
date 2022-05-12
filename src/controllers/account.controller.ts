@@ -47,11 +47,10 @@ export async function verifyUserDetails(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    //extract business and user details from event
-    // console.log("event.body", event);
-    getFile(event);
+    // getFile(event);
     const email = event.requestContext.authorizer?.claims?.email;
     if (!email) throw new MissingParamsError('email');
+
     const data = await AccountService.verifyUserDetailsHandler({
       email,
     });
