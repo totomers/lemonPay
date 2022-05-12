@@ -38,7 +38,7 @@ async function validateBusinessDetails(params: {
     const { businessRegistrationNumber } = params;
     // Check if business is already in our DB  מספר ח.פ. או מספר עוסק מורשה
     const result = await Business.findOne({ businessRegistrationNumber });
-    if (result._id)
+    if (result?._id)
       throw new CustomError(
         'Business registration number belongs to a pre-exisiting company',
         400,
