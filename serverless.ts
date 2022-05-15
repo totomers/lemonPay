@@ -94,6 +94,7 @@ const serverlessConfiguration: AWS = {
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_CLIENT_ID}",
       COGNITO_USER_DUMMY_PASSWORD:
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
+      STAGE: "${file(./config.${opt:stage, 'dev'}.json):STAGE}",
     },
   },
 

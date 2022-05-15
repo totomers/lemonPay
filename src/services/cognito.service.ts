@@ -355,7 +355,7 @@ export async function confirmUserPasswordResetHandler(params: {
 
 /**
  * =======================================================================================================
- * Confirm new users email
+ * Confirm new users email & return him his tokens
  * @param params
  * =======================================================================================================
  */
@@ -367,18 +367,10 @@ export async function confirmSignUpCognitoHandler(params: {
   try {
     const { email, confirmationCode } = params;
 
-    const confirmSignUpRequest: AWS.CognitoIdentityServiceProvider.ConfirmSignUpRequest =
-      {
-        Username: email,
-        ConfirmationCode: confirmationCode,
-        ClientId: clientId,
-      };
-    await cognitoidentityserviceprovider
-      .confirmSignUp(confirmSignUpRequest)
-      .promise();
-
-    //validate if confirmation was successful, if so then add the user to the unverified group (limited access)
-    await addUserToGroupCognitoHandler({ groupName: 'unverified', email });
+    await CognitoService.confirmEmailCognitoHandler({
+      email,
+      confirmationCode,
+    });
 
     const { AuthenticationResult } = await cognitoidentityserviceprovider
       .initiateAuth({
@@ -397,6 +389,45 @@ export async function confirmSignUpCognitoHandler(params: {
       accessToken: AccessToken,
     };
     return tokens;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+export async function confirmEmailCognitoHandler(params: {
+  email: string;
+  confirmationCode: string;
+}): Promise<{}> {
+  try {
+    const { email, confirmationCode } = params;
+    const FAKE_CONFIRMATION_CODE_DEV_TESTING = '111111';
+    console.log('process.env.STAGE:', process.env.STAGE);
+
+    if (
+      process.env.STAGE === 'DEV' &&
+      confirmationCode === FAKE_CONFIRMATION_CODE_DEV_TESTING
+    ) {
+      const adminConfirmSignUpRequest: AWS.CognitoIdentityServiceProvider.AdminConfirmSignUpRequest =
+        {
+          Username: email,
+          UserPoolId: userPoolId,
+        };
+      await cognitoidentityserviceprovider
+        .adminConfirmSignUp(adminConfirmSignUpRequest)
+        .promise();
+    } else {
+      const confirmSignUpRequest: AWS.CognitoIdentityServiceProvider.ConfirmSignUpRequest =
+        {
+          Username: email,
+          ConfirmationCode: confirmationCode,
+          ClientId: clientId,
+        };
+      await cognitoidentityserviceprovider
+        .confirmSignUp(confirmSignUpRequest)
+        .promise();
+    }
+
+    return {};
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -852,4 +883,5 @@ export const CognitoService = {
   initiateCustomAuthHandler,
   respondToAuthChallengeHandler,
   logoutUserHandler,
+  confirmEmailCognitoHandler,
 };
