@@ -181,7 +181,7 @@ export const defineAuthChallenge = {
 
 export const createAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.createAuthChallenge`,
-  role: 'arn:aws:iam::164864435727:role/lambda-email-ses',
+  // role: 'arn:aws:iam::164864435727:role/lambda-email-ses',
   events: [],
 };
 
