@@ -3,7 +3,7 @@ export interface IPhosTransactionPayload {
   merchantIdentifier: string; // "1602011247",
   userIdentifier: string; // a@a.a,
   transaction: {
-    transactionType: string; // "sale",
+    transactionType: 'sale' | 'refund' | 'void'; // "sale",
     transactionId: string; //"123",
     approvedAmount: number; //"1.23",
     approvalNumber: number; // "078206",
@@ -12,7 +12,7 @@ export interface IPhosTransactionPayload {
     batchNumber: number; // 0,
     transactionNumber: string; // 'fd1cdab34e813acfeca0a86924b2dc6f'
     cardNumber: string; // '516895XXXXXX5807';
-    cardType: string; // 'Visa';
+    cardType: 'Visa' | 'Mastercard'; // 'Visa';
     status: '1' | '0' | '-1'; // successful | pending | declined
     metadata: {
       minutes?: number; //236;

@@ -10,6 +10,7 @@ import {
   InitiateAuthResponse,
   RespondToAuthChallengeRequest,
   RespondToAuthChallengeResponse,
+  RevokeTokenRequest,
 } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 import { CONFIG } from 'src/config';
 import { IUserDocument } from 'src/types/user.interface';
@@ -17,6 +18,7 @@ import { AWSCognitoError, CustomError } from 'src/utils/customError';
 import { AccountService } from './account.service';
 import { EmailService } from './email.service';
 import jwt_decode from 'jwt-decode';
+import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 const userPoolId = CONFIG.COGNITO.USER_POOL_ID;
@@ -353,7 +355,7 @@ export async function confirmUserPasswordResetHandler(params: {
 
 /**
  * =======================================================================================================
- * Confirm new users email
+ * Confirm new users email & return him his tokens
  * @param params
  * =======================================================================================================
  */
@@ -365,18 +367,10 @@ export async function confirmSignUpCognitoHandler(params: {
   try {
     const { email, confirmationCode } = params;
 
-    const confirmSignUpRequest: AWS.CognitoIdentityServiceProvider.ConfirmSignUpRequest =
-      {
-        Username: email,
-        ConfirmationCode: confirmationCode,
-        ClientId: clientId,
-      };
-    await cognitoidentityserviceprovider
-      .confirmSignUp(confirmSignUpRequest)
-      .promise();
-
-    //validate if confirmation was successful, if so then add the user to the unverified group (limited access)
-    await addUserToGroupCognitoHandler({ groupName: 'unverified', email });
+    await CognitoService.confirmEmailCognitoHandler({
+      email,
+      confirmationCode,
+    });
 
     const { AuthenticationResult } = await cognitoidentityserviceprovider
       .initiateAuth({
@@ -395,6 +389,44 @@ export async function confirmSignUpCognitoHandler(params: {
       accessToken: AccessToken,
     };
     return tokens;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+export async function confirmEmailCognitoHandler(params: {
+  email: string;
+  confirmationCode: string;
+}): Promise<{}> {
+  try {
+    const { email, confirmationCode } = params;
+    console.log('process.env.STAGE:', process.env.STAGE);
+
+    if (
+      process.env.STAGE === 'DEV' &&
+      confirmationCode === process.env.FAKE_CONFIRMATION_CODE_DEV_TESTING
+    ) {
+      const adminConfirmSignUpRequest: AWS.CognitoIdentityServiceProvider.AdminConfirmSignUpRequest =
+        {
+          Username: email,
+          UserPoolId: userPoolId,
+        };
+      await cognitoidentityserviceprovider
+        .adminConfirmSignUp(adminConfirmSignUpRequest)
+        .promise();
+    } else {
+      const confirmSignUpRequest: AWS.CognitoIdentityServiceProvider.ConfirmSignUpRequest =
+        {
+          Username: email,
+          ConfirmationCode: confirmationCode,
+          ClientId: clientId,
+        };
+      await cognitoidentityserviceprovider
+        .confirmSignUp(confirmSignUpRequest)
+        .promise();
+    }
+
+    return {};
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -463,10 +495,55 @@ export async function signInCognitoHandler(params: {
 
     const { IdToken, RefreshToken } = cognitoAuthResults.AuthenticationResult;
     const tokens = { idToken: IdToken, refreshToken: RefreshToken };
-    const user = await AccountService.getUserHandler({ email });
-    const { _id, name, defaultBusiness } = user;
 
-    return { tokens, user: { _id, name, defaultBusiness, email } };
+    const decodedToken = jwt_decode(IdToken) as IClaimsIdToken;
+    const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
+
+    const emptyUser = { _id: '', name: '', businesses: [], email: '' };
+
+    if (isKnownDetails > 0) {
+      const user = await AccountService.getUserHandler({ email });
+      if (!user) {
+        await updateUserAttributes({
+          attributes: [{ Name: 'custom:isKnownDetails', Value: '0' }],
+          email,
+        });
+        return { tokens, user: emptyUser };
+      }
+      const { _id, name, businesses } = user;
+      return { tokens, user: { _id, name, businesses, email } };
+    } else
+      return {
+        tokens,
+        user: emptyUser,
+      };
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Logout out user
+ * @param params
+ * =======================================================================================================
+ */
+
+export async function logoutUserHandler(params: {
+  refreshToken: string;
+}): Promise<AWS.CognitoIdentityServiceProvider.RevokeTokenResponse> {
+  try {
+    const { refreshToken } = params;
+
+    const revokeTokenRequest: RevokeTokenRequest = {
+      Token: refreshToken,
+      ClientId: clientId,
+    };
+    await cognitoidentityserviceprovider
+      .revokeToken(revokeTokenRequest)
+      .promise();
+
+    return {};
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -633,21 +710,18 @@ export async function verifyAuthChallengeHandler(params: {
 }): Promise<VerifyAuthChallengeResponseTriggerEvent> {
   try {
     const { event } = params;
-    console.log('Verifing Auth Challenge! event.request:', event.request);
 
     const expectedAnswer =
       event.request.privateChallengeParameters.secretLoginCode;
 
-    console.log('expected answer is:', expectedAnswer);
-    console.log('the received answer is:', event.request.challengeAnswer);
-
-    if (event.request.challengeAnswer === expectedAnswer) {
-      console.log('CORRECT ANSWER!');
-
+    if (
+      event.request.challengeAnswer === expectedAnswer ||
+      (process.env.STAGE === 'DEV' &&
+        event.request.challengeAnswer ===
+          process.env.FAKE_CONFIRMATION_CODE_DEV_TESTING)
+    ) {
       event.response.answerCorrect = true;
     } else {
-      console.log('INCORRECT ANSWER!');
-
       event.response.answerCorrect = false;
     }
 
@@ -804,4 +878,6 @@ export const CognitoService = {
   verifyAuthChallengeHandler,
   initiateCustomAuthHandler,
   respondToAuthChallengeHandler,
+  logoutUserHandler,
+  confirmEmailCognitoHandler,
 };

@@ -6,6 +6,7 @@ import {
   verifyUserDetails,
   getVerifiedOnlySecret,
   signInUser,
+  logoutUser,
   signUpUser,
   confirmSignUp,
   setInitialPassword,
@@ -41,7 +42,27 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs14.x',
     region: 'eu-central-1',
-
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: ['cognito-identity:*'],
+            Resource: '*',
+          },
+          {
+            Effect: 'Allow',
+            Action: ['cognito-idp:*'],
+            Resource: '*',
+          },
+          {
+            Effect: 'Allow',
+            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
+            Resource: '*',
+          },
+        ],
+      },
+    },
     // vpc: {
     //   securityGroupIds: ["sg-083dfda18e37b6f16"],
     //   subnetIds: [
@@ -73,6 +94,9 @@ const serverlessConfiguration: AWS = {
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_CLIENT_ID}",
       COGNITO_USER_DUMMY_PASSWORD:
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
+      STAGE: "${file(./config.${opt:stage, 'dev'}.json):STAGE}",
+      FAKE_CONFIRMATION_CODE_DEV_TESTING:
+        "${file(./config.${opt:stage, 'dev'}.json):FAKE_CONFIRMATION_CODE_DEV_TESTING}",
     },
   },
 
@@ -85,6 +109,7 @@ const serverlessConfiguration: AWS = {
     verifyUserDetails,
     getVerifiedOnlySecret,
     signInUser,
+    logoutUser,
     signUpUser,
     confirmSignUp,
     setInitialPassword,

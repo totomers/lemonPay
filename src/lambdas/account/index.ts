@@ -56,7 +56,6 @@ export const resendConfirmationCode = {
 };
 export const confirmSignUp = {
   handler: `${handlerPath(__dirname)}/handler.confirmSignUp`,
-  role: '',
   events: [
     {
       http: {
@@ -131,6 +130,21 @@ export const refreshTokenSignInUser = {
     },
   ],
 };
+export const logoutUser = {
+  handler: `${handlerPath(__dirname)}/handler.logoutUser`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/logout',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+
 export const getVerificationStatus = {
   handler: `${handlerPath(__dirname)}/handler.getVerificationStatus`,
   events: [
@@ -182,7 +196,7 @@ export const defineAuthChallenge = {
 
 export const createAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.createAuthChallenge`,
-  role: 'arn:aws:iam::164864435727:role/lambda-email-ses',
+  // role: 'arn:aws:iam::164864435727:role/lambda-email-ses',
   events: [],
 };
 

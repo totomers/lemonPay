@@ -55,8 +55,6 @@ export const signInUser = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    // console.log("process.env: ", process.env);
-
     const result = await accountController.signInUser(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
@@ -69,6 +67,17 @@ export const refreshTokenSignInUser = middyfy(
     context
   ): Promise<APIGatewayProxyResult> => {
     const result = await accountController.refreshTokenSignIn(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+
+export const logoutUser = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.logoutUser(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
