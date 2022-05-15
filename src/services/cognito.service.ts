@@ -400,12 +400,11 @@ export async function confirmEmailCognitoHandler(params: {
 }): Promise<{}> {
   try {
     const { email, confirmationCode } = params;
-    const FAKE_CONFIRMATION_CODE_DEV_TESTING = '111111';
     console.log('process.env.STAGE:', process.env.STAGE);
 
     if (
       process.env.STAGE === 'DEV' &&
-      confirmationCode === FAKE_CONFIRMATION_CODE_DEV_TESTING
+      confirmationCode === process.env.FAKE_CONFIRMATION_CODE_DEV_TESTING
     ) {
       const adminConfirmSignUpRequest: AWS.CognitoIdentityServiceProvider.AdminConfirmSignUpRequest =
         {
@@ -711,21 +710,18 @@ export async function verifyAuthChallengeHandler(params: {
 }): Promise<VerifyAuthChallengeResponseTriggerEvent> {
   try {
     const { event } = params;
-    console.log('Verifing Auth Challenge! event.request:', event.request);
 
     const expectedAnswer =
       event.request.privateChallengeParameters.secretLoginCode;
 
-    console.log('expected answer is:', expectedAnswer);
-    console.log('the received answer is:', event.request.challengeAnswer);
-
-    if (event.request.challengeAnswer === expectedAnswer) {
-      console.log('CORRECT ANSWER!');
-
+    if (
+      event.request.challengeAnswer === expectedAnswer ||
+      (process.env.STAGE === 'DEV' &&
+        event.request.challengeAnswer ===
+          process.env.FAKE_CONFIRMATION_CODE_DEV_TESTING)
+    ) {
       event.response.answerCorrect = true;
     } else {
-      console.log('INCORRECT ANSWER!');
-
       event.response.answerCorrect = false;
     }
 

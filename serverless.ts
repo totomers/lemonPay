@@ -95,6 +95,8 @@ const serverlessConfiguration: AWS = {
       COGNITO_USER_DUMMY_PASSWORD:
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
       STAGE: "${file(./config.${opt:stage, 'dev'}.json):STAGE}",
+      FAKE_CONFIRMATION_CODE_DEV_TESTING:
+        "${file(./config.${opt:stage, 'dev'}.json):FAKE_CONFIRMATION_CODE_DEV_TESTING}",
     },
   },
 
