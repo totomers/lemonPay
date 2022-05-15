@@ -55,6 +55,11 @@ const serverlessConfiguration: AWS = {
             Action: ['cognito-idp:*'],
             Resource: '*',
           },
+          {
+            Effect: 'Allow',
+            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
+            Resource: '*',
+          },
         ],
       },
     },
