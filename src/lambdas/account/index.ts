@@ -130,6 +130,21 @@ export const refreshTokenSignInUser = {
     },
   ],
 };
+export const logoutUser = {
+  handler: `${handlerPath(__dirname)}/handler.logoutUser`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/logout',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+
 export const getVerificationStatus = {
   handler: `${handlerPath(__dirname)}/handler.getVerificationStatus`,
   events: [
