@@ -1,8 +1,18 @@
 import AWS, { AWSError } from 'aws-sdk';
 import { CONFIG } from 'src/config';
 import { AWSSESError, CustomError, ERROR_TYPES } from 'src/utils/customError';
+import nodemailer from 'nodemailer';
+const transporter = nodemailer.createTransport({
+  service: 'hotmail',
+  auth: {
+    user: 'no-reply@lemonpay.nl',
+    pass: 'Tot70346',
+  },
+});
 
-AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
+AWS.config.update({
+  region: CONFIG.SERVERLESS.REGION,
+});
 
 const SES = new AWS.SES();
 
@@ -24,30 +34,36 @@ export async function sendTextEmailHandler(params: {
     const defaultHTML = `<html><head><title>Your Token</title><style>h1{color:#f00;}</style></head><body><h1>Hello </h1><div>Your Device Validation Token is YYY<br/>Simply copy this token and paste it into the device validation input field.</div></body></html>`;
     const {
       to,
-      from = 'no-reply@lemonpayapp.com',
+      from = 'lemonpayapp@outlook.com',
       text,
       subject,
       html = defaultHTML,
     } = params;
-    const sendEmailRequest: AWS.SES.SendEmailRequest = {
-      Source: from,
-      Destination: { ToAddresses: [to] },
-      Message: {
-        Subject: { Data: subject },
+    // const sendEmailRequest: AWS.SES.SendEmailRequest = {
+    //   Source: from,
+    //   Destination: { ToAddresses: [to] },
+    //   Message: {
+    //     Subject: { Data: subject },
 
-        Body: {
-          Text: {
-            Data: text,
-          },
-          Html: {
-            Data: html,
-          },
-        },
-      },
-    };
-    console.log('sending an emaill');
+    //     Body: {
+    //       Text: {
+    //         Data: text,
+    //       },
+    //       Html: {
+    //         Data: html,
+    //       },
+    //     },
+    //   },
+    // };
 
-    const result = await SES.sendEmail(sendEmailRequest).promise();
+    // const result = await SES.sendEmail(sendEmailRequest).promise();
+    const result = await transporter.sendMail({
+      to,
+      from,
+      text,
+      html,
+      subject,
+    });
 
     return result;
   } catch (err) {
