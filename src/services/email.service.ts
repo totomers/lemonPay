@@ -4,6 +4,9 @@ import { AWSSESError, CustomError, ERROR_TYPES } from 'src/utils/customError';
 import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'hotmail',
+  host: 'smtp.office365.com',
+  port: 587, // secure SMTP
+
   auth: {
     user: 'no-reply@lemonpay.nl',
     pass: 'Tot70346',
@@ -34,7 +37,7 @@ export async function sendTextEmailHandler(params: {
     const defaultHTML = `<html><head><title>Your Token</title><style>h1{color:#f00;}</style></head><body><h1>Hello </h1><div>Your Device Validation Token is YYY<br/>Simply copy this token and paste it into the device validation input field.</div></body></html>`;
     const {
       to,
-      from = 'lemonpayapp@outlook.com',
+      from = 'no-reply@lemonpay.nl',
       text,
       subject,
       html = defaultHTML,
