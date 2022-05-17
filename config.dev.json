@@ -1,6 +1,7 @@
 {
   "STAGE":"DEV",
   "DB_NAME": "lemonPayDB",
+  "EMAIL_ADDRESS":"no-reply@lemonpay.nl",
   "SERVERLESS_REGION": "eu-central-1",
   "COGNITO_USER_POOL_ID": "eu-central-1_0Mt67WiIq",
   "COGNITO_USER_POOL_ARN": "arn:aws:cognito-idp:eu-central-1:164864435727:userpool/eu-central-1_0Mt67WiIq",

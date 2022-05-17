@@ -86,6 +86,8 @@ const serverlessConfiguration: AWS = {
       // DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
       DB_URL_DEV: '${ssm:/LEMONPAY_DB_URL_DEV}',
       DB_URL_PROD: '${ssm:/LEMONPAY_DB_URL_PROD}',
+      EMAIL_ADDRESS: "${file(./config.${opt:stage, 'dev'}.json):EMAIL_ADDRESS}",
+      EMAIL_PASSWORD: '${ssm:/lemonpay-email-password}',
       SERVERLESS_REGION:
         "${file(./config.${opt:stage, 'dev'}.json):SERVERLESS_REGION}",
       COGNITO_USER_POOL_ARN:

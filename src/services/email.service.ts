@@ -1,10 +1,6 @@
-import AWS, { AWSError } from 'aws-sdk';
+import AWS from 'aws-sdk';
 import { CONFIG } from 'src/config';
-import {
-  NodeMailerOutlookError,
-  CustomError,
-  ERROR_TYPES,
-} from 'src/utils/customError';
+import { NodeMailerOutlookError } from 'src/utils/customError';
 import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'hotmail',
@@ -12,16 +8,10 @@ const transporter = nodemailer.createTransport({
   port: 587, // secure SMTP
 
   auth: {
-    user: 'no-reply@lemonpay.nl',
-    pass: 'Tot70346',
+    user: CONFIG.EMAIL.ADDRESS,
+    pass: CONFIG.EMAIL.PASSWORD,
   },
 });
-
-AWS.config.update({
-  region: CONFIG.SERVERLESS.REGION,
-});
-
-const SES = new AWS.SES();
 
 /**
  *====================================================================================================
@@ -46,24 +36,7 @@ export async function sendTextEmailHandler(params: {
       subject,
       html = defaultHTML,
     } = params;
-    // const sendEmailRequest: AWS.SES.SendEmailRequest = {
-    //   Source: from,
-    //   Destination: { ToAddresses: [to] },
-    //   Message: {
-    //     Subject: { Data: subject },
 
-    //     Body: {
-    //       Text: {
-    //         Data: text,
-    //       },
-    //       Html: {
-    //         Data: html,
-    //       },
-    //     },
-    //   },
-    // };
-
-    // const result = await SES.sendEmail(sendEmailRequest).promise();
     const result = await transporter.sendMail({
       to,
       from,
