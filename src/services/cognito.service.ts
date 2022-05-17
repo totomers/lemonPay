@@ -767,7 +767,6 @@ export async function createAuthChallengeHandler(params: {
         });
 
         console.log(emailResult);
-        console.log('EMAIL DELIVERED');
       } catch (error) {
         // Handle SMS Failure
         console.log(error);
