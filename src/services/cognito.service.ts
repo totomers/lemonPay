@@ -579,12 +579,33 @@ export async function refreshTokenSignInCognitoHandler(params: {
     const { IdToken } = cognitoAuthResults.AuthenticationResult;
     const tokens = { idToken: IdToken };
 
-    const email = (jwt_decode(tokens.idToken) as { email: string }).email;
+    // const email = (jwt_decode(tokens.idToken) as { email: string }).email;
 
-    const user = await AccountService.getUserHandler({ email });
-    const { _id, name, businesses } = user;
+    // const user = await AccountService.getUserHandler({ email });
+    // const { _id, name, businesses } = user;
 
-    return { tokens, user: { _id, name, businesses, email } };
+    const decodedToken = jwt_decode(IdToken) as IClaimsIdToken;
+    const email = decodedToken.email;
+    const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
+
+    const emptyUser = { _id: '', name: '', businesses: [], email: '' };
+
+    if (isKnownDetails > 0) {
+      const user = await AccountService.getUserHandler({ email });
+      if (!user) {
+        await updateUserAttributes({
+          attributes: [{ Name: 'custom:isKnownDetails', Value: '0' }],
+          email,
+        });
+        return { tokens, user: emptyUser };
+      }
+      const { _id, name, businesses } = user;
+      return { tokens, user: { _id, name, businesses, email } };
+    } else
+      return {
+        tokens,
+        user: emptyUser,
+      };
   } catch (err) {
     throw new AWSCognitoError(err);
   }
