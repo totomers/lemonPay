@@ -6,8 +6,6 @@ import { ITransactionDocument } from 'src/types/transaction.interface';
 import {
   AWSSESError,
   CustomError,
-  DataNotFoundError,
-  ERROR_TYPES,
   MongoCustomError,
 } from 'src/utils/customError';
 import { EmailService } from './email.service';

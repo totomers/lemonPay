@@ -383,10 +383,11 @@ export async function confirmSignUpCognitoHandler(params: {
       })
       .promise();
 
-    const { IdToken, AccessToken } = AuthenticationResult;
+    const { IdToken, RefreshToken, AccessToken } = AuthenticationResult;
     const tokens = {
       idToken: IdToken,
       accessToken: AccessToken,
+      refreshToken: RefreshToken,
     };
     return tokens;
   } catch (err) {
