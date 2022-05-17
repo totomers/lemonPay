@@ -83,7 +83,9 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
+      // DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
+      DB_URL_DEV: '${ssm:/LEMONPAY_DB_URL_DEV}',
+      DB_URL_PROD: '${ssm:/LEMONPAY_DB_URL_PROD}',
       SERVERLESS_REGION:
         "${file(./config.${opt:stage, 'dev'}.json):SERVERLESS_REGION}",
       COGNITO_USER_POOL_ARN:
@@ -92,8 +94,9 @@ const serverlessConfiguration: AWS = {
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ID}",
       COGNITO_CLIENT_ID:
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_CLIENT_ID}",
-      COGNITO_USER_DUMMY_PASSWORD:
-        "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
+      // COGNITO_USER_DUMMY_PASSWORD:
+      //   "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
+      COGNITO_USER_DUMMY_PASSWORD: '${ssm:/lemonpay-dummy-password}',
       STAGE: "${file(./config.${opt:stage, 'dev'}.json):STAGE}",
       FAKE_CONFIRMATION_CODE_DEV_TESTING:
         "${file(./config.${opt:stage, 'dev'}.json):FAKE_CONFIRMATION_CODE_DEV_TESTING}",

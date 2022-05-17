@@ -1,0 +1,8 @@
+{
+  "STAGE":"PROD",
+  "DB_NAME": "lemonPayDB",
+  "SERVERLESS_REGION": "eu-central-1",
+  "COGNITO_USER_POOL_ID": "eu-central-1_wkc3b0JCL",
+  "COGNITO_USER_POOL_ARN": "arn:aws:cognito-idp:eu-central-1:164864435727:userpool/eu-central-1_wkc3b0JCL",
+  "COGNITO_CLIENT_ID": "38mji68hem52jtdeoev08gno98"
+}

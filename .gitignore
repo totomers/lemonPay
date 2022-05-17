@@ -9,5 +9,3 @@ jspm_packages
 .esbuild
 
 #  Config
-config.dev.json
-config.prod.json
