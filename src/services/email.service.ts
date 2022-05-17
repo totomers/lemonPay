@@ -1,6 +1,10 @@
 import AWS, { AWSError } from 'aws-sdk';
 import { CONFIG } from 'src/config';
-import { AWSSESError, CustomError, ERROR_TYPES } from 'src/utils/customError';
+import {
+  NodeMailerOutlookError,
+  CustomError,
+  ERROR_TYPES,
+} from 'src/utils/customError';
 import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'hotmail',
@@ -70,7 +74,7 @@ export async function sendTextEmailHandler(params: {
 
     return result;
   } catch (err) {
-    throw new AWSSESError(err);
+    throw new NodeMailerOutlookError(err);
   }
 }
 

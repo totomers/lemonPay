@@ -3,7 +3,7 @@ import { MongoError } from 'mongodb';
 
 export const ERROR_TYPES = {
   AWS_COGNITO: 'A',
-  AWS_SES: 'B',
+  NODEMAILER_OUTLOOK: 'B',
   MONGO: 'C',
   FAULTY_PARAMS: 'D',
   UNPROCESSABLE_PARAM_FORMAT: 'D',
@@ -101,9 +101,14 @@ export class AWSCognitoError extends CustomError {
   }
 }
 
-export class AWSSESError extends CustomError {
+export class NodeMailerOutlookError extends CustomError {
   constructor(error: AWSError) {
-    super(error.message, 500, error.code || error.name, ERROR_TYPES.AWS_SES);
+    super(
+      error.message,
+      500,
+      error.code || error.name,
+      ERROR_TYPES.NODEMAILER_OUTLOOK
+    );
   }
 }
 

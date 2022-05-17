@@ -4,7 +4,7 @@ import { Transaction } from 'src/database/models/transaction';
 import { User } from 'src/database/models/user';
 import { ITransactionDocument } from 'src/types/transaction.interface';
 import {
-  AWSSESError,
+  NodeMailerOutlookError,
   CustomError,
   MongoCustomError,
 } from 'src/utils/customError';
@@ -78,7 +78,7 @@ export async function emailClientInvoiceHandler(params: {
 
     return result;
   } catch (err) {
-    throw new AWSSESError(err);
+    throw new NodeMailerOutlookError(err);
   }
 }
 
