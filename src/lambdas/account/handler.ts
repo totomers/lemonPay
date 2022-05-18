@@ -45,7 +45,7 @@ export const getVerifiedOnlySecret = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const secret = 'apples';
+    const secret = 'peaches';
     return formatJSONResponse(secret);
   }
 );

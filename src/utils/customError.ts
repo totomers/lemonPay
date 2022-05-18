@@ -10,6 +10,7 @@ export const ERROR_TYPES = {
   DATA_NOT_FOUND: 'D',
   ADMIN_ONLY: 'D',
   UNVERIFIED_USER: 'D',
+  AWS_S3: 'E',
   UNKNOWN: 'U',
 };
 
@@ -98,6 +99,12 @@ export class AWSCognitoError extends CustomError {
   constructor(error: AWSError) {
     const code = mapCognitoErrorCode(error);
     super(error.message, 500, code, ERROR_TYPES.AWS_COGNITO, error.name);
+  }
+}
+export class ImageManagerError extends CustomError {
+  constructor(error: AWSError) {
+    const code = mapCognitoErrorCode(error);
+    super(error.message, 500, code, ERROR_TYPES.AWS_S3, error.name);
   }
 }
 
