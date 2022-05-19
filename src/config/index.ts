@@ -13,4 +13,8 @@ const COGNITO = {
   USER_POOL_ARN: process.env.COGNITO_USER_POOL_ARN,
 };
 
-export const CONFIG = { SERVERLESS, COGNITO, EMAIL };
+const S3 = {
+  BUCKET: process.env.S3_BUCKET,
+};
+
+export const CONFIG = { SERVERLESS, COGNITO, EMAIL, S3 };

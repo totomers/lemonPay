@@ -50,7 +50,8 @@ export async function verifyUserDetails(
     // TBD: If verification method will need to use a file/image we will use the getFile(event) method below:
     // const file = getFile(event);
     const email = event.requestContext.authorizer?.claims?.email;
-    if (!email) throw new MissingParamsError('email');
+    const { image, mime } = event.body;
+    if (!image || !mime) throw new MissingParamsError('image, mime');
 
     const data = await AccountService.verifyUserDetailsHandler({
       email,

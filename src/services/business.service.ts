@@ -11,7 +11,6 @@ import { AccountService } from './account.service';
 export async function getAllBusinessesHandler() {
   try {
     await connectToDatabase();
-
     return Business.find();
   } catch (error) {
     return error;

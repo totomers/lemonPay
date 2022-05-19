@@ -60,6 +60,11 @@ const serverlessConfiguration: AWS = {
             Action: ['ses:SendEmail', 'ses:SendRawEmail'],
             Resource: '*',
           },
+          {
+            Effect: 'Allow',
+            Action: ['s3:*'],
+            Resource: '*',
+          },
         ],
       },
     },
@@ -102,6 +107,7 @@ const serverlessConfiguration: AWS = {
       STAGE: "${file(./config.${opt:stage, 'dev'}.json):STAGE}",
       FAKE_CONFIRMATION_CODE_DEV_TESTING:
         "${file(./config.${opt:stage, 'dev'}.json):FAKE_CONFIRMATION_CODE_DEV_TESTING}",
+      S3_BUCKET_NAME: '${self:custom.S3_BUCKET_NAME}',
     },
   },
 
@@ -137,6 +143,7 @@ const serverlessConfiguration: AWS = {
   custom: {
     COGNITO_USER_POOL_ARN:
       "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ARN}",
+    S3_BUCKET_NAME: 'lemonpay-upload-bucket',
     esbuild: {
       bundle: true,
       minify: false,
@@ -148,18 +155,17 @@ const serverlessConfiguration: AWS = {
       concurrency: 10,
     },
   },
-  // resources: {
-  //   Resources: {
-  //     cognitoUserPool: {
-  //       Type: "AWS::Cognito::UserPool",
-  //       Properties: {
-  //         UserPoolName: "${opt:stage, 'dev'}-user-pool",
-  //         UsernameAttributes: "email",
-  //         AutoVerifiedAttributes: "email",
-  //       },
-  // },
-  // },
-  // },
+  resources: {
+    Resources: {
+      ImageUploadBucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          BucketName: '${self:custom.S3_BUCKET_NAME}',
+          AccessControl: 'PublicRead',
+        },
+      },
+    },
+  },
 };
 
 module.exports = serverlessConfiguration;
