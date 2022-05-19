@@ -450,7 +450,12 @@ export async function setInitialUserPasswordHandler(params: {
   try {
     const { email, accessToken, password } = params;
 
-    console.log('old password', process.env.COGNITO_USER_DUMMY_PASSWORD);
+    if (!isAlphaNumericalWithSpecialChar(password))
+      throw new CustomError(
+        'Password must consist of alphanumerical or special characters only.',
+        400,
+        'IllegalPassword'
+      );
 
     const changePasswordRequest: AWS.CognitoIdentityServiceProvider.ChangePasswordRequest =
       {
