@@ -1,7 +1,6 @@
 import { IUserDocument } from 'src/types/user.interface';
 import { connectToDatabase } from 'src/database/db';
 import { IBusinessDocument } from 'src/types/business.interface';
-import { Business } from 'src/database/models/business';
 import { User } from 'src/database/models/user';
 import AWS from 'aws-sdk';
 import { CognitoService } from './cognito.service';
@@ -39,7 +38,7 @@ export async function createBusinessAccountHandler(params: {
     const newUser = await User.create({
       ...user,
       defaultBusiness: newBusiness._id,
-      businesses: [{ business: business._id, role: 'ADMIN' }],
+      businesses: [{ business: newBusiness._id, role: 'ADMIN' }],
     });
 
     await CognitoService.updateUserAttributes({
