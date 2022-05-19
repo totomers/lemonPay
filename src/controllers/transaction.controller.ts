@@ -3,7 +3,7 @@ import { TransactionService } from 'src/services/transaction.service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { ITransactionDocument } from 'src/types/transaction.interface';
 import { MissingParamsError } from 'src/utils/customError';
-import { checkIfVerified } from 'src/utils/validate-if-verified';
+import { checkIfVerified } from 'src/utils/validators/validate-if-verified';
 
 /**
  * =======================================================================================================

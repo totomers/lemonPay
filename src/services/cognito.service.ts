@@ -19,6 +19,7 @@ import { AccountService } from './account.service';
 import { EmailService } from './email.service';
 import jwt_decode from 'jwt-decode';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
+import { isAlphaNumericalWithSpecialChar } from 'src/utils/validators/validate-password';
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 const userPoolId = CONFIG.COGNITO.USER_POOL_ID;
@@ -279,6 +280,13 @@ export async function resetUserPasswordHandler(params: {
   try {
     const { accessToken, password } = params;
 
+    if (!isAlphaNumericalWithSpecialChar(password))
+      throw new CustomError(
+        'Password must consist of alphanumerical or special characters only.',
+        400,
+        'IllegalPassword'
+      );
+
     const GetUserRequest: AWS.CognitoIdentityServiceProvider.GetUserRequest = {
       AccessToken: accessToken,
     };
@@ -294,11 +302,10 @@ export async function resetUserPasswordHandler(params: {
       throw new CustomError(
         'Password is currently not mutable for this user',
         400,
-        '233'
+        'PasswordNotMutable'
       );
     }
     const email = user.Username;
-    console.log('email:', email);
 
     const AdminSetUserPasswordRequest: AWS.CognitoIdentityServiceProvider.AdminSetUserPasswordRequest =
       {
