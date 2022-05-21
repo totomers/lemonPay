@@ -2,6 +2,7 @@ import * as fileType from 'file-type';
 import { v4 as uuid } from 'uuid';
 import * as AWS from 'aws-sdk';
 import { CustomError, ImageManagerError } from 'src/utils/customError';
+import { CONFIG } from 'src/config';
 
 type Base64EncodedString = string;
 
@@ -19,7 +20,7 @@ const allowedMimes = ['image/jpeg', 'image/png', 'image/jpg'];
 export async function uploadImageHandler(params: {
   image: Base64EncodedString;
   mime: string;
-}): Promise<{ imageUrl: string } | AWS.AWSError> {
+}): Promise<{ imageUrl: string }> {
   try {
     const { image, mime } = params;
     let imageData = image;
@@ -32,26 +33,36 @@ export async function uploadImageHandler(params: {
     const detectedExt = fileInfo.ext;
     const detectedMime = fileInfo.mime;
 
-    if (detectedMime !== mime) {
-      throw new CustomError('mime types dont match', 400, 400);
-    }
+    console.log('file info:  ', fileInfo);
+
+    // if (detectedMime !== mime) {
+    //   throw new CustomError('mime types dont match', 400, 400);
+    // }
 
     const name = uuid();
     const key = `${name}.${detectedExt}`;
 
     console.log(`writing image to bucket called ${key}`);
 
+    console.log('S3 Request:  ', {
+      Body: buffer,
+      Key: key,
+      ContentType: mime,
+      Bucket: CONFIG.S3.BUCKET,
+      ACL: 'public-read',
+    });
+
     await s3
       .putObject({
         Body: buffer,
         Key: key,
         ContentType: mime,
-        Bucket: process.env.imageUploadBucket,
+        Bucket: CONFIG.S3.BUCKET,
         ACL: 'public-read',
       })
       .promise();
 
-    const url = `https://${process.env.imageUploadBucket}.s3-${process.env.region}.amazonaws.com/${key}`;
+    const url = `https://${CONFIG.S3.BUCKET}.s3-${CONFIG.SERVERLESS.REGION}.amazonaws.com/${key}`;
     return {
       imageUrl: url,
     };

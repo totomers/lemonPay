@@ -14,7 +14,11 @@ const COGNITO = {
 };
 
 const S3 = {
-  BUCKET: process.env.S3_BUCKET,
+  BUCKET: process.env.S3_IMAGES_BUCKET_NAME,
 };
 
-export const CONFIG = { SERVERLESS, COGNITO, EMAIL, S3 };
+const PHOS = {
+  TOKEN_GEN_SECRET: process.env.PHOS_TOKEN_GEN_SECRET,
+  PRE_SHARED_SECRET: process.env.PHOS_PRE_SHARED_SECRET,
+};
+export const CONFIG = { SERVERLESS, COGNITO, EMAIL, S3, PHOS };

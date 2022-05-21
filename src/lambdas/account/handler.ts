@@ -39,6 +39,16 @@ export const verifyUserDetails = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const uploadAdminPassport = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.uploadAdminPassport(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
 
 export const getVerifiedOnlySecret = middyfy(
   async (
