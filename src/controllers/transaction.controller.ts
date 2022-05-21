@@ -1,7 +1,9 @@
 import { Context } from 'aws-lambda';
 import { TransactionService } from 'src/services/transaction.service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
+import { IPhosTransactionPayload } from 'src/types/phosTransPayload.interface';
 import { ITransactionDocument } from 'src/types/transaction.interface';
+import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/customError';
 import { checkIfVerified } from 'src/utils/validators/validate-if-verified';
 
@@ -13,19 +15,22 @@ import { checkIfVerified } from 'src/utils/validators/validate-if-verified';
 export async function addTransaction(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const tokenClaims = event.requestContext.authorizer
-      .claims as IClaimsIdToken;
+    // const tokenClaims = event.requestContext.authorizer
+    //   .claims as IClaimsIdToken;
 
-    checkIfVerified(tokenClaims);
+    // checkIfVerified(tokenClaims);
 
-    const { amount, businessId, currency, status, userId } =
-      event.body as Partial<ITransactionDocument>;
+    const {
+      merchantIdentifier,
+      transaction,
+      userIdentifier,
+      terminalIdentifier,
+    } = event.body as Partial<IPhosTransactionPayload>;
     const data = await TransactionService.createTransactionHandler({
-      amount,
-      businessId,
-      currency,
-      status,
-      userId,
+      merchantIdentifier,
+      transaction,
+      userIdentifier,
+      terminalIdentifier,
     });
     return { data };
   } catch (err) {
@@ -79,9 +84,61 @@ export async function getUserTransactions(event?: any, context?: Context) {
     return { err };
   }
 }
+/**
+ * =======================================================================================================
+ * Generate Token For Phos
+ * =======================================================================================================
+ */
+export async function createPhosToken(
+  event: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  try {
+    context.callbackWaitsForEmptyEventLoop = false;
+    const { email } = event.requestContext.authorizer.claims;
+
+    if (!email) throw new MissingParamsError('email');
+    const userId = 'mongoDbUserId/otherUserId';
+    const data = await TransactionService.createPhosTokenHandler({
+      email,
+      userId,
+    });
+
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Generate Token For Phos
+ * =======================================================================================================
+ */
+export async function validatePhosToken(
+  event: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  try {
+    context.callbackWaitsForEmptyEventLoop = false;
+    const { preSharedPhosKey, token } = event.body;
+    if (!preSharedPhosKey || !token)
+      throw new MissingParamsError('pre-shared key, token');
+    const data = await TransactionService.validatePhosTokenHandler({
+      preSharedPhosKey,
+      token,
+    });
+
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
 
 export const TransactionController = {
   emailClientInvoice,
   addTransaction,
   getUserTransactions,
+  createPhosToken,
+  validatePhosToken,
 };

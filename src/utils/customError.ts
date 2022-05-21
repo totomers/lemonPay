@@ -11,6 +11,7 @@ export const ERROR_TYPES = {
   ADMIN_ONLY: 'D',
   UNVERIFIED_USER: 'D',
   AWS_S3: 'E',
+  PHOS: 'F',
   UNKNOWN: 'U',
 };
 
@@ -103,8 +104,17 @@ export class AWSCognitoError extends CustomError {
 }
 export class ImageManagerError extends CustomError {
   constructor(error: AWSError) {
-    const code = mapCognitoErrorCode(error);
-    super(error.message, 500, code, ERROR_TYPES.AWS_S3, error.name);
+    super(error.message, 500, error.code, ERROR_TYPES.AWS_S3, error.name);
+  }
+}
+export class InvalidPhosTokenOrKeyError extends CustomError {
+  constructor() {
+    super(
+      'either token or pre-shared key contain invalid value',
+      403,
+      'InvalidTokenOrKey',
+      ERROR_TYPES.PHOS
+    );
   }
 }
 

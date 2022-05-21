@@ -44,3 +44,29 @@ export const getUserTransactions = {
     },
   ],
 };
+export const createPhosToken = {
+  handler: `${handlerPath(__dirname)}/handler.createPhosToken`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'transactions/createPhosToken',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+
+export const validatePhosToken = {
+  handler: `${handlerPath(__dirname)}/handler.validatePhosToken`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'transactions/validatePhosToken',
+      },
+    },
+  ],
+};

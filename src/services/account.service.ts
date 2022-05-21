@@ -8,9 +8,11 @@ import { CONFIG } from 'src/config';
 import {
   AWSCognitoError,
   CustomError,
+  ImageManagerError,
   MongoCustomError,
 } from 'src/utils/customError';
 import { BusinessService } from './business.service';
+import { ImageService } from './image.service';
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 
@@ -92,6 +94,30 @@ async function _verify(user) {
     });
   } catch (err) {
     throw new CustomError(err.message, 500, err.code);
+  }
+}
+
+/**
+ * ====================================================================================================
+ * Upload Business Admin's Passport
+ * @param params
+ * ====================================================================================================
+ */
+export async function uploadAdminPassportHandler(params: {
+  userId: string;
+  image: string;
+  mime: string;
+}): Promise<{}> {
+  try {
+    const { image, mime, userId } = params;
+    const result = await ImageService.uploadImageHandler({ image, mime });
+    console.log('imageUrl:', result.imageUrl);
+
+    //if successful save the url to User Document in MongoDB
+    return {};
+  } catch (err) {
+    console.log(err);
+    throw new CustomError('Unable to Upload', 500, 'U', err?.name);
   }
 }
 
@@ -180,4 +206,5 @@ export const AccountService = {
   editUserAccountHandler,
   isUserABusinessAdmin,
   getUserHandler,
+  uploadAdminPassportHandler,
 };

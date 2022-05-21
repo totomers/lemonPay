@@ -32,6 +32,21 @@ export const verifyUserDetails = {
     },
   ],
 };
+
+export const uploadAdminPassport = {
+  handler: `${handlerPath(__dirname)}/handler.uploadAdminPassport`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/uploadAdminPassport',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
 export const signUpUser = {
   handler: `${handlerPath(__dirname)}/handler.signUpUser`,
   events: [

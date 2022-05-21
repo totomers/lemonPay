@@ -13,6 +13,7 @@ import {
   resendConfirmationCode,
   getVerificationStatus,
   resetUserPassword,
+  uploadAdminPassport,
   // confirmResetUserPassword,
   getUserStatus,
   refreshTokenSignInUser,
@@ -26,6 +27,8 @@ import {
   emailClientInvoice,
   addTransaction,
   getUserTransactions,
+  createPhosToken,
+  validatePhosToken,
 } from 'src/lambdas/transaction';
 // import dotenv from "dotenv";
 
@@ -104,10 +107,12 @@ const serverlessConfiguration: AWS = {
       // COGNITO_USER_DUMMY_PASSWORD:
       //   "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
       COGNITO_USER_DUMMY_PASSWORD: '${ssm:/lemonpay-dummy-password}',
+      PHOS_TOKEN_GEN_SECRET: '${ssm:/lemonpay-phos-gen-token-secret}',
+      PHOS_PRE_SHARED_SECRET: '${ssm:/lemonpay-phos-pre-shared-secret}',
       STAGE: "${file(./config.${opt:stage, 'dev'}.json):STAGE}",
       FAKE_CONFIRMATION_CODE_DEV_TESTING:
         "${file(./config.${opt:stage, 'dev'}.json):FAKE_CONFIRMATION_CODE_DEV_TESTING}",
-      S3_BUCKET_NAME: '${self:custom.S3_BUCKET_NAME}',
+      S3_IMAGES_BUCKET_NAME: '${self:custom.S3_BUCKET_NAME}',
     },
   },
 
@@ -128,6 +133,7 @@ const serverlessConfiguration: AWS = {
     getVerificationStatus,
     emailClientInvoice,
     resetUserPassword,
+    uploadAdminPassport,
     // confirmResetUserPassword,
     getUserStatus,
     refreshTokenSignInUser,
@@ -138,6 +144,8 @@ const serverlessConfiguration: AWS = {
     respondToCustomAuthChallenge,
     addTransaction,
     getUserTransactions,
+    createPhosToken,
+    validatePhosToken,
   },
   package: { individually: true },
   custom: {
