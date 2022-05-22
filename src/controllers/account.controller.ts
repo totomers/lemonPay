@@ -279,8 +279,6 @@ export async function signInUser(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  // console.log("process.env", process.env);
-
   try {
     const { email, password } = event.body;
 
@@ -497,7 +495,7 @@ export async function initiateCustomAuthChallenge(
  * Respond To Custom Auth Challenge
  * =======================================================================================================
  */
-export async function respondToCustomAuthChallenge(
+export async function respondToSignInAuthChallenge(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
@@ -508,7 +506,33 @@ export async function respondToCustomAuthChallenge(
 
     if (!session || !confirmationCode || !username)
       throw new MissingParamsError('session, confirmationCode,username');
-    const data = await CognitoService.respondToAuthChallengeHandler({
+    const data = await CognitoService.respondToSignInChallengeHandler({
+      session,
+      confirmationCode,
+      username,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+/**
+ * =======================================================================================================
+ * Respond To Custom Auth Challenge
+ * =======================================================================================================
+ */
+export async function respondToResetPassChallenge(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { session, confirmationCode, username } = event.body;
+
+    if (!session || !confirmationCode || !username)
+      throw new MissingParamsError('session, confirmationCode,username');
+    const data = await CognitoService.respondToResetPassChallengeHandler({
       session,
       confirmationCode,
       username,
@@ -537,5 +561,6 @@ export const AccountController = {
   createAuthChallenge,
   verifyAuthChallenge,
   initiateCustomAuthChallenge,
-  respondToCustomAuthChallenge,
+  respondToResetPassChallenge,
+  respondToSignInAuthChallenge,
 };

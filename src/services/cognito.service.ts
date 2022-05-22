@@ -489,8 +489,7 @@ export async function signInCognitoHandler(params: {
   email: string;
   password: string;
 }): Promise<{
-  tokens: { idToken: string; refreshToken: string };
-  user: Partial<IUserDocument>;
+  session: string;
 }> {
   try {
     const { email, password } = params;
@@ -506,30 +505,9 @@ export async function signInCognitoHandler(params: {
       })
       .promise();
 
-    const { IdToken, RefreshToken } = cognitoAuthResults.AuthenticationResult;
-    const tokens = { idToken: IdToken, refreshToken: RefreshToken };
+    const data = await CognitoService.initiateCustomAuthHandler({ email });
 
-    const decodedToken = jwt_decode(IdToken) as IClaimsIdToken;
-    const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
-
-    const emptyUser = { _id: '', name: '', businesses: [], email: '' };
-
-    if (isKnownDetails > 0) {
-      const user = await AccountService.getUserHandler({ email });
-      if (!user) {
-        await updateUserAttributes({
-          attributes: [{ Name: 'custom:isKnownDetails', Value: '0' }],
-          email,
-        });
-        return { tokens, user: emptyUser };
-      }
-      const { _id, name, businesses } = user;
-      return { tokens, user: { _id, name, businesses, email } };
-    } else
-      return {
-        tokens,
-        user: emptyUser,
-      };
+    return { session: data.session };
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -836,7 +814,7 @@ export async function createAuthChallengeHandler(params: {
 
 export async function initiateCustomAuthHandler(params: {
   email: string;
-}): Promise<InitiateAuthResponse> {
+}): Promise<{ session: string }> {
   try {
     const { email } = params;
 
@@ -850,7 +828,69 @@ export async function initiateCustomAuthHandler(params: {
       .initiateAuth(InitiateCustomAuthRequest)
       .promise();
 
-    return data;
+    return { session: data.Session };
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+
+/**
+ * =======================================================================================================
+ *  Respond to custom sign in auth challenge with OTP.
+ * @param params
+ * =======================================================================================================
+ */
+
+export async function respondToSignInChallengeHandler(params: {
+  confirmationCode: string;
+  session: string;
+  username: string;
+}): Promise<
+  | {
+      tokens: { idToken: string; refreshToken: string };
+      user: Partial<IUserDocument>;
+    }
+  | { accessToken: string }
+> {
+  try {
+    const { confirmationCode, session, username } = params;
+
+    const RespondToAuthChallengeRequest: RespondToAuthChallengeRequest = {
+      ChallengeName: 'CUSTOM_CHALLENGE',
+      ClientId: clientId,
+      ChallengeResponses: { ANSWER: confirmationCode, USERNAME: username },
+      Session: session,
+    };
+
+    const data = await cognitoidentityserviceprovider
+      .respondToAuthChallenge(RespondToAuthChallengeRequest)
+      .promise();
+
+    const { IdToken, RefreshToken } = data.AuthenticationResult;
+    const tokens = { idToken: IdToken, refreshToken: RefreshToken };
+
+    const decodedToken = jwt_decode(IdToken) as IClaimsIdToken;
+    const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
+    const email = decodedToken.email;
+
+    const emptyUser = { _id: '', name: '', businesses: [], email: '' };
+
+    if (isKnownDetails > 0) {
+      const user = await AccountService.getUserHandler({ email });
+      if (!user) {
+        await updateUserAttributes({
+          attributes: [{ Name: 'custom:isKnownDetails', Value: '0' }],
+          email,
+        });
+        return { tokens, user: emptyUser };
+      }
+      const { _id, name, businesses } = user;
+      return { tokens, user: { _id, name, businesses, email } };
+    } else
+      return {
+        tokens,
+        user: emptyUser,
+      };
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -863,11 +903,17 @@ export async function initiateCustomAuthHandler(params: {
  * =======================================================================================================
  */
 
-export async function respondToAuthChallengeHandler(params: {
+export async function respondToResetPassChallengeHandler(params: {
   confirmationCode: string;
   session: string;
   username: string;
-}): Promise<RespondToAuthChallengeResponse> {
+}): Promise<
+  | {
+      tokens: { idToken: string; refreshToken: string };
+      user: Partial<IUserDocument>;
+    }
+  | { accessToken: string }
+> {
   try {
     const { confirmationCode, session, username } = params;
 
@@ -886,8 +932,7 @@ export async function respondToAuthChallengeHandler(params: {
       attributes: [{ Name: 'custom:isPasswordMutable', Value: '1' }],
       email: username,
     });
-
-    return data;
+    return { accessToken: data.AuthenticationResult.AccessToken };
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -910,7 +955,8 @@ export const CognitoService = {
   createAuthChallengeHandler,
   verifyAuthChallengeHandler,
   initiateCustomAuthHandler,
-  respondToAuthChallengeHandler,
+  respondToResetPassChallengeHandler,
+  respondToSignInChallengeHandler,
   logoutUserHandler,
   confirmEmailCognitoHandler,
 };

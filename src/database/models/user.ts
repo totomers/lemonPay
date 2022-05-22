@@ -24,7 +24,9 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
+    verificationImage: { type: String },
   },
+
   { timestamps: true }
 );
 

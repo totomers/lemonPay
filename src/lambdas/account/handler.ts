@@ -240,12 +240,25 @@ export const initiateCustomAuthChallenge = middyfy(
     return formatJSONResponse(result.data);
   }
 );
-export const respondToCustomAuthChallenge = middyfy(
+export const respondToSignInChallenge = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult | CustomError> => {
-    const result = await accountController.respondToCustomAuthChallenge(
+    const result = await accountController.respondToSignInAuthChallenge(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+export const respondToResetPassChallenge = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult | CustomError> => {
+    const result = await accountController.respondToResetPassChallenge(
       event,
       context
     );
