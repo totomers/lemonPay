@@ -220,7 +220,7 @@ export const verifyAuthChallenge = {
   events: [],
 };
 export const initiateAuthChallengeWithEmail = {
-  handler: `${handlerPath(__dirname)}/handler.initiateAuthChallengeWithEmail`,
+  handler: `${handlerPath(__dirname)}/handler.initiateAuthWithEmail`,
   events: [
     {
       http: {
@@ -231,7 +231,7 @@ export const initiateAuthChallengeWithEmail = {
   ],
 };
 export const initiateAuthChallengeWithToken = {
-  handler: `${handlerPath(__dirname)}/handler.initiateAuthChallengeWithToken`,
+  handler: `${handlerPath(__dirname)}/handler.initiateAuthWithToken`,
   events: [
     {
       http: {
