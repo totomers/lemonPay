@@ -244,6 +244,7 @@ export async function resetUserPassword(
     return { err, statusCode: err.code };
   }
 }
+
 // /**
 //  * Confirm Reset User's Password
 //  */
@@ -472,10 +473,10 @@ export async function verifyAuthChallenge(
 
 /**
  * =======================================================================================================
- * Initiate Custom Auth Challenge
+ * Initiate Custom Auth Challenge With Email
  * =======================================================================================================
  */
-export async function initiateCustomAuthChallenge(
+export async function initiateAuthChallengeWithEmail(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
@@ -494,7 +495,28 @@ export async function initiateCustomAuthChallenge(
 
 /**
  * =======================================================================================================
- * Respond To Custom Auth Challenge
+ * Initiate Custom Auth Challenge With Token
+ * =======================================================================================================
+ */
+export async function initiateAuthChallengeWithToken(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const email = event.requestContext.authorizer?.claims?.email;
+    if (!email) throw new MissingParamsError('email');
+    const data = await CognitoService.initiateCustomAuthHandler({ email });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Respond To Sign In Auth Challenge
  * =======================================================================================================
  */
 export async function respondToSignInAuthChallenge(
@@ -520,7 +542,7 @@ export async function respondToSignInAuthChallenge(
 }
 /**
  * =======================================================================================================
- * Respond To Custom Auth Challenge
+ * Respond To Reset Pass Auth Challenge
  * =======================================================================================================
  */
 export async function respondToResetPassChallenge(
@@ -562,7 +584,8 @@ export const AccountController = {
   defineCustomChallenge,
   createAuthChallenge,
   verifyAuthChallenge,
-  initiateCustomAuthChallenge,
+  initiateAuthChallengeWithEmail,
+  initiateAuthChallengeWithToken,
   respondToResetPassChallenge,
   respondToSignInAuthChallenge,
 };

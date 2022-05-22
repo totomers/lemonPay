@@ -219,8 +219,19 @@ export const verifyAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.verifyAuthChallenge`,
   events: [],
 };
-export const initiateCustomAuthChallenge = {
-  handler: `${handlerPath(__dirname)}/handler.initiateCustomAuthChallenge`,
+export const initiateAuthChallengeWithEmail = {
+  handler: `${handlerPath(__dirname)}/handler.initiateAuthChallengeWithEmail`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/initiateAuthChallenge',
+      },
+    },
+  ],
+};
+export const initiateAuthChallengeWithToken = {
+  handler: `${handlerPath(__dirname)}/handler.initiateAuthChallengeWithToken`,
   events: [
     {
       http: {

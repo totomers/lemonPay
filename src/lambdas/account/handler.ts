@@ -227,12 +227,25 @@ export const verifyAuthChallenge = middyfy(
   }
 );
 
-export const initiateCustomAuthChallenge = middyfy(
+export const initiateAuthChallengeWithEmail = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult | CustomError> => {
-    const result = await accountController.initiateCustomAuthChallenge(
+    const result = await accountController.initiateAuthChallengeWithEmail(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+export const initiateAuthChallengeWithToken = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult | CustomError> => {
+    const result = await accountController.initiateAuthChallengeWithToken(
       event,
       context
     );
