@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ICurrencyCodes } from './currencyCodes.interace';
+import { ICurrencyCodes } from './currencyCodes.interface';
 import { ITransactionStatus } from './transactionStatus.interface';
 
 export type ITransactionDocument = mongoose.Document & {

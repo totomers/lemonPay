@@ -22,6 +22,7 @@ import {
   verifyAuthChallenge,
   initiateCustomAuthChallenge,
   respondToCustomAuthChallenge,
+  respondToSignInAuthChallenge,
 } from 'src/lambdas/account';
 import {
   emailClientInvoice,
@@ -142,6 +143,7 @@ const serverlessConfiguration: AWS = {
     verifyAuthChallenge,
     initiateCustomAuthChallenge,
     respondToCustomAuthChallenge,
+    respondToSignInAuthChallenge,
     addTransaction,
     getUserTransactions,
     createPhosToken,

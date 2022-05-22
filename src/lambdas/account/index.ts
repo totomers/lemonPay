@@ -231,13 +231,25 @@ export const initiateCustomAuthChallenge = {
   ],
 };
 
-export const respondToCustomAuthChallenge = {
-  handler: `${handlerPath(__dirname)}/handler.respondToCustomAuthChallenge`,
+export const respondToSignInAuthChallenge = {
+  handler: `${handlerPath(__dirname)}/handler.respondToSignInChallenge`,
   events: [
     {
       http: {
         method: 'post',
-        path: 'account/respondToAuthChallenge',
+        path: 'account/respondToSignInChallenge',
+      },
+    },
+  ],
+};
+
+export const respondToCustomAuthChallenge = {
+  handler: `${handlerPath(__dirname)}/handler.respondToResetPassChallenge`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/respondToResetPassChallenge',
       },
     },
   ],

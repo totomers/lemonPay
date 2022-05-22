@@ -109,15 +109,21 @@ export async function uploadAdminPassportHandler(params: {
   mime: string;
 }): Promise<{}> {
   try {
+    await connectToDatabase();
     const { image, mime, userId } = params;
     const result = await ImageService.uploadImageHandler({ image, mime });
     console.log('imageUrl:', result.imageUrl);
+    console.log(userId, result.imageUrl);
 
+    await User.findByIdAndUpdate(userId, {
+      verificationImage: result.imageUrl,
+    });
     //if successful save the url to User Document in MongoDB
     return {};
   } catch (err) {
     console.log(err);
-    throw new CustomError('Unable to Upload', 500, 'U', err?.name);
+    if (err instanceof ImageManagerError) throw err;
+    throw new MongoCustomError(err);
   }
 }
 

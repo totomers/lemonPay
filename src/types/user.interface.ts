@@ -12,4 +12,5 @@ export type IUserDocument = mongoose.Document & {
   homeHouseNumber: string;
   homeZipCode: string;
   email: string;
+  verificationImage?: string;
 };
