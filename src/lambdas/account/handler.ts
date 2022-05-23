@@ -227,7 +227,7 @@ export const verifyAuthChallenge = middyfy(
   }
 );
 
-export const initiateAuthChallengeWithEmail = middyfy(
+export const initiateAuthWithEmail = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,
     context
@@ -240,7 +240,7 @@ export const initiateAuthChallengeWithEmail = middyfy(
     return formatJSONResponse(result.data);
   }
 );
-export const initiateAuthChallengeWithToken = middyfy(
+export const initiateAuthWithToken = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,
     context
