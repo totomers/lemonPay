@@ -895,7 +895,8 @@ export async function respondToSignInChallengeHandler(params: {
       throw new CustomError(
         'Confirmation Code is incorrect.',
         500,
-        'CodeMismatchException'
+        'CodeMismatchException',
+        'A'
       );
     }
 
