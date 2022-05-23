@@ -722,6 +722,8 @@ export async function defineAuthChallengeHandler(params: {
       event.response.issueTokens = false;
       event.response.failAuthentication = false;
       event.response.challengeName = 'CUSTOM_CHALLENGE';
+      console.log('RECEIVED A WRONG OTP');
+
       // throw new CustomError(
       //   'Confirmation Code is not correct',
       //   400,
@@ -888,6 +890,14 @@ export async function respondToSignInChallengeHandler(params: {
     const data = await cognitoidentityserviceprovider
       .respondToAuthChallenge(RespondToAuthChallengeRequest)
       .promise();
+
+    if (!data?.AuthenticationResult) {
+      throw new CustomError(
+        'Confirmation Code is incorrect.',
+        500,
+        'CodeMismatchException'
+      );
+    }
 
     const result = await _extractUserAndTokenFromSignInResponse({
       signInResponse: data,
