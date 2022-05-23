@@ -225,7 +225,7 @@ export const initiateAuthChallengeWithEmail = {
     {
       http: {
         method: 'post',
-        path: 'account/initiateAuthChallenge',
+        path: 'account/initiateAuthWithEmail',
       },
     },
   ],
@@ -236,7 +236,7 @@ export const initiateAuthChallengeWithToken = {
     {
       http: {
         method: 'get',
-        path: 'account/initiateAuthChallenge',
+        path: 'account/initiateAuthWithToken',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
