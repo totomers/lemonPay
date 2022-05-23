@@ -699,12 +699,7 @@ export async function defineAuthChallengeHandler(params: {
     if (event.request.userNotFound) {
       event.response.issueTokens = false;
       event.response.failAuthentication = true;
-      throw new CustomError(
-        'Error finding user.',
-        400,
-        'UserNotFoundException',
-        'A'
-      );
+      throw new Error('User does not exist');
     }
 
     if (
@@ -714,12 +709,7 @@ export async function defineAuthChallengeHandler(params: {
       // wrong OTP even After 3 sessions?
       event.response.issueTokens = false;
       event.response.failAuthentication = true;
-      throw new CustomError(
-        'Authentification attempts exceeded.',
-        400,
-        'LimitExceededException',
-        'A'
-      );
+      throw new Error('Invalid OTP');
     } else if (
       event.request.session.length > 0 &&
       event.request.session.slice(-1)[0].challengeResult === true
@@ -732,12 +722,12 @@ export async function defineAuthChallengeHandler(params: {
       event.response.issueTokens = false;
       event.response.failAuthentication = false;
       event.response.challengeName = 'CUSTOM_CHALLENGE';
-      throw new CustomError(
-        'Confirmation Code is not correct',
-        400,
-        'CodeMismatchException',
-        'A'
-      );
+      // throw new CustomError(
+      //   'Confirmation Code is not correct',
+      //   400,
+      //   'CodeMismatchException',
+      //   'A'
+      // );
     }
 
     return event;
