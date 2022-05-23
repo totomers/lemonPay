@@ -276,7 +276,13 @@ export async function resendConfirmationCodeHandler(params: {
 export async function resetUserPasswordHandler(params: {
   password: string;
   accessToken: string;
-}): Promise<AWS.CognitoIdentityServiceProvider.AdminSetUserPasswordResponse> {
+}): Promise<{
+  tokens: {
+    idToken: string;
+    refreshToken: string;
+  };
+  user: Partial<IUserDocument>;
+}> {
   try {
     const { accessToken, password } = params;
 
@@ -314,13 +320,27 @@ export async function resetUserPasswordHandler(params: {
         Password: password,
         Username: email,
       };
-    const result = await cognitoidentityserviceprovider
+    await cognitoidentityserviceprovider
       .adminSetUserPassword(AdminSetUserPasswordRequest)
       .promise();
 
     await updateUserAttributes({
       attributes: [{ Name: 'custom:isPasswordMutable', Value: '0' }],
       email,
+    });
+
+    const SignInRequest: InitiateAuthRequest = {
+      AuthFlow: 'USER_PASSWORD_AUTH',
+      ClientId: clientId,
+      AuthParameters: { USERNAME: email, PASSWORD: password },
+    };
+
+    const data = await cognitoidentityserviceprovider
+      .initiateAuth(SignInRequest)
+      .promise();
+
+    const result = await _extractUserAndTokenFromSignInResponse({
+      signInResponse: data,
     });
 
     return result;
@@ -679,7 +699,12 @@ export async function defineAuthChallengeHandler(params: {
     if (event.request.userNotFound) {
       event.response.issueTokens = false;
       event.response.failAuthentication = true;
-      throw new Error('User does not exist');
+      throw new CustomError(
+        'Error finding user.',
+        400,
+        'UserNotFoundException',
+        'A'
+      );
     }
 
     if (
@@ -689,7 +714,12 @@ export async function defineAuthChallengeHandler(params: {
       // wrong OTP even After 3 sessions?
       event.response.issueTokens = false;
       event.response.failAuthentication = true;
-      throw new Error('Invalid OTP');
+      throw new CustomError(
+        'Authentification attempts exceeded.',
+        400,
+        'LimitExceededException',
+        'A'
+      );
     } else if (
       event.request.session.length > 0 &&
       event.request.session.slice(-1)[0].challengeResult === true
@@ -702,6 +732,12 @@ export async function defineAuthChallengeHandler(params: {
       event.response.issueTokens = false;
       event.response.failAuthentication = false;
       event.response.challengeName = 'CUSTOM_CHALLENGE';
+      throw new CustomError(
+        'Confirmation Code is not correct',
+        400,
+        'CodeMismatchException',
+        'A'
+      );
     }
 
     return event;
@@ -845,13 +881,10 @@ export async function respondToSignInChallengeHandler(params: {
   confirmationCode: string;
   session: string;
   username: string;
-}): Promise<
-  | {
-      tokens: { idToken: string; refreshToken: string };
-      user: Partial<IUserDocument>;
-    }
-  | { accessToken: string }
-> {
+}): Promise<{
+  tokens: { idToken: string; refreshToken: string };
+  user: Partial<IUserDocument>;
+}> {
   try {
     const { confirmationCode, session, username } = params;
 
@@ -866,7 +899,32 @@ export async function respondToSignInChallengeHandler(params: {
       .respondToAuthChallenge(RespondToAuthChallengeRequest)
       .promise();
 
-    const { IdToken, RefreshToken } = data.AuthenticationResult;
+    const result = await _extractUserAndTokenFromSignInResponse({
+      signInResponse: data,
+    });
+
+    return result;
+  } catch (err) {
+    throw new AWSCognitoError(err);
+  }
+}
+/**
+ * =======================================================================================================
+ *  Extract user info and tokens from the cognito sign in response
+ * @param params
+ * =======================================================================================================
+ */
+
+export async function _extractUserAndTokenFromSignInResponse(params: {
+  signInResponse: AWS.CognitoIdentityServiceProvider.InitiateAuthResponse;
+}): Promise<{
+  tokens: { idToken: string; refreshToken: string };
+  user: Partial<IUserDocument>;
+}> {
+  try {
+    const { signInResponse } = params;
+
+    const { IdToken, RefreshToken } = signInResponse.AuthenticationResult;
     const tokens = { idToken: IdToken, refreshToken: RefreshToken };
 
     const decodedToken = jwt_decode(IdToken) as IClaimsIdToken;
@@ -892,7 +950,7 @@ export async function respondToSignInChallengeHandler(params: {
         user: emptyUser,
       };
   } catch (err) {
-    throw new AWSCognitoError(err);
+    throw err;
   }
 }
 
