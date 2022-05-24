@@ -768,6 +768,8 @@ export async function verifyAuthChallengeHandler(params: {
 
     return event;
   } catch (err) {
+    console.log('Error verifying the code: ', err);
+
     throw new AWSCognitoError(err);
   }
 }
@@ -830,6 +832,7 @@ export async function createAuthChallengeHandler(params: {
 
     return event;
   } catch (err) {
+    console.log('Error creating the auth: ', err);
     throw new AWSCognitoError(err);
   }
 }
