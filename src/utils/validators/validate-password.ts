@@ -11,7 +11,7 @@ export const isAlphaNumericalWithSpecialChar = (str: string) => {
 
   for (i = 0, len = str.length; i < len; i++) {
     code = str.charCodeAt(i);
-    if (!(code > 33 && code < 126)) {
+    if (!(code > 32 && code < 127)) {
       return false;
     }
   }
