@@ -9,6 +9,8 @@ const UserSchema = new mongoose.Schema(
       default: null,
     },
     name: { type: String, required: true },
+    referralCode: { type: String, required: true, unique: true },
+    refferer: { type: mongoose.Schema.Types.ObjectId },
     dateofbirth: { type: Date, required: true },
     homeAddress: { type: String, required: true },
     homeHouseNumber: { type: String },

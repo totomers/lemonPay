@@ -700,7 +700,8 @@ export async function defineAuthChallengeHandler(params: {
     if (event.request.userNotFound) {
       event.response.issueTokens = false;
       event.response.failAuthentication = true;
-      throw new Error('User does not exist');
+
+      // throw new Error('User does not exist');
     }
 
     if (
@@ -710,7 +711,7 @@ export async function defineAuthChallengeHandler(params: {
       // wrong OTP even After 3 sessions?
       event.response.issueTokens = false;
       event.response.failAuthentication = true;
-      throw new Error('Invalid OTP');
+      // throw new CustomError('Invalid OTP', 500, 'MaxAttemptsException');
     } else if (
       event.request.session.length > 0 &&
       event.request.session.slice(-1)[0].challengeResult === true
@@ -911,6 +912,7 @@ export async function respondToSignInChallengeHandler(params: {
       //   'CodeMismatchException',
       //   'A'
       // );
+
       return { session: data.Session };
     }
 
