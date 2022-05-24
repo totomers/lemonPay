@@ -339,8 +339,8 @@ export async function resetUserPasswordHandler(params: {
       .initiateAuth(SignInRequest)
       .promise();
 
-    const result = await _extractUserAndTokenFromSignInResponse({
-      signInResponse: data,
+    const result = await _extractCustomResultFromAuthChallenge({
+      authChallengeResult: data,
     });
 
     return result;
@@ -704,7 +704,7 @@ export async function defineAuthChallengeHandler(params: {
     }
 
     if (
-      event.request.session.length >= 3 &&
+      event.request.session.length > 3 &&
       event.request.session.slice(-1)[0].challengeResult === false
     ) {
       // wrong OTP even After 3 sessions?
@@ -735,7 +735,7 @@ export async function defineAuthChallengeHandler(params: {
 
     return event;
   } catch (err) {
-    throw new AWSCognitoError(err);
+    throw err;
   }
 }
 
@@ -770,7 +770,7 @@ export async function verifyAuthChallengeHandler(params: {
   } catch (err) {
     console.log('Error verifying the code: ', err);
 
-    throw new AWSCognitoError(err);
+    throw err;
   }
 }
 
@@ -833,7 +833,7 @@ export async function createAuthChallengeHandler(params: {
     return event;
   } catch (err) {
     console.log('Error creating the auth: ', err);
-    throw new AWSCognitoError(err);
+    throw err;
   }
 }
 
@@ -877,10 +877,13 @@ export async function respondToSignInChallengeHandler(params: {
   confirmationCode: string;
   session: string;
   username: string;
-}): Promise<{
-  tokens: { idToken: string; refreshToken: string };
-  user: Partial<IUserDocument>;
-}> {
+}): Promise<
+  | {
+      tokens: { idToken: string; refreshToken: string };
+      user: Partial<IUserDocument>;
+    }
+  | { session: string }
+> {
   try {
     const { confirmationCode, session, username } = params;
 
@@ -895,17 +898,24 @@ export async function respondToSignInChallengeHandler(params: {
       .respondToAuthChallenge(RespondToAuthChallengeRequest)
       .promise();
 
+    console.log(
+      'session gotten vs session returned:',
+      session === data.Session
+    );
+    console.log('returned session ', data.Session);
+
     if (!data?.AuthenticationResult) {
-      throw new CustomError(
-        'Confirmation Code is incorrect.',
-        500,
-        'CodeMismatchException',
-        'A'
-      );
+      // throw new CustomError(
+      //   'Confirmation Code is incorrect.',
+      //   500,
+      //   'CodeMismatchException',
+      //   'A'
+      // );
+      return { session: data.Session };
     }
 
-    const result = await _extractUserAndTokenFromSignInResponse({
-      signInResponse: data,
+    const result = await _extractCustomResultFromAuthChallenge({
+      authChallengeResult: data,
     });
 
     return result;
@@ -920,16 +930,16 @@ export async function respondToSignInChallengeHandler(params: {
  * =======================================================================================================
  */
 
-export async function _extractUserAndTokenFromSignInResponse(params: {
-  signInResponse: AWS.CognitoIdentityServiceProvider.InitiateAuthResponse;
+export async function _extractCustomResultFromAuthChallenge(params: {
+  authChallengeResult: AWS.CognitoIdentityServiceProvider.InitiateAuthResponse;
 }): Promise<{
   tokens: { idToken: string; refreshToken: string };
   user: Partial<IUserDocument>;
 }> {
   try {
-    const { signInResponse } = params;
+    const { authChallengeResult } = params;
 
-    const { IdToken, RefreshToken } = signInResponse.AuthenticationResult;
+    const { IdToken, RefreshToken } = authChallengeResult.AuthenticationResult;
     const tokens = { idToken: IdToken, refreshToken: RefreshToken };
 
     const decodedToken = jwt_decode(IdToken) as IClaimsIdToken;
@@ -970,7 +980,7 @@ export async function respondToResetPassChallengeHandler(params: {
   confirmationCode: string;
   session: string;
   username: string;
-}): Promise<{ accessToken: string }> {
+}): Promise<{ accessToken: string } | { session: string }> {
   try {
     const { confirmationCode, session, username } = params;
 
@@ -985,6 +995,15 @@ export async function respondToResetPassChallengeHandler(params: {
       .respondToAuthChallenge(RespondToAuthChallengeRequest)
       .promise();
 
+    if (!data?.AuthenticationResult) {
+      // throw new CustomError(
+      //   'Confirmation Code is incorrect.',
+      //   500,
+      //   'CodeMismatchException',
+      //   'A'
+      // );
+      return { session: data.Session };
+    }
     await updateUserAttributes({
       attributes: [{ Name: 'custom:isPasswordMutable', Value: '1' }],
       email: username,
