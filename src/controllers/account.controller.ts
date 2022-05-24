@@ -20,9 +20,8 @@ export async function createBusinessAccount(
 ) {
   try {
     context.callbackWaitsForEmptyEventLoop = false;
-    const email =
-      event.requestContext.authorizer?.claims?.email || 'bart@moveo.co.il';
-    const name = event.requestContext.authorizer?.claims?.name || 'Bar Tsafrir';
+    const email = event.requestContext.authorizer?.claims?.email;
+    const name = event.requestContext.authorizer?.claims?.name;
     if (!email || !name) throw new MissingParamsError('email, name');
 
     const user = { ...event.body.user, email, name };
