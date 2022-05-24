@@ -966,13 +966,10 @@ export async function respondToResetPassChallengeHandler(params: {
   confirmationCode: string;
   session: string;
   username: string;
-}): Promise<
-  | {
-      tokens: { idToken: string; refreshToken: string };
-      user: Partial<IUserDocument>;
-    }
-  | { accessToken: string }
-> {
+}): Promise<{
+  tokens: { idToken: string; refreshToken: string };
+  user: Partial<IUserDocument>;
+}> {
   try {
     const { confirmationCode, session, username } = params;
 
@@ -991,7 +988,11 @@ export async function respondToResetPassChallengeHandler(params: {
       attributes: [{ Name: 'custom:isPasswordMutable', Value: '1' }],
       email: username,
     });
-    return { accessToken: data.AuthenticationResult.AccessToken };
+
+    const results = await _extractUserAndTokenFromSignInResponse({
+      signInResponse: data,
+    });
+    return results;
   } catch (err) {
     throw new AWSCognitoError(err);
   }
