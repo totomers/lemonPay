@@ -2,6 +2,7 @@ import { IUserDocument } from 'src/types/user.interface';
 import { connectToDatabase } from 'src/database/db';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { User } from 'src/database/models/user';
+
 import AWS from 'aws-sdk';
 import { CognitoService } from './cognito.service';
 import { CONFIG } from 'src/config';
@@ -13,6 +14,7 @@ import {
 } from 'src/utils/customError';
 import { BusinessService } from './business.service';
 import { ImageService } from './image.service';
+import { generateRefCode } from 'src/utils/referralCodeGen';
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 
@@ -37,22 +39,63 @@ export async function createBusinessAccountHandler(params: {
 
     // Check If User with the same email exists
 
-    const newUser = await User.create({
-      ...user,
-      defaultBusiness: newBusiness._id,
-      businesses: [{ business: newBusiness._id, role: 'ADMIN' }],
+    const newUser = await createAdminUserHandler({
+      user,
+      business: newBusiness,
     });
+
+    console.log('newUser', newUser);
 
     await CognitoService.updateUserAttributes({
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
 
-    return { user: newUser, business: newBusiness };
+    return { user: newUser.user, business: newBusiness };
   } catch (err) {
     throw new MongoCustomError(err);
   }
 }
+/**
+ * ====================================================================================================
+ * Create Admin User
+ * @param params
+ * ====================================================================================================
+ */
+export async function createAdminUserHandler(params: {
+  user: Partial<IUserDocument>;
+  business: Partial<IBusinessDocument>;
+}): Promise<{ user: IUserDocument }> {
+  try {
+    await connectToDatabase();
+    const { user, business } = params;
+
+    const referralCode = await _generateUserRefCode();
+
+    const newUser = await User.create({
+      ...user,
+      referralCode,
+      defaultBusiness: business._id,
+      businesses: [{ business: business._id, role: 'ADMIN' }],
+    });
+
+    return { user: newUser };
+  } catch (err) {
+    throw new MongoCustomError(err);
+  }
+}
+
+async function _generateUserRefCode(): Promise<string> {
+  try {
+    const referralCode = generateRefCode();
+    const userFound = await User.findOne({ referralCode });
+    if (userFound?._id) await _generateUserRefCode();
+    return referralCode;
+  } catch (err) {
+    throw new MongoCustomError(err);
+  }
+}
+
 /**
  * ====================================================================================================
  * Verify new user
@@ -197,10 +240,22 @@ export async function getUserHandler(params: { email: string }) {
   try {
     await connectToDatabase();
 
-    const { email } = params;
-    const user = (await User.findOne({ email })) as IUserDocument;
+    const { email = 'tomere@moveo.co.il' } = params;
+    const user = (await User.findOne({ email })
+      .populate({
+        path: 'businesses',
+        populate: {
+          path: 'business',
+          model: 'business',
+          select: { businessName: 1 },
+        },
+      })
+      .exec()) as IUserDocument;
 
-    return user;
+    const status = await CognitoService.getUserStatusHandler({ email });
+
+    //@ts-ignore
+    return { ...user._doc, status };
   } catch (err) {
     throw new MongoCustomError(err);
   }

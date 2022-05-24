@@ -190,6 +190,16 @@ export const getUserStatus = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const getUser = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.getUser(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
 
 export const defineAuthChallenge = middyfy(
   async (

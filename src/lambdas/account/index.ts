@@ -188,6 +188,20 @@ export const getUserStatus = {
     },
   ],
 };
+export const getUser = {
+  handler: `${handlerPath(__dirname)}/handler.getUser`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'account/getUser',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
 
 export const getVerifiedOnlySecret = {
   handler: `${handlerPath(__dirname)}/handler.getVerifiedOnlySecret`,

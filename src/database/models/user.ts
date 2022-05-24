@@ -1,11 +1,23 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from 'src/types/user.interface';
 
+const subSchemaUserBusiness = new mongoose.Schema(
+  {
+    business: { type: mongoose.Schema.Types.ObjectId, ref: 'Business' },
+    role: {
+      type: String,
+      enum: ['USER', 'ADMIN'],
+      default: 'USER',
+    },
+  },
+  { _id: false }
+);
+
 const UserSchema = new mongoose.Schema(
   {
     defaultBusiness: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Business',
+      ref: 'business',
       default: null,
     },
     name: { type: String, required: true },
@@ -16,16 +28,7 @@ const UserSchema = new mongoose.Schema(
     homeHouseNumber: { type: String },
     homeZipCode: { type: String },
     email: { type: String, required: true, unique: true },
-    businesses: [
-      {
-        business: { type: mongoose.Schema.Types.ObjectId, ref: 'Business' },
-        role: {
-          type: String,
-          enum: ['USER', 'ADMIN'],
-          default: 'USER',
-        },
-      },
-    ],
+    businesses: [subSchemaUserBusiness],
     verificationImage: { type: String },
   },
 

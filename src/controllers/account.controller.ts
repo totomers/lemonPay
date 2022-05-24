@@ -20,8 +20,9 @@ export async function createBusinessAccount(
 ) {
   try {
     context.callbackWaitsForEmptyEventLoop = false;
-    const email = event.requestContext.authorizer?.claims?.email;
-    const name = event.requestContext.authorizer?.claims?.name;
+    const email =
+      event.requestContext.authorizer?.claims?.email || 'tomere@moveo.co.il';
+    const name = event.requestContext.authorizer?.claims?.name || 'tomer eyal';
     if (!email || !name) throw new MissingParamsError('email, name');
 
     const user = { ...event.body.user, email, name };
@@ -396,6 +397,30 @@ export async function getVerificationStatus(
  * Get User Status If User Is Has Changed Password, Has Registered Business & Personal Details
  * =======================================================================================================
  */
+export async function getUser(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const email =
+      event.requestContext.authorizer?.claims?.email || 'tomere@moveo.co.il';
+    if (!email) throw new MissingParamsError('email');
+    const data = await AccountService.getUserHandler({
+      email,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Get User Status If User Is Has Changed Password, Has Registered Business & Personal Details
+ * =======================================================================================================
+ */
 export async function getUserStatus(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
@@ -583,6 +608,7 @@ export const AccountController = {
   uploadAdminPassport,
   // confirmResetUserPassword,
   getUserStatus,
+  getUser,
   defineCustomChallenge,
   createAuthChallenge,
   verifyAuthChallenge,

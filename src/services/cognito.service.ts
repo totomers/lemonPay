@@ -571,7 +571,7 @@ export async function refreshTokenSignInCognitoHandler(params: {
   refreshToken: string;
 }): Promise<{
   tokens: { idToken: string };
-  user: Partial<IUserDocument>;
+  user: any;
 }> {
   try {
     const { refreshToken } = params;
@@ -586,36 +586,15 @@ export async function refreshTokenSignInCognitoHandler(params: {
       })
       .promise();
 
-    const { IdToken } = cognitoAuthResults.AuthenticationResult;
-    const tokens = { idToken: IdToken };
+    const result = await _extractCustomResultFromAuthChallenge({
+      authChallengeResult: cognitoAuthResults,
+    });
 
     // const email = (jwt_decode(tokens.idToken) as { email: string }).email;
 
     // const user = await AccountService.getUserHandler({ email });
     // const { _id, name, businesses } = user;
-
-    const decodedToken = jwt_decode(IdToken) as IClaimsIdToken;
-    const email = decodedToken.email;
-    const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
-
-    const emptyUser = { _id: '', name: '', businesses: [], email: '' };
-
-    if (isKnownDetails > 0) {
-      const user = await AccountService.getUserHandler({ email });
-      if (!user) {
-        await updateUserAttributes({
-          attributes: [{ Name: 'custom:isKnownDetails', Value: '0' }],
-          email,
-        });
-        return { tokens, user: emptyUser };
-      }
-      const { _id, name, businesses } = user;
-      return { tokens, user: { _id, name, businesses, email } };
-    } else
-      return {
-        tokens,
-        user: emptyUser,
-      };
+    return result;
   } catch (err) {
     throw new AWSCognitoError(err);
   }
@@ -936,7 +915,13 @@ export async function _extractCustomResultFromAuthChallenge(params: {
   authChallengeResult: AWS.CognitoIdentityServiceProvider.InitiateAuthResponse;
 }): Promise<{
   tokens: { idToken: string; refreshToken: string };
-  user: Partial<IUserDocument>;
+  user: Partial<{
+    _id: string;
+    email: string;
+    name: string;
+    businesses: any;
+    status: any;
+  }>;
 }> {
   try {
     const { authChallengeResult } = params;
@@ -948,7 +933,14 @@ export async function _extractCustomResultFromAuthChallenge(params: {
     const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
     const email = decodedToken.email;
 
-    const emptyUser = { _id: '', name: '', businesses: [], email: '' };
+    const userStatus = await CognitoService.getUserStatusHandler({ email });
+    const emptyUser = {
+      _id: '',
+      name: '',
+      businesses: [],
+      email: '',
+      status: userStatus,
+    };
 
     if (isKnownDetails > 0) {
       const user = await AccountService.getUserHandler({ email });
@@ -959,8 +951,8 @@ export async function _extractCustomResultFromAuthChallenge(params: {
         });
         return { tokens, user: emptyUser };
       }
-      const { _id, name, businesses } = user;
-      return { tokens, user: { _id, name, businesses, email } };
+      const { _id, name, businesses, status } = user;
+      return { tokens, user: { _id, name, businesses, email, status } };
     } else
       return {
         tokens,
