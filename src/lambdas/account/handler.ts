@@ -195,12 +195,12 @@ export const defineAuthChallenge = middyfy(
   async (
     event: DefineAuthChallengeTriggerEvent,
     context
-  ): Promise<DefineAuthChallengeTriggerEvent | CustomError> => {
+  ): Promise<DefineAuthChallengeTriggerEvent | Partial<CustomError>> => {
     const result = await accountController.defineCustomChallenge(
       event,
       context
     );
-    // if (result.err) return formatErrorResponse(result.err);
+    if (result.err) return formatErrorResponse(result.err);
     return result.data;
   }
 );
@@ -209,9 +209,9 @@ export const createAuthChallenge = middyfy(
   async (
     event: CreateAuthChallengeTriggerEvent,
     context
-  ): Promise<CreateAuthChallengeTriggerEvent | CustomError> => {
+  ): Promise<CreateAuthChallengeTriggerEvent | Partial<CustomError>> => {
     const result = await accountController.createAuthChallenge(event, context);
-    // if (result.err) return formatErrorResponse(result.err);
+    if (result.err) return formatErrorResponse(result.err);
     return result.data;
   }
 );
@@ -220,9 +220,11 @@ export const verifyAuthChallenge = middyfy(
   async (
     event: VerifyAuthChallengeResponseTriggerEvent,
     context
-  ): Promise<VerifyAuthChallengeResponseTriggerEvent | CustomError> => {
+  ): Promise<
+    VerifyAuthChallengeResponseTriggerEvent | Partial<CustomError>
+  > => {
     const result = await accountController.verifyAuthChallenge(event, context);
-    // if (result.err) return formatErrorResponse(result.err);
+    if (result.err) return formatErrorResponse(result.err);
     return result.data;
   }
 );
