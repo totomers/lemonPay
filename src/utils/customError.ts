@@ -92,7 +92,7 @@ export class AdminOnlyError extends CustomError {
 export class MongoCustomError extends CustomError {
   //https://github.com/mongodb/mongo/blob/master/src/mongo/base/error_codes.yml
   constructor(error: MongoError) {
-    super(error.message, 500, error.code || error.name, ERROR_TYPES.MONGO);
+    super(error.message, 500, mapMongoErrorCode(error), ERROR_TYPES.MONGO);
   }
 }
 
@@ -139,6 +139,18 @@ function mapCognitoErrorCode(error: AWSError) {
         return 'TooManyRequestsException';
       }
       return error.code;
+    default:
+      return error.code;
+  }
+}
+
+function mapMongoErrorCode(error: MongoError) {
+  //28-04-2022 Currently an open issue exists : Cognito does not differentiate the codes of login attemps exceeded vs wrong username or password
+  //https://github.com/aws-amplify/amplify-js/issues/1234
+
+  switch (error.code) {
+    case 11000:
+      return 'DuplicateKey';
     default:
       return error.code;
   }
