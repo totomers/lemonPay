@@ -901,6 +901,12 @@ export async function respondToSignInChallengeHandler(params: {
 
     return result;
   } catch (err) {
+    if (err.code === 'NotAuthorizedException')
+      throw new CustomError(
+        'Confirmation Code is invalid.',
+        400,
+        'CodeMismatchException'
+      );
     throw new AWSCognitoError(err);
   }
 }
