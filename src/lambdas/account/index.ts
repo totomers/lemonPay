@@ -17,6 +17,20 @@ export const createBusinessAccount = {
     },
   ],
 };
+export const addReferrerToUser = {
+  handler: `${handlerPath(__dirname)}/handler.addReferrerToUser`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/addReferrerToUser',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
 
 export const verifyUserDetails = {
   handler: `${handlerPath(__dirname)}/handler.verifyUserDetails`,
@@ -108,20 +122,7 @@ export const resetUserPassword = {
     },
   ],
 };
-// export const confirmResetUserPassword = {
-//   handler: `${handlerPath(__dirname)}/handler.confirmResetUserPassword`,
-//   events: [
-//     {
-//       http: {
-//         method: "post",
-//         path: "account/confirmResetPassword",
-//         authorizer: {
-//           arn: "${self:custom.COGNITO_USER_POOL_ARN}",
-//         },
-//       },
-//     },
-//   ],
-// };
+
 export const signInUser = {
   handler: `${handlerPath(__dirname)}/handler.signInUser`,
   events: [
@@ -195,21 +196,6 @@ export const getUser = {
       http: {
         method: 'get',
         path: 'account/getUser',
-        authorizer: {
-          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
-        },
-      },
-    },
-  ],
-};
-
-export const getVerifiedOnlySecret = {
-  handler: `${handlerPath(__dirname)}/handler.getVerifiedOnlySecret`,
-  events: [
-    {
-      http: {
-        method: 'post',
-        path: 'account/getSecret',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },

@@ -570,8 +570,7 @@ export async function logoutUserHandler(params: {
 export async function refreshTokenSignInCognitoHandler(params: {
   refreshToken: string;
 }): Promise<{
-  tokens: { idToken: string };
-  user: any;
+  idToken: string;
 }> {
   try {
     const { refreshToken } = params;
@@ -586,15 +585,7 @@ export async function refreshTokenSignInCognitoHandler(params: {
       })
       .promise();
 
-    const result = await _extractCustomResultFromAuthChallenge({
-      authChallengeResult: cognitoAuthResults,
-    });
-
-    // const email = (jwt_decode(tokens.idToken) as { email: string }).email;
-
-    // const user = await AccountService.getUserHandler({ email });
-    // const { _id, name, businesses } = user;
-    return result;
+    return { idToken: cognitoAuthResults.AuthenticationResult.IdToken };
   } catch (err) {
     throw new AWSCognitoError(err);
   }

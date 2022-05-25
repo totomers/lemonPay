@@ -4,7 +4,6 @@ import { getAllBusinesses, createBusiness } from 'src/lambdas/business';
 import {
   createBusinessAccount,
   verifyUserDetails,
-  getVerifiedOnlySecret,
   signInUser,
   logoutUser,
   signUpUser,
@@ -14,7 +13,7 @@ import {
   getVerificationStatus,
   resetUserPassword,
   uploadAdminPassport,
-  // confirmResetUserPassword,
+  addReferrerToUser,
   getUser,
   getUserStatus,
   refreshTokenSignInUser,
@@ -33,11 +32,6 @@ import {
   createPhosToken,
   validatePhosToken,
 } from 'src/lambdas/transaction';
-// import dotenv from "dotenv";
-
-// dotenv.config({
-//   path: "./config/.env.dev",
-// });
 
 const serverlessConfiguration: AWS = {
   service: 'lemonPay',
@@ -94,7 +88,6 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      // DB_URL: "${file(./config.${opt:stage, 'dev'}.json):DB_URL}",
       DB_URL_DEV: '${ssm:/LEMONPAY_DB_URL_DEV}',
       DB_URL_PROD: '${ssm:/LEMONPAY_DB_URL_PROD}',
       EMAIL_ADDRESS: "${file(./config.${opt:stage, 'dev'}.json):EMAIL_ADDRESS}",
@@ -107,8 +100,6 @@ const serverlessConfiguration: AWS = {
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ID}",
       COGNITO_CLIENT_ID:
         "${file(./config.${opt:stage, 'dev'}.json):COGNITO_CLIENT_ID}",
-      // COGNITO_USER_DUMMY_PASSWORD:
-      //   "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_DUMMY_PASSWORD}",
       COGNITO_USER_DUMMY_PASSWORD: '${ssm:/lemonpay-dummy-password}',
       PHOS_TOKEN_GEN_SECRET: '${ssm:/lemonpay-phos-gen-token-secret}',
       PHOS_PRE_SHARED_SECRET: '${ssm:/lemonpay-phos-pre-shared-secret}',
@@ -126,7 +117,6 @@ const serverlessConfiguration: AWS = {
     createBusiness,
     createBusinessAccount,
     verifyUserDetails,
-    getVerifiedOnlySecret,
     signInUser,
     logoutUser,
     signUpUser,
@@ -137,7 +127,7 @@ const serverlessConfiguration: AWS = {
     emailClientInvoice,
     resetUserPassword,
     uploadAdminPassport,
-    // confirmResetUserPassword,
+    addReferrerToUser,
     getUser,
     getUserStatus,
     refreshTokenSignInUser,

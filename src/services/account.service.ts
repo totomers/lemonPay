@@ -203,6 +203,47 @@ export async function editUserAccountHandler(params: {
     throw new MongoCustomError(err);
   }
 }
+/**
+ * ====================================================================================================
+ * Edit user
+ * @param params
+ * ====================================================================================================
+ */
+
+export async function addReferrerToUserHandler(params: {
+  userId: string;
+  referralCode: string;
+}): Promise<{ updatedUser: IUserDocument } | CustomError> {
+  try {
+    await connectToDatabase();
+
+    const { userId, referralCode } = params;
+
+    const referringUser = await User.findById({ referralCode });
+
+    if (referringUser?._id)
+      throw new CustomError(
+        'No user found with the given referral code',
+        400,
+        'ReferralCodeMismatchException'
+      );
+    const updatedUser = await User.findOneAndUpdate(
+      { userId },
+      {
+        referrer: referringUser._id,
+      }
+    );
+
+    // await CognitoService.updateUserAttributes({
+    //   attributes:[{...},{...},{...}]
+    //   email: user.email,
+    // });
+
+    return { updatedUser };
+  } catch (err) {
+    throw new MongoCustomError(err);
+  }
+}
 
 /**
  * ====================================================================================================
@@ -268,4 +309,5 @@ export const AccountService = {
   isUserABusinessAdmin,
   getUserHandler,
   uploadAdminPassportHandler,
+  addReferrerToUserHandler,
 };
