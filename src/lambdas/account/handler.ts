@@ -210,7 +210,7 @@ export const defineAuthChallenge = middyfy(
       event,
       context
     );
-    if (result.err) return formatErrorResponse(result.err);
+    if (result.err) return result.err;
     return result.data;
   }
 );
