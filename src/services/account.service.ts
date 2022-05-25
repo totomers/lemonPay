@@ -220,7 +220,12 @@ export async function addReferrerToUserHandler(params: {
     const { userId, referralCode } = params;
 
     const referringUser = await User.findById({ referralCode });
-
+    if (referringUser.refferralCode === referralCode)
+      throw new CustomError(
+        'Self Referring Is Not Valid',
+        400,
+        'ReferralCodeMismatchException'
+      );
     if (referringUser?._id)
       throw new CustomError(
         'No user found with the given referral code',
