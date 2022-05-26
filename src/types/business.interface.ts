@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import { IRole } from './role.interface';
+// import { IRole } from './role.interface';
 
 export type IBusinessDocument = mongoose.Document & {
   businessName: string;
   businessTradeName: string;
-  users: { user: mongoose.Schema.Types.ObjectId; role: IRole }[];
+  // users: { user: mongoose.Schema.Types.ObjectId; role: IRole }[];
   businessType:
     | 'SoleTrader'
     | 'CommercialPartnership'
@@ -18,4 +18,5 @@ export type IBusinessDocument = mongoose.Document & {
   bankAccountHolderName: string;
   bankAccountIban: string;
   bankAccountSwift: string;
+  referralCode: string;
 };
