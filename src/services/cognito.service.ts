@@ -917,7 +917,6 @@ export async function _extractCustomResultFromAuthChallenge(params: {
     email: string;
     name: string;
     businesses: any;
-    status: any;
   }>;
 }> {
   try {
@@ -930,13 +929,11 @@ export async function _extractCustomResultFromAuthChallenge(params: {
     const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
     const email = decodedToken.email;
 
-    const userStatus = await CognitoService.getUserStatusHandler({ email });
     const emptyUser = {
       _id: '',
       name: '',
       businesses: [],
       email: '',
-      status: userStatus,
     };
 
     if (isKnownDetails > 0) {
