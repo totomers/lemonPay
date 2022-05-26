@@ -1,2 +1,8 @@
 import { createBusinessHandler } from './handlers/createBusiness.handler';
-export const BusinessService = { createBusinessHandler };
+import { editBusinessHandler } from './handlers/editBusiness.handler';
+import { getAllBusinessesHandler } from './handlers/getAllBusiness.handler';
+export const BusinessService = {
+  createBusinessHandler,
+  editBusinessHandler,
+  getAllBusinessesHandler,
+};

@@ -4,7 +4,7 @@ import { IUserDocument } from 'src/types/user.interface';
 import { AWSCognitoError, CustomError } from 'src/utils/customError';
 import { clientId, cognitoidentityserviceprovider } from '../common';
 import jwt_decode from 'jwt-decode';
-import { AccountService } from 'src/services/account.service';
+import { AccountService } from '../../account-service';
 import { CognitoService } from '..';
 /**
  * =======================================================================================================

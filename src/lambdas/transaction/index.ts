@@ -1,13 +1,13 @@
 // import { CONFIG } from "src/config";
 import { handlerPath } from 'src/utils/handler-resolver';
 
-export const emailClientInvoice = {
-  handler: `${handlerPath(__dirname)}/handler.emailClientInvoice`,
+export const emailReceipt = {
+  handler: `${handlerPath(__dirname)}/handler.emailReceipt`,
   events: [
     {
       http: {
         method: 'post',
-        path: 'transactions/emailClientInvoice',
+        path: 'transactions/emailReceipt',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
@@ -30,13 +30,13 @@ export const addTransaction = {
     },
   ],
 };
-export const getUserTransactions = {
-  handler: `${handlerPath(__dirname)}/handler.getUserTransactions`,
+export const getTransactionHistory = {
+  handler: `${handlerPath(__dirname)}/handler.getTransactionHistory`,
   events: [
     {
       http: {
         method: 'post',
-        path: 'transactions/getUserTransactions',
+        path: 'transactions/getTransactionHistory',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },

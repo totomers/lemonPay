@@ -8,12 +8,9 @@ import {
 import { middyfy } from 'src/utils/lambda';
 import { transactionController } from '../../controllers';
 
-export const emailClientInvoice = middyfy(
+export const emailReceipt = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const result = await transactionController.emailClientInvoice(
-      event,
-      context
-    );
+    const result = await transactionController.emailReceipt(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -26,9 +23,9 @@ export const addTransaction = middyfy(
     return formatJSONResponse(result.data);
   }
 );
-export const getUserTransactions = middyfy(
+export const getTransactionHistory = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const result = await transactionController.getUserTransactions(
+    const result = await transactionController.getTransactionHistory(
       event,
       context
     );

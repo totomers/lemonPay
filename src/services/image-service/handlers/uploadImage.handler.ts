@@ -1,12 +1,12 @@
 import * as fileType from 'file-type';
 import { v4 as uuid } from 'uuid';
-import * as AWS from 'aws-sdk';
+import { S3 } from 'aws-sdk';
 import { CustomError, ImageManagerError } from 'src/utils/customError';
 import { CONFIG } from 'src/config';
 
 type Base64EncodedString = string;
 
-const s3 = new AWS.S3();
+const s3 = new S3();
 
 const allowedMimes = ['image/jpeg', 'image/png', 'image/jpg'];
 
@@ -70,7 +70,3 @@ export async function uploadImageHandler(params: {
     throw new ImageManagerError(err);
   }
 }
-
-export const ImageService = {
-  uploadImageHandler,
-};
