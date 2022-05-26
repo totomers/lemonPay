@@ -1,7 +1,7 @@
 import { getUserHandler } from '../account-service/getUserHandler.handler';
-import { signUpCognitoHandler } from './signUp.handler';
-import { updateUserAttributes } from './updateUserAttr.handler';
-import { resendConfirmationCodeHandler } from './resendConfirmationCode.handler';
+import { signUpCognitoHandler } from './functions/signUp.handler';
+import { updateUserAttributes } from './functions/updateUserAttr.handler';
+import { resendConfirmationCodeHandler } from './functions/resendConfirmationCode.handler';
 
 export const CognitoService = {
   getUserHandler,

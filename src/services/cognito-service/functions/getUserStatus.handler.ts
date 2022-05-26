@@ -1,6 +1,6 @@
-import { AWSCognitoError } from './common';
-import { _getUserFromCognito } from './utils/_getUserFromCognito';
-import { _getCustomAttribute } from './utils/_getCustomAttr';
+import { AWSCognitoError } from '../common';
+import { _getUserFromCognito } from '../utils/_getUserFromCognito';
+import { _getCustomAttribute } from '../utils/_getCustomAttr';
 
 /**
  * =======================================================================================================
