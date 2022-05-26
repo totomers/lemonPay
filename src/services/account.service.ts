@@ -28,9 +28,7 @@ AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 export async function createBusinessAccountHandler(params: {
   user: Partial<IUserDocument>;
   business: Partial<IBusinessDocument>;
-}): Promise<
-  { user: IUserDocument; business: IBusinessDocument } | CustomError
-> {
+}): Promise<{ user: IUserDocument } | CustomError> {
   try {
     await connectToDatabase();
     const { user, business } = params;
@@ -51,7 +49,7 @@ export async function createBusinessAccountHandler(params: {
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
 
-    return { user: newUser.user, business: newBusiness };
+    return { user: newUser.user };
   } catch (err) {
     throw new MongoCustomError(err);
   }
