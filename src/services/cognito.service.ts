@@ -948,8 +948,8 @@ export async function _extractCustomResultFromAuthChallenge(params: {
         });
         return { tokens, user: emptyUser };
       }
-      const { _id, name, businesses, status } = user;
-      return { tokens, user: { _id, name, businesses, email, status } };
+      const { _id, name, businesses } = user;
+      return { tokens, user: { _id, name, businesses, email } };
     } else
       return {
         tokens,

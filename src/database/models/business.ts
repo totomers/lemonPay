@@ -33,6 +33,12 @@ const BusinessSchema = new mongoose.Schema(
     bankAccountHolderName: { type: String, required: true },
     bankAccountIban: { type: String, required: true },
     bankAccountSwift: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ['pendingAction', 'pendingVerification', 'verified', 'unverified'],
+      default: 'pendingAction',
+      required: true,
+    },
   },
   { timestamps: true }
 );

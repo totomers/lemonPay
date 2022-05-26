@@ -18,4 +18,5 @@ export type IBusinessDocument = mongoose.Document & {
   bankAccountHolderName: string;
   bankAccountIban: string;
   bankAccountSwift: string;
+  status: 'pendingAction' | 'pendingVerification' | 'verified' | 'unverified';
 };

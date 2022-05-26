@@ -293,15 +293,12 @@ export async function getUserHandler(params: { email: string }) {
         populate: {
           path: 'business',
           model: 'business',
-          select: { businessName: 1 },
+          select: { businessName: 1, status: 1 },
         },
       })
       .exec()) as IUserDocument;
 
-    const status = await CognitoService.getUserStatusHandler({ email });
-
-    //@ts-ignore
-    return { ...user._doc, status };
+    return user;
   } catch (err) {
     throw new MongoCustomError(err);
   }
