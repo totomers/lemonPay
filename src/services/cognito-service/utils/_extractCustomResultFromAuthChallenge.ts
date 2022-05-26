@@ -1,4 +1,5 @@
-import { AccountService } from './account.service';
+import { AccountService } from '../../account-service';
+import { CognitoService } from '..';
 import jwt_decode from 'jwt-decode';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 
@@ -18,7 +19,6 @@ export async function _extractCustomResultFromAuthChallenge(params: {
     email: string;
     name: string;
     businesses: any;
-    status: any;
   }>;
 }> {
   try {
@@ -31,26 +31,24 @@ export async function _extractCustomResultFromAuthChallenge(params: {
     const isKnownDetails = parseInt(decodedToken['custom:isKnownDetails']);
     const email = decodedToken.email;
 
-    const userStatus = await CognitoService.getUserStatusHandler({ email });
     const emptyUser = {
       _id: '',
       name: '',
       businesses: [],
       email: '',
-      status: userStatus,
     };
 
     if (isKnownDetails > 0) {
       const user = await AccountService.getUserHandler({ email });
       if (!user) {
-        await updateUserAttributes({
+        await CognitoService.updateUserAttributes({
           attributes: [{ Name: 'custom:isKnownDetails', Value: '0' }],
           email,
         });
         return { tokens, user: emptyUser };
       }
-      const { _id, name, businesses, status } = user;
-      return { tokens, user: { _id, name, businesses, email, status } };
+      const { _id, name, businesses } = user;
+      return { tokens, user: { _id, name, businesses, email } };
     } else
       return {
         tokens,
