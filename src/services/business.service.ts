@@ -7,6 +7,7 @@ import {
   MongoCustomError,
 } from 'src/utils/customError';
 import { AccountService } from './account.service';
+import { generateRefCode } from 'src/utils/referralCodeGen';
 
 export async function getAllBusinessesHandler() {
   try {
@@ -24,12 +25,25 @@ export async function createBusinessHandler(
     await connectToDatabase();
     const { businessRegistrationNumber } = params;
     await validateBusinessDetails({ businessRegistrationNumber });
-    const result = await Business.create(params);
+
+    const referralCode = await _generateUserRefCode();
+    const result = await Business.create({ ...params, referralCode });
 
     return result;
   } catch (err) {
     console.log(err);
 
+    throw new MongoCustomError(err);
+  }
+}
+
+async function _generateUserRefCode(): Promise<string> {
+  try {
+    const referralCode = generateRefCode();
+    const businessFound = await Business.findOne({ referralCode });
+    if (businessFound?._id) await _generateUserRefCode();
+    return referralCode;
+  } catch (err) {
     throw new MongoCustomError(err);
   }
 }

@@ -7,7 +7,6 @@ export type IUserDocument = mongoose.Document & {
     business: mongoose.Schema.Types.ObjectId;
     role: 'USER' | 'ADMIN';
   }[];
-  referralCode: number;
   dateofbirth: string;
   homeAddress: string;
   homeHouseNumber: string;

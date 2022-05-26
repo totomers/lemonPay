@@ -28,7 +28,7 @@ AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 export async function createBusinessAccountHandler(params: {
   user: Partial<IUserDocument>;
   business: Partial<IBusinessDocument>;
-}): Promise<{ user: IUserDocument } | CustomError> {
+}): Promise<Partial<IUserDocument>> {
   try {
     await connectToDatabase();
     const { user, business } = params;
@@ -46,8 +46,9 @@ export async function createBusinessAccountHandler(params: {
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
-
-    return { user: newUser.user };
+    const { _id, name, email, businesses } = newUser;
+    const returnedUser = { _id, name, email, businesses };
+    return returnedUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }
@@ -61,16 +62,13 @@ export async function createBusinessAccountHandler(params: {
 export async function createAdminUserHandler(params: {
   user: Partial<IUserDocument>;
   business: Partial<IBusinessDocument>;
-}): Promise<{ user: IUserDocument }> {
+}): Promise<IUserDocument> {
   try {
     await connectToDatabase();
     const { user, business } = params;
 
-    const referralCode = await _generateUserRefCode();
-
     const newUser = new User({
       ...user,
-      referralCode,
       defaultBusiness: business._id,
       businesses: [{ business: business._id, role: 'ADMIN' }],
     });
@@ -82,11 +80,11 @@ export async function createAdminUserHandler(params: {
       populate: {
         path: 'business',
         model: 'business',
-        select: { businessName: 1, status: 1 },
+        select: { businessName: 1, status: 1, referralCode: 1 },
       },
     })) as IUserDocument;
 
-    return { user: populatedUser };
+    return populatedUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }
