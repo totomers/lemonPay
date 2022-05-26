@@ -26,6 +26,7 @@ const BusinessSchema = new mongoose.Schema(
       // enum: ["TaxiCabsAndLimousines", "RailroadsFreight", "PassengerRailways"],
       required: true,
     },
+    referralCode: { type: String, required: true, unique: true },
     businessAddress: { type: String, required: true },
     businessHouseNumber: { type: String },
     businessZipCode: { type: String },
