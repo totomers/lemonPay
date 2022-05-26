@@ -161,20 +161,6 @@ export const logoutUser = {
   ],
 };
 
-export const getVerificationStatus = {
-  handler: `${handlerPath(__dirname)}/handler.getVerificationStatus`,
-  events: [
-    {
-      http: {
-        method: 'post',
-        path: 'account/getVerificationStatus',
-        authorizer: {
-          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
-        },
-      },
-    },
-  ],
-};
 export const getUserStatus = {
   handler: `${handlerPath(__dirname)}/handler.getUserStatus`,
   events: [

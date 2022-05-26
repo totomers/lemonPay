@@ -4,7 +4,7 @@ import {
   DefineAuthChallengeTriggerEvent,
   VerifyAuthChallengeResponseTriggerEvent,
 } from 'aws-lambda';
-import { AccountService } from '../services/account.service';
+import { AccountService } from '../services/account-service';
 import { CognitoService } from 'src/services/cognito-service';
 import { MissingParamsError } from 'src/utils/customError';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
