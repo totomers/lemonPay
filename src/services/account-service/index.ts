@@ -1,10 +1,10 @@
-import { createBusinessAccountHandler } from './createBusinessAccount.handler';
-import { verifyUserDetailsHandler } from './verifyUserDetails.handler';
-import { createAdminUserHandler } from './createAdminUser.handler';
-import { editUserAccountHandler } from './editUserAccount.handler';
-import { isUserABusinessAdmin } from './isUserBusinessAdmin.handler';
-import { getUserHandler } from './getUserHandler.handler';
-import { upl } from './uploadAdminPassport.handler';
+import { createBusinessAccountHandler } from './functions/createBusinessAccount.handler';
+import { verifyUserDetailsHandler } from './functions/verifyUserDetails.handler';
+import { createAdminUserHandler } from './functions/createAdminUser.handler';
+import { editUserAccountHandler } from './functions/editUserAccount.handler';
+import { isUserABusinessAdmin } from './functions/isUserBusinessAdmin.handler';
+import { getUserHandler } from './functions/getUserHandler.handler';
+import { uploadAdminPassportHandler } from './functions/uploadAdminPassport.handler';
 
 export const AccountService = {
   createBusinessAccountHandler,
