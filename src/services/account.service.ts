@@ -47,10 +47,6 @@ export async function createBusinessAccountHandler(params: {
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
 
-    // const returnedUser = await getUserHandler({ email: user.email });
-
-    console.log(newUser.user);
-
     return { user: newUser.user };
   } catch (err) {
     throw new MongoCustomError(err);
