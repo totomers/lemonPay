@@ -3,7 +3,8 @@ import { IBusinessDocument } from 'src/types/business.interface';
 import { IUserDocument } from 'src/types/user.interface';
 import { CustomError, MongoCustomError } from 'src/utils/customError';
 import { BusinessService } from '../business.service';
-
+import { AccountService } from '..';
+import { CognitoService } from 'src/services/cognito-service';
 /**
  * ====================================================================================================
  * Create new user
@@ -14,9 +15,7 @@ import { BusinessService } from '../business.service';
 export async function createBusinessAccountHandler(params: {
   user: Partial<IUserDocument>;
   business: Partial<IBusinessDocument>;
-}): Promise<
-  { user: IUserDocument; business: IBusinessDocument } | CustomError
-> {
+}): Promise<Partial<IUserDocument>> {
   try {
     await connectToDatabase();
     const { user, business } = params;
@@ -25,19 +24,18 @@ export async function createBusinessAccountHandler(params: {
 
     // Check If User with the same email exists
 
-    const newUser = await createAdminUserHandler({
+    const newUser = await AccountService.createAdminUserHandler({
       user,
       business: newBusiness,
     });
-
-    console.log('newUser', newUser);
 
     await CognitoService.updateUserAttributes({
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
-
-    return { user: newUser.user, business: newBusiness };
+    const { _id, name, email, businesses } = newUser;
+    const returnedUser = { _id, name, email, businesses };
+    return returnedUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }

@@ -14,15 +14,13 @@ import { generateRefCode } from 'src/services/account-service/utils/referralCode
 export async function createAdminUserHandler(params: {
   user: Partial<IUserDocument>;
   business: Partial<IBusinessDocument>;
-}): Promise<{ user: IUserDocument }> {
+}): Promise<IUserDocument> {
   try {
     await connectToDatabase();
     const { user, business } = params;
 
-    const referralCode = await _generateUserRefCode();
     const newUser = new User({
       ...user,
-      referralCode,
       defaultBusiness: business._id,
       businesses: [{ business: business._id, role: 'ADMIN' }],
     });
@@ -38,18 +36,7 @@ export async function createAdminUserHandler(params: {
       },
     })) as IUserDocument;
 
-    return { user: populatedUser };
-  } catch (err) {
-    throw new MongoCustomError(err);
-  }
-}
-
-async function _generateUserRefCode(): Promise<string> {
-  try {
-    const referralCode = generateRefCode();
-    const userFound = await User.findOne({ referralCode });
-    if (userFound?._id) await _generateUserRefCode();
-    return referralCode;
+    return populatedUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }
