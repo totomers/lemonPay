@@ -3,7 +3,7 @@ import {
   AWSCognitoError,
   cognitoidentityserviceprovider,
   userPoolId,
-} from './common';
+} from '../common';
 
 /**
  * =======================================================================================================

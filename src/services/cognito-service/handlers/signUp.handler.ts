@@ -4,9 +4,9 @@ import {
   clientId,
   cognitoidentityserviceprovider,
   userPoolId,
-} from './common';
-import { _getCustomAttribute } from './utils/_getCustomAttr';
-import { _getUserFromCognito } from './utils/_getUserFromCognito';
+} from '../common';
+import { _getCustomAttribute } from '../utils/_getCustomAttr';
+import { _getUserFromCognito } from '../utils/_getUserFromCognito';
 
 /**
  * =======================================================================================================

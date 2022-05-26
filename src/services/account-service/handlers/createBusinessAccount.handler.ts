@@ -2,7 +2,7 @@ import { connectToDatabase } from 'src/database/db';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { IUserDocument } from 'src/types/user.interface';
 import { CustomError, MongoCustomError } from 'src/utils/customError';
-import { BusinessService } from '../business.service';
+import { BusinessService } from '../../business-service';
 import { AccountService } from '..';
 import { CognitoService } from 'src/services/cognito-service';
 /**

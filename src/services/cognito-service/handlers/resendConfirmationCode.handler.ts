@@ -2,7 +2,7 @@ import {
   AWSCognitoError,
   clientId,
   cognitoidentityserviceprovider,
-} from './common';
+} from '../common';
 
 /**
  * =======================================================================================================

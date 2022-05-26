@@ -13,7 +13,7 @@ import {
 } from 'src/utils/customError';
 import { BusinessService } from './business.service';
 import { ImageService } from './image.service';
-import { generateRefCode } from 'src/services/account-service/utils/referralCodeGen';
+import { generateRefCode } from 'src/services/business-service/utils/referralCodeGen';
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 
