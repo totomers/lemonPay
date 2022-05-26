@@ -2,7 +2,6 @@ import { IUserDocument } from 'src/types/user.interface';
 import { connectToDatabase } from 'src/database/db';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { User } from 'src/database/models/user';
-
 import AWS from 'aws-sdk';
 import { CognitoService } from './cognito.service';
 import { CONFIG } from 'src/config';
@@ -56,6 +55,7 @@ export async function createBusinessAccountHandler(params: {
     throw new MongoCustomError(err);
   }
 }
+
 /**
  * ====================================================================================================
  * Create Admin User
