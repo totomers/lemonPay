@@ -42,12 +42,14 @@ export async function createBusinessAccountHandler(params: {
       business: newBusiness,
     });
 
-    console.log('newUser', newUser);
-
     await CognitoService.updateUserAttributes({
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
+
+    // const returnedUser = await getUserHandler({ email: user.email });
+
+    console.log(newUser.user);
 
     return { user: newUser.user };
   } catch (err) {
@@ -70,14 +72,25 @@ export async function createAdminUserHandler(params: {
 
     const referralCode = await _generateUserRefCode();
 
-    const newUser = await User.create({
+    const newUser = new User({
       ...user,
       referralCode,
       defaultBusiness: business._id,
       businesses: [{ business: business._id, role: 'ADMIN' }],
     });
 
-    return { user: newUser };
+    await newUser.save();
+
+    const populatedUser = (await User.populate(newUser, {
+      path: 'businesses',
+      populate: {
+        path: 'business',
+        model: 'business',
+        select: { businessName: 1, status: 1 },
+      },
+    })) as IUserDocument;
+
+    return { user: populatedUser };
   } catch (err) {
     throw new MongoCustomError(err);
   }
