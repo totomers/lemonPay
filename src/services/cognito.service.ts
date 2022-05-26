@@ -19,7 +19,7 @@ import { AccountService } from './account.service';
 import { EmailService } from './email.service';
 import jwt_decode from 'jwt-decode';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
-import { isAlphaNumericalWithSpecialChar } from 'src/utils/validators/validate-password';
+import { isAlphaNumericalWithSpecialChar } from 'src/services/cognito-service/utils/_validatePassword';
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 const userPoolId = CONFIG.COGNITO.USER_POOL_ID;
@@ -29,154 +29,36 @@ const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
   apiVersion: '2016-04-18',
 });
 
-/**
- * =======================================================================================================
- *  Initiates password reset process. Sends confirmation email to user to get permission to reset users password
- * @param params
- * =======================================================================================================
- */
+// /**
+//  * =======================================================================================================
+//  *  Initiates password reset process. Sends confirmation email to user to get permission to reset users password
+//  * @param params
+//  * =======================================================================================================
+//  */
 
-export async function confirmUserPasswordResetHandler(params: {
-  email: string;
-  password: string;
-  confirmationCode: string;
-}): Promise<AWS.CognitoIdentityServiceProvider.ConfirmForgotPasswordResponse> {
-  try {
-    const { email, password, confirmationCode } = params;
-    const ConfirmForgotPasswordRequest: AWS.CognitoIdentityServiceProvider.ConfirmForgotPasswordRequest =
-      {
-        Username: email,
-        ClientId: clientId,
-        Password: password,
-        ConfirmationCode: confirmationCode,
-      };
-    const result = await cognitoidentityserviceprovider
-      .confirmForgotPassword(ConfirmForgotPasswordRequest)
-      .promise();
+// export async function confirmUserPasswordResetHandler(params: {
+//   email: string;
+//   password: string;
+//   confirmationCode: string;
+// }): Promise<AWS.CognitoIdentityServiceProvider.ConfirmForgotPasswordResponse> {
+//   try {
+//     const { email, password, confirmationCode } = params;
+//     const ConfirmForgotPasswordRequest: AWS.CognitoIdentityServiceProvider.ConfirmForgotPasswordRequest =
+//       {
+//         Username: email,
+//         ClientId: clientId,
+//         Password: password,
+//         ConfirmationCode: confirmationCode,
+//       };
+//     const result = await cognitoidentityserviceprovider
+//       .confirmForgotPassword(ConfirmForgotPasswordRequest)
+//       .promise();
 
-    return result;
-  } catch (err) {
-    throw new AWSCognitoError(err);
-  }
-}
-
-/**
- * =======================================================================================================
- * Confirm new users email & return him his tokens
- * @param params
- * =======================================================================================================
- */
-
-export async function confirmSignUpCognitoHandler(params: {
-  email: string;
-  confirmationCode: string;
-}): Promise<{ idToken: string; accessToken: string }> {
-  try {
-    const { email, confirmationCode } = params;
-
-    await CognitoService.confirmEmailCognitoHandler({
-      email,
-      confirmationCode,
-    });
-
-    const { AuthenticationResult } = await cognitoidentityserviceprovider
-      .initiateAuth({
-        AuthFlow: 'USER_PASSWORD_AUTH',
-        ClientId: clientId,
-        AuthParameters: {
-          USERNAME: email,
-          PASSWORD: process.env.COGNITO_USER_DUMMY_PASSWORD,
-        },
-      })
-      .promise();
-
-    const { IdToken, RefreshToken, AccessToken } = AuthenticationResult;
-    const tokens = {
-      idToken: IdToken,
-      accessToken: AccessToken,
-      refreshToken: RefreshToken,
-    };
-    return tokens;
-  } catch (err) {
-    throw new AWSCognitoError(err);
-  }
-}
-
-export async function confirmEmailCognitoHandler(params: {
-  email: string;
-  confirmationCode: string;
-}): Promise<{}> {
-  try {
-    const { email, confirmationCode } = params;
-    console.log('process.env.STAGE:', process.env.STAGE);
-
-    if (
-      process.env.STAGE === 'DEV' &&
-      confirmationCode === process.env.FAKE_CONFIRMATION_CODE_DEV_TESTING
-    ) {
-      const adminConfirmSignUpRequest: AWS.CognitoIdentityServiceProvider.AdminConfirmSignUpRequest =
-        {
-          Username: email,
-          UserPoolId: userPoolId,
-        };
-      await cognitoidentityserviceprovider
-        .adminConfirmSignUp(adminConfirmSignUpRequest)
-        .promise();
-    } else {
-      const confirmSignUpRequest: AWS.CognitoIdentityServiceProvider.ConfirmSignUpRequest =
-        {
-          Username: email,
-          ConfirmationCode: confirmationCode,
-          ClientId: clientId,
-        };
-      await cognitoidentityserviceprovider
-        .confirmSignUp(confirmSignUpRequest)
-        .promise();
-    }
-
-    return {};
-  } catch (err) {
-    throw new AWSCognitoError(err);
-  }
-}
-
-export async function setInitialUserPasswordHandler(params: {
-  email;
-  accessToken: string;
-  password: string;
-}): Promise<
-  AWS.CognitoIdentityServiceProvider.ChangePasswordResponse | AWS.AWSError
-> {
-  try {
-    const { email, accessToken, password } = params;
-
-    if (!isAlphaNumericalWithSpecialChar(password))
-      throw new CustomError(
-        'Password must consist of alphanumerical or special characters only.',
-        400,
-        'IllegalPassword'
-      );
-
-    const changePasswordRequest: AWS.CognitoIdentityServiceProvider.ChangePasswordRequest =
-      {
-        AccessToken: accessToken,
-        PreviousPassword: process.env.COGNITO_USER_DUMMY_PASSWORD,
-        ProposedPassword: password,
-      };
-    const result = await cognitoidentityserviceprovider
-      .changePassword(changePasswordRequest)
-      .promise();
-
-    await updateUserAttributes({
-      email,
-      attributes: [{ Name: 'custom:isInitiated', Value: '1' }],
-    });
-
-    return result;
-  } catch (err) {
-    throw new AWSCognitoError(err);
-  }
-}
+//     return result;
+//   } catch (err) {
+//     throw new AWSCognitoError(err);
+//   }
+// }
 
 /**
  * =======================================================================================================

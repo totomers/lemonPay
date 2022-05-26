@@ -1,16 +1,16 @@
 import { InitiateAuthRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 import { IUserDocument } from 'src/types/user.interface';
-import { isAlphaNumericalWithSpecialChar } from 'src/utils/validators/validate-password';
-import { CognitoService } from '.';
+import { isAlphaNumericalWithSpecialChar } from 'src/services/cognito-service/utils/_validatePassword';
+import { CognitoService } from '..';
 import {
   AWSCognitoError,
   clientId,
   cognitoidentityserviceprovider,
   CustomError,
   userPoolId,
-} from './common';
-import { _extractCustomResultFromAuthChallenge } from './utils/_extractCustomResultFromAuthChallenge';
-import { _getCustomAttribute } from './utils/_getCustomAttr';
+} from '../common';
+import { _extractCustomResultFromAuthChallenge } from '../utils/_extractCustomResultFromAuthChallenge';
+import { _getCustomAttribute } from '../utils/_getCustomAttr';
 
 /**
  * =======================================================================================================

@@ -13,7 +13,7 @@ import {
 } from 'src/utils/customError';
 import { BusinessService } from './business.service';
 import { ImageService } from './image.service';
-import { generateRefCode } from 'src/utils/referralCodeGen';
+import { generateRefCode } from 'src/services/account-service/utils/referralCodeGen';
 
 AWS.config.update({ region: CONFIG.SERVERLESS.REGION });
 
@@ -71,15 +71,25 @@ export async function createAdminUserHandler(params: {
     const { user, business } = params;
 
     const referralCode = await _generateUserRefCode();
-
-    const newUser = await User.create({
+    const newUser = new User({
       ...user,
       referralCode,
       defaultBusiness: business._id,
       businesses: [{ business: business._id, role: 'ADMIN' }],
     });
 
-    return { user: newUser };
+    await newUser.save();
+
+    const populatedUser = (await User.populate(newUser, {
+      path: 'businesses',
+      populate: {
+        path: 'business',
+        model: 'business',
+        select: { businessName: 1, status: 1 },
+      },
+    })) as IUserDocument;
+
+    return { user: populatedUser };
   } catch (err) {
     throw new MongoCustomError(err);
   }

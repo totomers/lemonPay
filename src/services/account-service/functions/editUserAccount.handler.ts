@@ -13,7 +13,7 @@ import { MongoCustomError } from 'src/utils/customError';
 export async function editUserAccountHandler(params: {
   email: string;
   edittedUser: Partial<IUserDocument>;
-}): Promise<{ updatedUser: IUserDocument } | CustomError> {
+}): Promise<{ updatedUser: IUserDocument }> {
   try {
     await connectToDatabase();
 
