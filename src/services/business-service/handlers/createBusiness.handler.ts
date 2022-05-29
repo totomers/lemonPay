@@ -10,7 +10,7 @@ export async function createBusinessHandler(
   try {
     await connectToDatabase();
     const { businessRegistrationNumber } = params;
-    await _validateBusinessDetails({ businessRegistrationNumber });
+    // await _validateBusinessDetails({ businessRegistrationNumber });   TBD: Guy needs to decide if he wants this validation
 
     const referralCode = await _generateUserRefCode();
     const result = await Business.create({ ...params, referralCode });
