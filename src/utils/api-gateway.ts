@@ -19,6 +19,11 @@ export type ParsedAPIGatewayProxyEvent = Omit<APIGatewayProxyEvent, 'body'> & {
 export const formatJSONResponse = (body?: any, statusCode?: number) => {
   return {
     statusCode: statusCode || 200,
+    headers: {
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': 'https://www.example.com',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+    },
     body: JSON.stringify(body),
   };
 };
@@ -30,6 +35,11 @@ export const formatErrorResponse = (err: CustomError) => {
   delete err.statusCode;
   return {
     statusCode,
+    headers: {
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': 'https://www.example.com',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+    },
     body: JSON.stringify(err),
   };
 };
