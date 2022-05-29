@@ -68,6 +68,7 @@ export const signUpUser = {
       http: {
         method: 'post',
         path: 'account/register',
+        cors: true,
       },
     },
   ],
