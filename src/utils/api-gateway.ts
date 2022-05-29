@@ -21,7 +21,7 @@ export const formatJSONResponse = (body?: any, statusCode?: number) => {
     statusCode: statusCode || 200,
     headers: {
       'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Origin': 'https://www.example.com',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
     },
     body: JSON.stringify(body),
