@@ -144,6 +144,7 @@ export const refreshTokenSignInUser = {
       http: {
         method: 'post',
         path: 'account/refreshTokenSignIn',
+        cors: true,
       },
     },
   ],
@@ -158,6 +159,7 @@ export const logoutUser = {
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
+        cors: true,
       },
     },
   ],
@@ -240,6 +242,7 @@ export const respondToSignInAuthChallenge = {
       http: {
         method: 'post',
         path: 'account/respondToSignInChallenge',
+        cors: true,
       },
     },
   ],
