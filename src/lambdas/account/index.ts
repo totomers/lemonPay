@@ -131,6 +131,7 @@ export const signInUser = {
       http: {
         method: 'post',
         path: 'account/signIn',
+        cors: true,
       },
     },
   ],
