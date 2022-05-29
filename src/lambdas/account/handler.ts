@@ -166,20 +166,6 @@ export const resetUserPassword = middyfy(
 //   }
 // );
 
-export const getVerificationStatus = middyfy(
-  async (
-    event: ParsedAPIGatewayProxyEvent,
-    context
-  ): Promise<APIGatewayProxyResult> => {
-    const result = await accountController.getVerificationStatus(
-      event,
-      context
-    );
-    if (result.err) return formatErrorResponse(result.err);
-    return formatJSONResponse(result.data);
-  }
-);
-
 export const getUserStatus = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,

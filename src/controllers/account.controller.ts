@@ -4,8 +4,8 @@ import {
   DefineAuthChallengeTriggerEvent,
   VerifyAuthChallengeResponseTriggerEvent,
 } from 'aws-lambda';
-import { AccountService } from '../services/account.service';
-import { CognitoService } from 'src/services/cognito.service';
+import { AccountService } from '../services/account-service';
+import { CognitoService } from 'src/services/cognito-service';
 import { MissingParamsError } from 'src/utils/customError';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 
@@ -371,52 +371,6 @@ export async function logoutUser(
     return { err };
   }
 }
-/**
- * =======================================================================================================
- * Private- add user to a group with different access control -For Testing Only Make Public
- * =======================================================================================================
- */
-export async function addUserToGroup(
-  event?: ParsedAPIGatewayProxyEvent,
-  context?: Context
-) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  try {
-    const { email, groupName } = event.body;
-
-    if (!groupName || !email) throw new MissingParamsError('groupName, email');
-    const data = await CognitoService.addUserToGroupCognitoHandler({
-      groupName,
-      email,
-    });
-    return { data };
-  } catch (err) {
-    return { err };
-  }
-}
-/**
- * =======================================================================================================
- * Get Confirmation Status If User Is Verified Or Not
- * =======================================================================================================
- */
-export async function getVerificationStatus(
-  event?: ParsedAPIGatewayProxyEvent,
-  context?: Context
-) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  try {
-    const email = event.requestContext.authorizer?.claims?.email;
-    if (!email) throw new MissingParamsError('email');
-    const data = await CognitoService.getVerificationStatusHandler({
-      email,
-    });
-    return { data };
-  } catch (err) {
-    return { err };
-  }
-}
 
 /**
  * =======================================================================================================
@@ -629,7 +583,6 @@ export const AccountController = {
   logoutUser,
   setUsersInitialPassword,
   resendConfirmationCode,
-  getVerificationStatus,
   resetUserPassword,
   uploadAdminPassport,
   addReferrerToUser,

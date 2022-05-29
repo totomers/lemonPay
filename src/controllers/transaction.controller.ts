@@ -1,5 +1,5 @@
 import { Context } from 'aws-lambda';
-import { TransactionService } from 'src/services/transaction.service';
+import { TransactionService } from 'src/services/transaction-service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { IPhosTransactionPayload } from 'src/types/phosTransPayload.interface';
 import { ITransactionDocument } from 'src/types/transaction.interface';
@@ -43,12 +43,12 @@ export async function addTransaction(event?: any, context?: Context) {
  * Send client email with text after successful transaction has been made.
  * =======================================================================================================
  */
-export async function emailClientInvoice(event?: any, context?: Context) {
+export async function emailReceipt(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     const { email, name } = event.requestContext.authorizer.claims;
     if (!email || !name) throw new MissingParamsError('email,name');
-    const data = await TransactionService.emailClientInvoiceHandler({
+    const data = await TransactionService.emailReceiptHandler({
       name,
       email,
     });
@@ -63,7 +63,7 @@ export async function emailClientInvoice(event?: any, context?: Context) {
  * Get User Transactions History From DB.
  * =======================================================================================================
  */
-export async function getUserTransactions(event?: any, context?: Context) {
+export async function getTransactionHistory(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     const tokenClaims = event.requestContext.authorizer
@@ -75,7 +75,7 @@ export async function getUserTransactions(event?: any, context?: Context) {
     if (!userId || !businessId)
       throw new MissingParamsError('userId, businessId');
 
-    const data = await TransactionService.getUserTransactionsHandler({
+    const data = await TransactionService.getTransactionHistoryHandler({
       userId,
       businessId,
     });
@@ -136,9 +136,9 @@ export async function validatePhosToken(
 }
 
 export const TransactionController = {
-  emailClientInvoice,
+  emailReceipt,
   addTransaction,
-  getUserTransactions,
+  getTransactionHistory,
   createPhosToken,
   validatePhosToken,
 };

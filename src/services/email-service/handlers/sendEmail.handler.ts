@@ -1,4 +1,3 @@
-import AWS from 'aws-sdk';
 import { CONFIG } from 'src/config';
 import { NodeMailerOutlookError } from 'src/utils/customError';
 import nodemailer from 'nodemailer';
@@ -6,7 +5,6 @@ const transporter = nodemailer.createTransport({
   service: 'hotmail',
   host: 'smtp.office365.com',
   port: 587, // secure SMTP
-
   auth: {
     user: CONFIG.EMAIL.ADDRESS,
     pass: CONFIG.EMAIL.PASSWORD,
@@ -20,7 +18,7 @@ const transporter = nodemailer.createTransport({
  * *====================================================================================================
  */
 
-export async function sendTextEmailHandler(params: {
+export async function sendEmailHandler(params: {
   text: string;
   subject: string;
   to: string;
@@ -50,7 +48,3 @@ export async function sendTextEmailHandler(params: {
     throw new NodeMailerOutlookError(err);
   }
 }
-
-export const EmailService = {
-  sendTextEmailHandler,
-};

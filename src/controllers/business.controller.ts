@@ -1,6 +1,6 @@
 import { Context } from 'aws-lambda';
 import { MessageUtil } from '../utils/message';
-import { BusinessService } from '../services/business.service';
+import { BusinessService } from '../services/business-service';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 

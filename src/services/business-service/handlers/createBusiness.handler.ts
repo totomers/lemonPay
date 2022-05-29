@@ -1,22 +1,8 @@
-import { IBusinessDocument } from 'src/types/business.interface';
 import { connectToDatabase } from 'src/database/db';
-import { Business } from '../database/models/business';
-import {
-  AdminOnlyError,
-  CustomError,
-  MongoCustomError,
-} from 'src/utils/customError';
-import { AccountService } from './account.service';
-import { generateRefCode } from 'src/utils/referralCodeGen';
-
-export async function getAllBusinessesHandler() {
-  try {
-    await connectToDatabase();
-    return Business.find();
-  } catch (error) {
-    return error;
-  }
-}
+import { Business } from 'src/database/models/business';
+import { generateRefCode } from '../utils/referralCodeGen';
+import { IBusinessDocument } from 'src/types/business.interface';
+import { CustomError, MongoCustomError } from 'src/utils/customError';
 
 export async function createBusinessHandler(
   params: Partial<IBusinessDocument>
@@ -24,7 +10,7 @@ export async function createBusinessHandler(
   try {
     await connectToDatabase();
     const { businessRegistrationNumber } = params;
-    await validateBusinessDetails({ businessRegistrationNumber });
+    await _validateBusinessDetails({ businessRegistrationNumber });
 
     const referralCode = await _generateUserRefCode();
     const result = await Business.create({ ...params, referralCode });
@@ -47,7 +33,8 @@ async function _generateUserRefCode(): Promise<string> {
     throw new MongoCustomError(err);
   }
 }
-async function validateBusinessDetails(params: {
+
+async function _validateBusinessDetails(params: {
   businessRegistrationNumber: string;
 }) {
   try {
@@ -66,32 +53,3 @@ async function validateBusinessDetails(params: {
     throw err;
   }
 }
-
-export async function editBusinessHandler(params: {
-  edittedBusiness: Partial<IBusinessDocument>;
-  email: string;
-}): Promise<IBusinessDocument> {
-  try {
-    await connectToDatabase();
-    const { email, edittedBusiness } = params;
-    const isBusinessAdmin = await AccountService.isUserABusinessAdmin({
-      email,
-      businessId: edittedBusiness._id,
-    });
-
-    if (!isBusinessAdmin) throw new AdminOnlyError();
-    const result = await Business.findByIdAndUpdate(edittedBusiness._id, {
-      edittedBusiness,
-    });
-
-    return result;
-  } catch (err) {
-    if (err instanceof AdminOnlyError) throw err;
-    else throw new MongoCustomError(err);
-  }
-}
-
-export const BusinessService = {
-  getAllBusinessesHandler,
-  createBusinessHandler,
-};

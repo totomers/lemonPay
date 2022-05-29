@@ -10,7 +10,6 @@ import {
   confirmSignUp,
   setInitialPassword,
   resendConfirmationCode,
-  getVerificationStatus,
   resetUserPassword,
   uploadAdminPassport,
   addReferrerToUser,
@@ -26,9 +25,9 @@ import {
   respondToSignInAuthChallenge,
 } from 'src/lambdas/account';
 import {
-  emailClientInvoice,
+  emailReceipt,
   addTransaction,
-  getUserTransactions,
+  getTransactionHistory,
   createPhosToken,
   validatePhosToken,
 } from 'src/lambdas/transaction';
@@ -123,8 +122,7 @@ const serverlessConfiguration: AWS = {
     confirmSignUp,
     setInitialPassword,
     resendConfirmationCode,
-    getVerificationStatus,
-    emailClientInvoice,
+    emailReceipt,
     resetUserPassword,
     uploadAdminPassport,
     addReferrerToUser,
@@ -139,7 +137,7 @@ const serverlessConfiguration: AWS = {
     respondToCustomAuthChallenge,
     respondToSignInAuthChallenge,
     addTransaction,
-    getUserTransactions,
+    getTransactionHistory,
     createPhosToken,
     validatePhosToken,
   },
