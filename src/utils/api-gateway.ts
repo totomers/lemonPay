@@ -37,7 +37,7 @@ export const formatErrorResponse = (err: CustomError) => {
     statusCode,
     headers: {
       'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Origin': 'https://www.example.com',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
     },
     body: JSON.stringify(err),
