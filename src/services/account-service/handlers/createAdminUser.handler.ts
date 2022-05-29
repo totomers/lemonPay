@@ -32,7 +32,7 @@ export async function createAdminUserHandler(params: {
       populate: {
         path: 'business',
         model: 'business',
-        select: { businessName: 1, status: 1 },
+        select: { businessName: 1, status: 1, referralCode: 1 },
       },
     })) as IUserDocument;
 
