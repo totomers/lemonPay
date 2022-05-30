@@ -52,7 +52,7 @@ export async function respondToSignInChallengeHandler(params: {
       throw new CustomError(
         'Confirmation Code is invalid.',
         400,
-        'CodeMismatchException'
+        'TooManyRequestsException'
       );
     throw new AWSCognitoError(err);
   }
