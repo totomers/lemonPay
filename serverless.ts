@@ -180,6 +180,7 @@ const serverlessConfiguration: AWS = {
           ResponseParameters: {
             'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Methods': "'*'",
           },
           ResponseType: 'DEFAULT_4XX',
           RestApiId: { Ref: 'ApiGatewayRestApi' },
