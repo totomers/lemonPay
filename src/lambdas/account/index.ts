@@ -202,7 +202,7 @@ export const getBusinessAdminList = {
         path: 'account/getBusinessAdminList',
         cors: {
           origin: '*',
-          headers: '*',
+          headers: ['*'],
           allowCredentials: true,
         },
         authorizer: {
