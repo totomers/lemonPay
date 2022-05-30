@@ -200,6 +200,7 @@ export const getBusinessAdminList = {
       http: {
         method: 'get',
         path: 'account/getBusinessAdminList',
+        cors: true,
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
