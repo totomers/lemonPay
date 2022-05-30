@@ -186,6 +186,16 @@ export const getUser = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const getBusinessAdminList = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.getBusinessAdminList(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
 
 export const defineAuthChallenge = middyfy(
   async (

@@ -193,6 +193,20 @@ export const getUser = {
     },
   ],
 };
+export const getBusinessAdminList = {
+  handler: `${handlerPath(__dirname)}/handler.getBusinessAdminList`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'account/getBusinessAdminList',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
 
 export const defineAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.defineAuthChallenge`,

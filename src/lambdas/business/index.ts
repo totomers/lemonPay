@@ -18,6 +18,22 @@ export const getAllBusinesses = {
     },
   ],
 };
+export const getBusinessDetails = {
+  handler: `${handlerPath(__dirname)}/handler.getBusinessDetails`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'businesses/getBusinessDetails',
+        cors: true,
+        authorizer: {
+          // name: "LemonPayCognitoAuthorizer",
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
 
 export const createBusiness = {
   handler: `${handlerPath(__dirname)}/handler.createBusiness`,

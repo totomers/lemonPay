@@ -395,6 +395,24 @@ export async function getUser(
     return { err };
   }
 }
+/**
+ * =======================================================================================================
+ * Get List Of All Business Owners
+ * =======================================================================================================
+ */
+export async function getBusinessAdminList(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const data = await AccountService.getBusinessAdminListHandler();
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
 
 /**
  * =======================================================================================================
@@ -595,4 +613,5 @@ export const AccountController = {
   initiateAuthChallengeWithToken,
   respondToResetPassChallenge,
   respondToSignInAuthChallenge,
+  getBusinessAdminList,
 };

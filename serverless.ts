@@ -1,6 +1,10 @@
 import type { AWS } from '@serverless/typescript';
 import hello from 'src/lambdas/hello';
-import { getAllBusinesses, createBusiness } from 'src/lambdas/business';
+import {
+  getAllBusinesses,
+  createBusiness,
+  getBusinessDetails,
+} from 'src/lambdas/business';
 import {
   createBusinessAccount,
   verifyUserDetails,
@@ -23,6 +27,7 @@ import {
   initiateAuthChallengeWithToken,
   respondToCustomAuthChallenge,
   respondToSignInAuthChallenge,
+  getBusinessAdminList,
 } from 'src/lambdas/account';
 import {
   emailReceipt,
@@ -140,6 +145,8 @@ const serverlessConfiguration: AWS = {
     getTransactionHistory,
     createPhosToken,
     validatePhosToken,
+    getBusinessAdminList,
+    getBusinessDetails,
   },
   package: { individually: true },
   custom: {

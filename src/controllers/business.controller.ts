@@ -23,6 +23,26 @@ export async function getAll(
     return MessageUtil.error(err.code, err.message);
   }
 }
+/**
+ * =======================================================================================================
+ * Get business details
+ * =======================================================================================================
+ */
+export async function getBusinessDetails(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    const { _id } = event.body;
+    const result = await BusinessService.getBusinessDetailsHandler({ _id });
+    return result;
+  } catch (err) {
+    console.error(err);
+    console.log('error:', err);
+    return MessageUtil.error(err.code, err.message);
+  }
+}
 
 /**
  * =======================================================================================================
@@ -48,4 +68,5 @@ export async function create(
 export const BusinessController = {
   getAll,
   create,
+  getBusinessDetails,
 };
