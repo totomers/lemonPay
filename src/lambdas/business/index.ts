@@ -23,7 +23,7 @@ export const getBusinessDetails = {
   events: [
     {
       http: {
-        method: 'get',
+        method: 'post',
         path: 'businesses/getBusinessDetails',
         cors: true,
         authorizer: {
