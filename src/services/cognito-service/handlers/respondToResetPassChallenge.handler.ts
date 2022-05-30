@@ -1,7 +1,11 @@
 import { RespondToAuthChallengeRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 import { AWSCognitoError } from 'src/utils/customError';
 import { CognitoService } from '..';
-import { clientId, cognitoidentityserviceprovider } from '../common';
+import {
+  clientId,
+  cognitoidentityserviceprovider,
+  CustomError,
+} from '../common';
 
 /**
  * =======================================================================================================
@@ -37,12 +41,19 @@ export async function respondToResetPassChallengeHandler(params: {
       // );
       return { session: data.Session };
     }
+
     await CognitoService.updateUserAttributes({
       attributes: [{ Name: 'custom:isPasswordMutable', Value: '1' }],
       email: username,
     });
     return { accessToken: data.AuthenticationResult.AccessToken };
   } catch (err) {
+    if (err.code === 'NotAuthorizedException')
+      throw new CustomError(
+        'Confirmation Code is invalid.',
+        400,
+        'CodeMismatchException'
+      );
     throw new AWSCognitoError(err);
   }
 }
