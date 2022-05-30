@@ -9,6 +9,7 @@ export const getAllBusinesses = {
       http: {
         method: 'get',
         path: 'businesses/getAll',
+        cors: true,
         authorizer: {
           // name: "LemonPayCognitoAuthorizer",
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
@@ -33,51 +34,3 @@ export const createBusiness = {
     },
   ],
 };
-
-// export const createTodo = {
-//   handler: `${handlerPath(__dirname)}/handler.createTodo`,
-//   events: [
-//     {
-//       http: {
-//         method: "post",
-//         path: "todo",
-//       },
-//     },
-//   ],
-// };
-
-// export const getTodo = {
-//   handler: `${handlerPath(__dirname)}/handler.getTodo`,
-//   events: [
-//     {
-//       http: {
-//         method: "get",
-//         path: "todo/{id}",
-//       },
-//     },
-//   ],
-// };
-
-// export const updateTodo = {
-//   handler: `${handlerPath(__dirname)}/handler.updateTodo`,
-//   events: [
-//     {
-//       http: {
-//         method: "put",
-//         path: "todo/{id}",
-//       },
-//     },
-//   ],
-// };
-
-// export const deleteTodo = {
-//   handler: `${handlerPath(__dirname)}/handler.deleteTodo`,
-//   events: [
-//     {
-//       http: {
-//         method: "delete",
-//         path: "todo/{id}",
-//       },
-//     },
-//   ],
-// };
