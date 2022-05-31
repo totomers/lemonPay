@@ -20,7 +20,9 @@ export async function getTransactionHistoryHandler(params: {
     const result = await Transaction.find({
       userId,
       businessId,
-    });
+    }).select(
+      '_id,businessId,userId,transactionType,approvedAmount,approvalTime,transactionNumber,cardNumber,cardType,status,createdAt,updatedAt'
+    );
     return result;
   } catch (err) {
     throw new MongoCustomError(err);
