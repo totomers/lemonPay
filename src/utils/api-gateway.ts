@@ -28,29 +28,29 @@ export const formatJSONResponse = (body?: any, statusCode?: number) => {
     body: JSON.stringify(body),
   };
 };
-export const formatJSONResponseWithCookie = (
-  body?: any,
+// export const formatJSONResponseWithCookie = (
+//   body?: any,
 
-  statusCode?: number,
-  key?: string,
-  value?: string
-) => {
-  return {
-    statusCode: statusCode || 200,
-    headers: {
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Origin': 'http://localhost:3001',
-      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-      'Set-Cookie': setCookieString(key, value, {
-        domain: '*',
-        secure: true,
-        httpOnly: true,
-        path: '*',
-      }),
-    },
-    body: JSON.stringify(body),
-  };
-};
+//   statusCode?: number,
+//   key?: string,
+//   value?: string
+// ) => {
+//   return {
+//     statusCode: statusCode || 200,
+//     headers: {
+//       'Access-Control-Allow-Headers': 'Content-Type',
+//       'Access-Control-Allow-Origin': '*',
+//       'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+//       'Set-Cookie': setCookieString(key, value, {
+//         domain: '*',
+//         secure: true,
+//         httpOnly: true,
+//         path: '*',
+//       }),
+//     },
+//     body: JSON.stringify(body),
+//   };
+// };
 
 export const formatErrorResponse = (err: CustomError) => {
   const statusCode = err.statusCode;
