@@ -16,12 +16,11 @@ export async function getAll(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const result = await BusinessService.getAllBusinessesHandler();
-    return result;
+    const data = await BusinessService.getAllBusinessesHandler();
+    return { data };
   } catch (err) {
-    console.error(err);
     console.log('error:', err);
-    return MessageUtil.error(err.code, err.message);
+    return { err };
   }
 }
 /**
@@ -37,12 +36,11 @@ export async function getBusinessDetails(
   try {
     const { _id } = event.body;
     if (!_id) throw new MissingParamsError('_id');
-    const result = await BusinessService.getBusinessDetailsHandler({ _id });
-    return result;
+    const data = await BusinessService.getBusinessDetailsHandler({ _id });
+    return { data };
   } catch (err) {
-    console.error(err);
     console.log('error:', err);
-    return MessageUtil.error(err.code, err.message);
+    return { err };
   }
 }
 
@@ -58,12 +56,11 @@ export async function create(
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     const params: Partial<IBusinessDocument> = event?.body;
-    const result = await BusinessService.createBusinessHandler(params);
-    return result;
+    const data = await BusinessService.createBusinessHandler(params);
+    return { data };
   } catch (err) {
-    console.error(err);
     console.log('error:', err);
-    return MessageUtil.error(err.code, err.message);
+    return { err };
   }
 }
 

@@ -1,5 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import {
+  formatErrorResponse,
   formatJSONResponse,
   ParsedAPIGatewayProxyEvent,
 } from 'src/utils/api-gateway';
@@ -11,8 +12,9 @@ export const getAllBusinesses = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const businesses = await businessController.getAll(event, context);
-    return formatJSONResponse(businesses);
+    const result = await businessController.getAll(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
   }
 );
 export const getBusinessDetails = middyfy(
@@ -20,11 +22,9 @@ export const getBusinessDetails = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const businesses = await businessController.getBusinessDetails(
-      event,
-      context
-    );
-    return formatJSONResponse(businesses);
+    const result = await businessController.getBusinessDetails(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
   }
 );
 
@@ -33,7 +33,8 @@ export const createBusiness = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const newBusiness = await businessController.create(event, context);
-    return formatJSONResponse(newBusiness);
+    const result = await businessController.create(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
   }
 );
