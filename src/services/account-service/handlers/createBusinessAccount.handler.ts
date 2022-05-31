@@ -19,32 +19,35 @@ export async function createBusinessAccountHandler(params: {
 }): Promise<Partial<IUserDocument>> {
   try {
     await connectToDatabase();
-    const conn = mongoose.connection;
-    const session = await conn.startSession();
-    const user = await session.withTransaction(async () => {
-      const { user, business } = params;
-      const newUserId = new mongoose.Types.ObjectId();
+    // const conn = mongoose.connection;
+    // const session = await conn.startSession();
+    // const user = await session.withTransaction(async () => {
+    const { user, business } = params;
+    const newUserId = new mongoose.Types.ObjectId();
 
-      const newBusiness = await BusinessService.createBusinessHandler({
-        ...business,
-        businessAdmin: newUserId,
-      });
-
-      const newUser = await AccountService.createAdminUserHandler({
-        user: { ...user, _id: newUserId },
-        business: newBusiness,
-      });
-
-      const { _id, name, email, businesses } = newUser;
-      const returnedUser = { _id, name, email, businesses };
-      return returnedUser;
+    const newBusiness = await BusinessService.createBusinessHandler({
+      ...business,
+      businessAdmin: newUserId,
     });
-    session.endSession();
+    console.log('newBusiness', newBusiness);
+
+    const newUser = await AccountService.createAdminUserHandler({
+      user: { ...user, _id: newUserId },
+      business: newBusiness,
+    });
+    console.log('newUser', newUser);
+
+    //   return newUser;
+    // });
+
+    // await session.endSession();
     await CognitoService.updateUserAttributes({
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
-    return user;
+    console.log('user returned', user);
+
+    return newUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }

@@ -31,7 +31,7 @@ const BusinessSchema = new mongoose.Schema(
     businessAddress: { type: String, required: true },
     businessHouseNumber: { type: String },
     businessZipCode: { type: String },
-    businessRegistrationNumber: { type: String, unique: true, required: true },
+    businessRegistrationNumber: { type: String, required: true },
     bankAccountHolderName: { type: String, required: true },
     bankAccountIban: { type: String, required: true },
     bankAccountSwift: { type: String, required: true },
