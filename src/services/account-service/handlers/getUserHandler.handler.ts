@@ -15,6 +15,7 @@ export async function getUserHandler(params: { email: string }) {
 
     const { email = 'tomere@moveo.co.il' } = params;
     const user = (await User.findOne({ email })
+      .select({ _id: 1, name: 1, email: 1 })
       .populate({
         path: 'businesses',
         populate: {
@@ -25,21 +26,8 @@ export async function getUserHandler(params: { email: string }) {
       })
       .exec()) as IUserDocument;
 
-    const cleanedUser = _cleanUserObject(user);
-
-    return cleanedUser;
+    return user;
   } catch (err) {
     throw new MongoCustomError(err);
   }
-}
-
-function _cleanUserObject(
-  user:
-    | (IUserDocument & { createdat: string; updatedat: string })
-    | IUserDocument
-) {
-  delete user.__v;
-  if ('createdat' in user) delete user.createdat;
-  if ('updatedat' in user) delete user.updatedat;
-  return user as IUserDocument;
 }

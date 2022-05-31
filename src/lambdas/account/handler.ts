@@ -7,6 +7,7 @@ import {
 import {
   formatErrorResponse,
   formatJSONResponse,
+  formatJSONResponseWithCookie,
   ParsedAPIGatewayProxyEvent,
 } from 'src/utils/api-gateway';
 import { CustomError } from 'src/utils/customError';
@@ -271,6 +272,14 @@ export const respondToSignInChallenge = middyfy(
       context
     );
     if (result.err) return formatErrorResponse(result.err);
+    if ('tokens' in result.data)
+      return formatJSONResponseWithCookie(
+        result.data,
+        200,
+        'refreshToken',
+        result.data.tokens.refreshToken
+      );
+
     return formatJSONResponse(result.data);
   }
 );

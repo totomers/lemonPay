@@ -338,6 +338,8 @@ export async function refreshTokenSignIn(
   try {
     const { refreshToken } = event.body;
 
+    console.log('COOKIE FOUND: ', event.headers.Cookie);
+
     if (!refreshToken) throw new MissingParamsError('refreshToken');
     const data = await CognitoService.refreshTokenSignInCognitoHandler({
       refreshToken,
