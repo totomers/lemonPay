@@ -4,7 +4,7 @@ import { Business } from 'src/database/models/business';
 export async function getAllBusinessesHandler() {
   try {
     await connectToDatabase();
-    return Business.find();
+    return await Business.find();
   } catch (error) {
     return error;
   }

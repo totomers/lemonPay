@@ -5,7 +5,7 @@ export async function getBusinessDetailsHandler(params: { _id: string }) {
   try {
     await connectToDatabase();
     const { _id } = params;
-    return Business.findById(_id);
+    return await Business.findById(_id);
   } catch (error) {
     return error;
   }

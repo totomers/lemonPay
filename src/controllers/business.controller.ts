@@ -3,6 +3,7 @@ import { MessageUtil } from '../utils/message';
 import { BusinessService } from '../services/business-service';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
+import { MissingParamsError } from 'src/utils/customError';
 
 /**
  * =======================================================================================================
@@ -35,6 +36,7 @@ export async function getBusinessDetails(
   context.callbackWaitsForEmptyEventLoop = false;
   try {
     const { _id } = event.body;
+    if (!_id) throw new MissingParamsError('_id');
     const result = await BusinessService.getBusinessDetailsHandler({ _id });
     return result;
   } catch (err) {
