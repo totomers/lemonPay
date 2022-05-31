@@ -5,6 +5,7 @@ import { CustomError, MongoCustomError } from 'src/utils/customError';
 import { BusinessService } from '../../business-service';
 import { AccountService } from '..';
 import { CognitoService } from 'src/services/cognito-service';
+import mongoose from 'mongoose';
 /**
  * ====================================================================================================
  * Create new user
@@ -18,24 +19,32 @@ export async function createBusinessAccountHandler(params: {
 }): Promise<Partial<IUserDocument>> {
   try {
     await connectToDatabase();
-    const { user, business } = params;
+    const conn = mongoose.connection;
+    const session = await conn.startSession();
+    const user = await session.withTransaction(async () => {
+      const { user, business } = params;
+      const newUserId = new mongoose.Types.ObjectId();
 
-    const newBusiness = await BusinessService.createBusinessHandler(business);
+      const newBusiness = await BusinessService.createBusinessHandler({
+        ...business,
+        businessAdmin: newUserId,
+      });
 
-    // Check If User with the same email exists
+      const newUser = await AccountService.createAdminUserHandler({
+        user: { ...user, _id: newUserId },
+        business: newBusiness,
+      });
 
-    const newUser = await AccountService.createAdminUserHandler({
-      user,
-      business: newBusiness,
+      const { _id, name, email, businesses } = newUser;
+      const returnedUser = { _id, name, email, businesses };
+      return returnedUser;
     });
-
+    session.endSession();
     await CognitoService.updateUserAttributes({
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
-    const { _id, name, email, businesses } = newUser;
-    const returnedUser = { _id, name, email, businesses };
-    return returnedUser;
+    return user;
   } catch (err) {
     throw new MongoCustomError(err);
   }

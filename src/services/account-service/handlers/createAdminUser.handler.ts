@@ -21,22 +21,32 @@ export async function createAdminUserHandler(params: {
 
     const newUser = new User({
       ...user,
-      defaultBusiness: business._id,
       businesses: [{ business: business._id, role: 'ADMIN' }],
     });
 
     await newUser.save();
 
-    const populatedUser = (await User.populate(newUser, {
-      path: 'businesses',
-      populate: {
-        path: 'business',
-        model: 'business',
-        select: { businessName: 1, status: 1, referralCode: 1 },
+    const adminBusiness = {
+      business: {
+        _id: business._id,
+        name: business.businessName,
+        status: business.status,
+        referraalCode: business.referralCode,
       },
-    })) as IUserDocument;
+      role: 'ADMIN',
+    };
+    const newAdminUser = { ...newUser, businesses: [adminBusiness] };
 
-    return populatedUser;
+    // const populatedUser = (await User.populate(newUser, {
+    //   path: 'businesses',
+    //   populate: {
+    //     path: 'business',
+    //     model: 'business',
+    //     select: { businessName: 1, status: 1, referralCode: 1 },
+    //   },
+    // })) as IUserDocument;
+
+    return newAdminUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }

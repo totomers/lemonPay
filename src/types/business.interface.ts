@@ -5,6 +5,7 @@ export type IBusinessDocument = mongoose.Document & {
   businessName: string;
   businessTradeName: string;
   // users: { user: mongoose.Schema.Types.ObjectId; role: IRole }[];
+  businessAdmin: mongoose.Types.ObjectId;
   businessType:
     | 'SoleTrader'
     | 'CommercialPartnership'

@@ -14,6 +14,7 @@ export async function getBusinessAdminListHandler() {
     await connectToDatabase();
 
     const users = (await User.find()
+      .select({ _id: 1, name: 1, email: 1 })
       .populate({
         path: 'businesses',
         populate: {
