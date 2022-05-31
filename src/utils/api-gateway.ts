@@ -39,7 +39,7 @@ export const formatJSONResponseWithCookie = (
     statusCode: statusCode || 200,
     headers: {
       'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'http://localhost:3001',
       'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
       'Set-Cookie': setCookieString(key, value, {
         domain: '*',
