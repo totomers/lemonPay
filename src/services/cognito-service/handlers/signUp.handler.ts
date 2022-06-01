@@ -82,8 +82,6 @@ export async function deleteUninitiatedUser(params: { email: string }) {
     if (result instanceof AWSCognitoError) return result;
 
     const user = result;
-    // if (!user || !user.UserAttributes) return;
-    console.log('found an exisiting user', user);
 
     const isUninitiatedAttr = _getCustomAttribute(
       user.UserAttributes,
@@ -91,24 +89,22 @@ export async function deleteUninitiatedUser(params: { email: string }) {
     );
 
     if (isUninitiatedAttr.Value === '0') {
-      const adminDeleteUserRequest: AWS.CognitoIdentityServiceProvider.AdminDeleteUserRequest =
-        { UserPoolId: userPoolId, Username: email };
-      await cognitoidentityserviceprovider
-        .adminDeleteUser(adminDeleteUserRequest)
-        .promise();
+      _deleteCognitoUser(email);
       return;
     }
 
     const mongoUser = await User.findOne({ email });
-    if (mongoUser._id) {
-      const adminDeleteUserRequest: AWS.CognitoIdentityServiceProvider.AdminDeleteUserRequest =
-        { UserPoolId: userPoolId, Username: email };
-      await cognitoidentityserviceprovider
-        .adminDeleteUser(adminDeleteUserRequest)
-        .promise();
-      return;
-    }
+    if (mongoUser._id) _deleteCognitoUser(email);
   } catch (err) {
     throw new AWSCognitoError(err);
   }
+}
+
+async function _deleteCognitoUser(email: string) {
+  const adminDeleteUserRequest: AWS.CognitoIdentityServiceProvider.AdminDeleteUserRequest =
+    { UserPoolId: userPoolId, Username: email };
+  await cognitoidentityserviceprovider
+    .adminDeleteUser(adminDeleteUserRequest)
+    .promise();
+  return;
 }

@@ -12,7 +12,7 @@ const TransactionSchema = new mongoose.Schema(
     phosTransactionId: { type: String, required: true }, //"123",
     approvedAmount: { type: String, required: true }, //"1.23",
     approvalNumber: { type: Number, required: true }, // "078206",
-    approvalTime: { type: String, required: true }, //"2021-11-30 09:27:55",
+    approvalTime: { type: Date, required: true }, //"2021-11-30 09:27:55",
     responseCode: { type: String }, // "00",
     origTransactionId: { type: String }, // "sodsd123",
     batchNumber: { type: Number, required: true }, // 0,
