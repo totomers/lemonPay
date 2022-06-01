@@ -20,11 +20,24 @@ export async function getTransactionHistoryHandler(params: {
     const result = await Transaction.find({
       userId,
       businessId,
-    }).select(
-      '_id,businessId,userId,transactionType,approvedAmount,approvalTime,transactionNumber,cardNumber,cardType,status,createdAt,updatedAt'
-    );
+    }).select({
+      _id: 1,
+      businessId: 1,
+      userId: 1,
+      transactionType: 1,
+      approvedAmount: 1,
+      approvalTime: 1,
+      transactionNumber: 1,
+      cardNumber: 1,
+      cardType: 1,
+      status: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    });
     return result;
   } catch (err) {
     throw new MongoCustomError(err);
   }
 }
+
+//_id,businessId,userId,transactionType,approvedAmount,approvalTime,transactionNumber,cardNumber,cardType,status,createdAt,updatedAt
