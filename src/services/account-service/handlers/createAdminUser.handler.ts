@@ -32,7 +32,7 @@ export async function createAdminUserHandler(params: {
     const adminBusiness = {
       business: {
         _id: business._id,
-        name: business.businessName,
+        businessName: business.businessName,
         status: business.status,
         referralCode: business.referralCode,
       },
