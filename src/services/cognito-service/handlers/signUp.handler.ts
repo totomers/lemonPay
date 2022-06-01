@@ -1,3 +1,4 @@
+import { User } from 'src/database/models/user';
 import { AWSCognitoError } from 'src/utils/customError';
 import {
   AWS,
@@ -22,7 +23,7 @@ export async function signUpCognitoHandler(params: {
   try {
     const { email, name } = params;
 
-    await overrideUninitiatedUser({ email });
+    await deleteUninitiatedUser({ email });
 
     const signUpRequest: AWS.CognitoIdentityServiceProvider.SignUpRequest = {
       Username: email,
@@ -73,7 +74,7 @@ export async function signUpCognitoHandler(params: {
  * =======================================================================================================
  */
 
-export async function overrideUninitiatedUser(params: { email: string }) {
+export async function deleteUninitiatedUser(params: { email: string }) {
   try {
     const { email } = params;
 
@@ -95,6 +96,17 @@ export async function overrideUninitiatedUser(params: { email: string }) {
       await cognitoidentityserviceprovider
         .adminDeleteUser(adminDeleteUserRequest)
         .promise();
+      return;
+    }
+
+    const mongoUser = await User.findOne({ email });
+    if (mongoUser._id) {
+      const adminDeleteUserRequest: AWS.CognitoIdentityServiceProvider.AdminDeleteUserRequest =
+        { UserPoolId: userPoolId, Username: email };
+      await cognitoidentityserviceprovider
+        .adminDeleteUser(adminDeleteUserRequest)
+        .promise();
+      return;
     }
   } catch (err) {
     throw new AWSCognitoError(err);
