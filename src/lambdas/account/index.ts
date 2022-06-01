@@ -193,6 +193,20 @@ export const getUser = {
     },
   ],
 };
+export const getUserFullDetails = {
+  handler: `${handlerPath(__dirname)}/handler.getUserFullDetails`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'account/getUserFullDetails',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
 export const getBusinessAdminList = {
   handler: `${handlerPath(__dirname)}/handler.getBusinessAdminList`,
   events: [

@@ -7,6 +7,7 @@ import { getUserHandler } from './handlers/getUserHandler.handler';
 import { uploadAdminPassportHandler } from './handlers/uploadAdminPassport.handler';
 import { addReferrerToUserHandler } from './handlers/addReferrerToUser.handler';
 import { getBusinessAdminListHandler } from './handlers/getBusinessAdminList.handler';
+import { getUserFullDetailsHandler } from './handlers/getUserFullDetails.handler';
 
 export const AccountService = {
   createBusinessAccountHandler,
@@ -18,4 +19,5 @@ export const AccountService = {
   uploadAdminPassportHandler,
   addReferrerToUserHandler,
   getBusinessAdminListHandler,
+  getUserFullDetailsHandler,
 };

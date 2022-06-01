@@ -376,7 +376,7 @@ export async function logoutUser(
 
 /**
  * =======================================================================================================
- * Get User Status If User Is Has Changed Password, Has Registered Business & Personal Details
+ * Get User Plain Details And Businesses
  * =======================================================================================================
  */
 export async function getUser(
@@ -390,6 +390,29 @@ export async function getUser(
       event.requestContext.authorizer?.claims?.email || 'tomere@moveo.co.il';
     if (!email) throw new MissingParamsError('email');
     const data = await AccountService.getUserHandler({
+      email,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+/**
+ * =======================================================================================================
+ * Get User Full Details And Businesses
+ * =======================================================================================================
+ */
+export async function getUserFullDetails(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const email =
+      event.requestContext.authorizer?.claims?.email || 'tomere@moveo.co.il';
+    if (!email) throw new MissingParamsError('email');
+    const data = await AccountService.getUserFullDetailsHandler({
       email,
     });
     return { data };
@@ -608,6 +631,7 @@ export const AccountController = {
   addReferrerToUser,
   getUserStatus,
   getUser,
+  getUserFullDetails,
   defineCustomChallenge,
   createAuthChallenge,
   verifyAuthChallenge,

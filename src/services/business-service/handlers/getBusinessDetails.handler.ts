@@ -5,7 +5,11 @@ export async function getBusinessDetailsHandler(params: { _id: string }) {
   try {
     await connectToDatabase();
     const { _id } = params;
-    const business = await Business.findById(_id);
+    const business = await Business.findById(_id).select({
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0,
+    });
 
     return business;
   } catch (error) {
