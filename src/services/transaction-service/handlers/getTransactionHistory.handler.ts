@@ -13,7 +13,7 @@ import { MongoCustomError } from 'src/utils/customError';
 export async function getTransactionHistoryHandler(params: {
   userId: string;
   businessId: string;
-}): Promise<{ transaction: ITransactionDocument[] }> {
+}): Promise<{ transactions: ITransactionDocument[] }> {
   try {
     await connectToDatabase();
     const { userId, businessId } = params;
@@ -34,7 +34,7 @@ export async function getTransactionHistoryHandler(params: {
       createdAt: 1,
       updatedAt: 1,
     });
-    return { transaction: result };
+    return { transactions: result };
   } catch (err) {
     throw new MongoCustomError(err);
   }
