@@ -23,8 +23,9 @@ export const getBusinessDetails = {
   events: [
     {
       http: {
-        method: 'post',
-        path: 'businesses/getBusinessDetails',
+        method: 'get',
+        path: 'businesses/getBusinessDetails/{_id}',
+        request: { parameters: { paths: { _id: true } } },
         cors: true,
         authorizer: {
           // name: "LemonPayCognitoAuthorizer",

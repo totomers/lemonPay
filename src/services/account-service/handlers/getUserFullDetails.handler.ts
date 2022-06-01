@@ -21,7 +21,7 @@ export async function getUserFullDetailsHandler(params: { email: string }) {
         populate: {
           path: 'business',
           model: 'business',
-          select: { businessName: 1, status: 1, referralCode: 1 },
+          select: { createdAt: 0, updatedAt: 0, __v: 0 },
         },
       })
       .exec()) as IUserDocument;

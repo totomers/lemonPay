@@ -18,7 +18,6 @@ export async function createBusinessHandler(
     return result;
   } catch (err) {
     console.log(err);
-
     throw new MongoCustomError(err);
   }
 }

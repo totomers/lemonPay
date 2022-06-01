@@ -34,7 +34,7 @@ export async function getBusinessDetails(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const _id = event.body._id;
+    const _id = event.pathParameters._id;
     if (!_id) throw new MissingParamsError('_id');
     const data = await BusinessService.getBusinessDetailsHandler({ _id });
     return { data };
