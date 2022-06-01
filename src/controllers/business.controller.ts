@@ -64,8 +64,85 @@ export async function create(
   }
 }
 
+/**
+ * =======================================================================================================
+ * Approve business
+ * =======================================================================================================
+ */
+export async function approveBusiness(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    const { _id, merchantId, email } = event?.body;
+    if (!_id || !merchantId || !email)
+      throw new MissingParamsError('_id, merchantId, email');
+    const data = await BusinessService.approveBusinessHandler({
+      _id,
+      merchantId,
+      email,
+    });
+    return { data };
+  } catch (err) {
+    console.log('error:', err);
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Decline business
+ * =======================================================================================================
+ */
+export async function declineBusiness(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    const { _id, email } = event?.body;
+    if (!_id || !email) throw new MissingParamsError('_id, email');
+    const data = await BusinessService.declineBusinessHandler({
+      _id,
+      email,
+    });
+    return { data };
+  } catch (err) {
+    console.log('error:', err);
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
+ * Update business status (pendingAction or pendingVerification)
+ * =======================================================================================================
+ */
+export async function updateBusinessStatus(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    const { _id, status } = event?.body;
+    if (!_id || !status) throw new MissingParamsError('_id, status');
+    const data = await BusinessService.updateBusinessStatus({
+      _id,
+      status,
+    });
+    return { data };
+  } catch (err) {
+    console.log('error:', err);
+    return { err };
+  }
+}
+
 export const BusinessController = {
   getAll,
   create,
   getBusinessDetails,
+  approveBusiness,
+  declineBusiness,
+  updateBusinessStatus,
 };

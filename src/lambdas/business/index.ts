@@ -51,3 +51,46 @@ export const createBusiness = {
     },
   ],
 };
+
+export const approveBusiness = {
+  handler: `${handlerPath(__dirname)}/handler.approveBusiness`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'businesses/approve',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+export const declineBusiness = {
+  handler: `${handlerPath(__dirname)}/handler.declineBusiness`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'businesses/decline',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+export const updateBusinessStatus = {
+  handler: `${handlerPath(__dirname)}/handler.updateBusinessStatus`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'businesses/updateBusinessStatus',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};

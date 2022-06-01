@@ -4,6 +4,9 @@ import {
   getAllBusinesses,
   createBusiness,
   getBusinessDetails,
+  approveBusiness,
+  declineBusiness,
+  updateBusinessStatus,
 } from 'src/lambdas/business';
 import {
   createBusinessAccount,
@@ -149,6 +152,9 @@ const serverlessConfiguration: AWS = {
     validatePhosToken,
     getBusinessAdminList,
     getBusinessDetails,
+    approveBusiness,
+    declineBusiness,
+    updateBusinessStatus,
   },
   package: { individually: true },
   custom: {
