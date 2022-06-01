@@ -21,7 +21,6 @@ const UserSchema = new mongoose.Schema(
       default: null,
     },
     name: { type: String, required: true },
-
     refferer: { type: mongoose.Schema.Types.ObjectId, ref: 'business' },
     dateofbirth: { type: Date, required: true },
     homeAddress: { type: String, required: true },
