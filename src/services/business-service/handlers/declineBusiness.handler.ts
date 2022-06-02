@@ -22,7 +22,9 @@ export async function declineBusinessHandler(params: {
         status: 'unverified',
       },
       { new: true }
-    );
+    )
+      .populate('businessAdmin')
+      .exec();
 
     await _sendBusinessDeclineEmail(email);
 

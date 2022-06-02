@@ -24,7 +24,9 @@ export async function approveBusinessHandler(params: {
         merchantId,
       },
       { new: true }
-    );
+    )
+      .populate('businessAdmin')
+      .exec();
 
     await _sendBusinessApprovalEmail(email);
 
