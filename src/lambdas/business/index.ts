@@ -57,7 +57,7 @@ export const approveBusiness = {
   events: [
     {
       http: {
-        method: 'post',
+        method: 'patch',
         path: 'businesses/approve',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
@@ -71,7 +71,7 @@ export const declineBusiness = {
   events: [
     {
       http: {
-        method: 'post',
+        method: 'patch',
         path: 'businesses/decline',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
@@ -85,7 +85,7 @@ export const updateBusinessStatus = {
   events: [
     {
       http: {
-        method: 'post',
+        method: 'patch',
         path: 'businesses/updateBusinessStatus',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
