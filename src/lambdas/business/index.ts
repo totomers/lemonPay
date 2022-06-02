@@ -59,6 +59,7 @@ export const approveBusiness = {
       http: {
         method: 'patch',
         path: 'businesses/approve',
+        cors: true,
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
@@ -73,6 +74,7 @@ export const declineBusiness = {
       http: {
         method: 'patch',
         path: 'businesses/decline',
+        cors: true,
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
@@ -87,6 +89,7 @@ export const updateBusinessStatus = {
       http: {
         method: 'patch',
         path: 'businesses/updateBusinessStatus',
+        cors: true,
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
