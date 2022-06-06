@@ -21,7 +21,7 @@ export async function approveBusinessHandler(params: {
       _id,
       {
         status: 'verified',
-        merchantId,
+        // merchantId,
       },
       { new: true }
     )
