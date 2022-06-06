@@ -32,6 +32,8 @@ import {
   respondToCustomAuthChallenge,
   respondToSignInAuthChallenge,
   getBusinessAdminList,
+  signInLemonPayAdmin,
+  createLemonPayAdmin,
 } from 'src/lambdas/account';
 import {
   emailReceipt,
@@ -155,6 +157,8 @@ const serverlessConfiguration: AWS = {
     approveBusiness,
     declineBusiness,
     updateBusinessStatus,
+    signInLemonPayAdmin,
+    createLemonPayAdmin,
   },
   package: { individually: true },
   custom: {

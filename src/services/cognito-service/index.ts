@@ -15,6 +15,8 @@ import { verifyAuthChallengeHandler } from './handlers/triggers/verifyAuthChalle
 import { initiateCustomAuthHandler } from './handlers/initiateCustomAuth.handler';
 import { respondToSignInChallengeHandler } from './handlers/respondToSignInChallenge.handler';
 import { respondToResetPassChallengeHandler } from './handlers/respondToResetPassChallenge.handler';
+import { createLemonPayAdminHandler } from './handlers/createLemonPayAdmin.handler';
+import { signInLemonPayAdminHandler } from './handlers/signInLemonPayAdmin.handler';
 
 export const CognitoService = {
   getUserStatusHandler,
@@ -34,4 +36,6 @@ export const CognitoService = {
   initiateCustomAuthHandler,
   respondToSignInChallengeHandler,
   respondToResetPassChallengeHandler,
+  createLemonPayAdminHandler,
+  signInLemonPayAdminHandler,
 };

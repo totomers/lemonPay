@@ -38,6 +38,22 @@ export async function createLemonPayAdminHandler(params: {
           Name: 'custom:isLemonPayAdmin',
           Value: '1',
         },
+        {
+          Name: 'custom:isInitiated',
+          Value: '0',
+        },
+        {
+          Name: 'custom:isKnownDetails',
+          Value: '0',
+        },
+        {
+          Name: 'custom:isVerified',
+          Value: '0',
+        },
+        {
+          Name: 'custom:isPasswordMutable',
+          Value: '0',
+        },
       ],
     };
     const result = await cognitoidentityserviceprovider

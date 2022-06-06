@@ -616,6 +616,59 @@ export async function respondToResetPassChallenge(
     return { err };
   }
 }
+
+/**
+ * =======================================================================================================
+ * Create lemon pay admin user
+ * =======================================================================================================
+ */
+export async function createLemonPayAdmin(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { name, email, password } = event.body;
+
+    if (!name || !email || !password)
+      throw new MissingParamsError('name, email, password');
+
+    const data = await CognitoService.createLemonPayAdminHandler({
+      name,
+      email,
+      password,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+/**
+ * =======================================================================================================
+ * Sign In lemon pay admin user
+ * =======================================================================================================
+ */
+export async function signInLemonPayAdmin(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { email, password } = event.body;
+
+    if (!email || !password) throw new MissingParamsError('email, password');
+
+    const data = await CognitoService.signInLemonPayAdminHandler({
+      email,
+      password,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
 export const AccountController = {
   createBusinessAccount,
   verifyUserDetails,
@@ -640,4 +693,6 @@ export const AccountController = {
   respondToResetPassChallenge,
   respondToSignInAuthChallenge,
   getBusinessAdminList,
+  createLemonPayAdmin,
+  signInLemonPayAdmin,
 };

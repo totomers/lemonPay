@@ -32,11 +32,16 @@ export async function getUserStatusHandler(params: { email: string }) {
       user.UserAttributes,
       'custom:isVerified'
     );
+    const isLemonPayAdmin = _getCustomAttribute(
+      user.UserAttributes,
+      'custom:isLemonPayAdmin'
+    );
 
     return {
-      isInitiated: isUninitiatedAttr.Value === '1',
-      isKnownDetails: isKnownDetails.Value === '1',
-      isVerified: isVerified.Value === '1',
+      isInitiated: isUninitiatedAttr?.Value === '1',
+      isKnownDetails: isKnownDetails?.Value === '1',
+      isVerified: isVerified?.Value === '1',
+      isLemonPayAdmin: isLemonPayAdmin?.Value === '1',
     };
   } catch (err) {
     throw new AWSCognitoError(err);

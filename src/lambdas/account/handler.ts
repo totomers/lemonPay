@@ -306,6 +306,27 @@ export const respondToResetPassChallenge = middyfy(
   }
 );
 
+export const createLemonPayAdmin = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult | CustomError> => {
+    const result = await accountController.createLemonPayAdmin(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+export const signInLemonPayAdmin = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult | CustomError> => {
+    const result = await accountController.signInLemonPayAdmin(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+
 // export const createBusiness = middyfy(
 //   async (event, context): Promise<APIGatewayProxyResult> => {
 //     const newBusiness = await businessController.create(event, context);

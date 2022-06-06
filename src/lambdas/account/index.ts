@@ -288,3 +288,25 @@ export const respondToCustomAuthChallenge = {
     },
   ],
 };
+export const createLemonPayAdmin = {
+  handler: `${handlerPath(__dirname)}/handler.createLemonPayAdmin`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/createLemonPayAdmin',
+      },
+    },
+  ],
+};
+export const signInLemonPayAdmin = {
+  handler: `${handlerPath(__dirname)}/handler.signInLemonPayAdmin`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/signInLemonPayAdmin',
+      },
+    },
+  ],
+};
