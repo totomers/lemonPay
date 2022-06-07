@@ -5,7 +5,7 @@ import { handlerPath } from 'src/utils/handler-resolver';
 //consider removing handlerPath and using relative URL instead..
 export const getAllBusinesses = {
   handler: `${handlerPath(__dirname)}/handler.getAllBusinesses`,
-  vpc: '${self:custom.VPC}' as unknown as AwsLambdaVpcConfig,
+  // vpc: ('${self:custom.VPC}' as unknown as AwsLambdaVpcConfig),
   events: [
     {
       http: {
