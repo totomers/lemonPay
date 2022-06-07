@@ -162,6 +162,7 @@ const serverlessConfiguration: AWS = {
   },
   package: { individually: true },
   custom: {
+    vpc: "${file(./config.${opt:stage, 'dev'}.json):VPC}",
     COGNITO_USER_POOL_ARN:
       "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ARN}",
     S3_BUCKET_NAME: 'lemonpay-upload-bucket',

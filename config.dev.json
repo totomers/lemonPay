@@ -1,4 +1,5 @@
 {
+  "VPC":"null",
   "STAGE":"DEV",
   "DB_NAME": "lemonPayDB",
   "EMAIL_ADDRESS":"no-reply@lemonpay.nl",
