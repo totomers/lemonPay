@@ -1,5 +1,5 @@
 // import { CONFIG } from "src/config";
-import { AwsLambdaVpcConfig } from '@serverless/typescript';
+
 import { handlerPath } from 'src/utils/handler-resolver';
 
 //consider removing handlerPath and using relative URL instead..
