@@ -6,6 +6,7 @@
       "subnet-044e75fdbc85948b0"
     ]
   },
+  
   "VPC-SECURITY_GROUPS": ["sg-083dfda18e37b6f16"],
   "VPC-SUBNETS":[
     "subnet-0057d89a2e6d126f4",
@@ -20,6 +21,7 @@
   "COGNITO_USER_POOL_ID": "eu-central-1_wkc3b0JCL",
   "COGNITO_USER_POOL_ARN": "arn:aws:cognito-idp:eu-central-1:164864435727:userpool/eu-central-1_wkc3b0JCL",
   "COGNITO_CLIENT_ID": "38mji68hem52jtdeoev08gno98",
-  "FAKE_CONFIRMATION_CODE_DEV_TESTING":""
+  "FAKE_CONFIRMATION_CODE_DEV_TESTING":"",
+  "S3_BUCKET_NAME":"lemonpay-upload-bucket-prod"
 }
 

@@ -7,5 +7,6 @@
   "COGNITO_USER_POOL_ID": "eu-central-1_0Mt67WiIq",
   "COGNITO_USER_POOL_ARN": "arn:aws:cognito-idp:eu-central-1:164864435727:userpool/eu-central-1_0Mt67WiIq",
   "COGNITO_CLIENT_ID": "9kv0cedj4ilrbpgo4sttn4k4t",
-  "FAKE_CONFIRMATION_CODE_DEV_TESTING":"111111"
+  "FAKE_CONFIRMATION_CODE_DEV_TESTING":"111111",
+  "S3_BUCKET_NAME":"lemonpay-upload-bucket-dev"
 }
