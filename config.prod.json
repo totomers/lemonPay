@@ -6,6 +6,13 @@
       "subnet-044e75fdbc85948b0"
     ]
   },
+  "VPC-SECURITY_GROUPS": ["sg-083dfda18e37b6f16"],
+  "VPC-SUBNETS":[
+    "subnet-0057d89a2e6d126f4",
+    "subnet-042ef0140a82af9cd",
+    "subnet-0e1e25edcf598f0a5",
+    "subnet-09b199a4edcdc72a3"
+  ],
   "STAGE":"PROD",
   "DB_NAME": "lemonPayDB",
   "EMAIL_ADDRESS":"no-reply@lemonpay.nl",
