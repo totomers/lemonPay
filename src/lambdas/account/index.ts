@@ -306,6 +306,7 @@ export const signInLemonPayAdmin = {
       http: {
         method: 'post',
         path: 'account/signInLemonPayAdmin',
+        cors: true,
       },
     },
   ],

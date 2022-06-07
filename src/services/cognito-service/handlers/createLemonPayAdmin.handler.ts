@@ -17,55 +17,69 @@ export async function createLemonPayAdminHandler(params: {
   name: string;
   email: string;
   password: string;
-}): Promise<AWS.CognitoIdentityServiceProvider.SignUpResponse | AWS.AWSError> {
+}): Promise<
+  AWS.CognitoIdentityServiceProvider.AdminCreateUserResponse | AWS.AWSError
+> {
   try {
     const { email, name, password } = params;
 
-    const signUpRequest: AWS.CognitoIdentityServiceProvider.SignUpRequest = {
-      Username: email,
-      Password: password,
-      ClientId: clientId,
-      UserAttributes: [
-        {
-          Name: 'name',
-          Value: name,
-        },
-        {
-          Name: 'email',
-          Value: email,
-        },
-        {
-          Name: 'custom:isLemonPayAdmin',
-          Value: '1',
-        },
-        {
-          Name: 'custom:isInitiated',
-          Value: '0',
-        },
-        {
-          Name: 'custom:isKnownDetails',
-          Value: '0',
-        },
-        {
-          Name: 'custom:isVerified',
-          Value: '0',
-        },
-        {
-          Name: 'custom:isPasswordMutable',
-          Value: '0',
-        },
-      ],
-    };
+    const createAdminUserRequest: AWS.CognitoIdentityServiceProvider.AdminCreateUserRequest =
+      {
+        Username: email,
+        UserPoolId: userPoolId,
+        UserAttributes: [
+          {
+            Name: 'name',
+            Value: name,
+          },
+          {
+            Name: 'email',
+            Value: email,
+          },
+          {
+            Name: 'custom:isLemonPayAdmin',
+            Value: '1',
+          },
+          {
+            Name: 'custom:isInitiated',
+            Value: '0',
+          },
+          {
+            Name: 'custom:isKnownDetails',
+            Value: '0',
+          },
+          {
+            Name: 'custom:isVerified',
+            Value: '0',
+          },
+          {
+            Name: 'custom:isPasswordMutable',
+            Value: '0',
+          },
+        ],
+      };
     const result = await cognitoidentityserviceprovider
-      .signUp(signUpRequest)
+      .adminCreateUser(createAdminUserRequest)
       .promise();
 
-    const ConfirmUserRequest: AWS.CognitoIdentityServiceProvider.AdminConfirmSignUpRequest =
-      { UserPoolId: userPoolId, Username: email };
+    const setUserPasswordRequest: AWS.CognitoIdentityServiceProvider.AdminSetUserPasswordRequest =
+      {
+        Password: password,
+        Permanent: true,
+        Username: email,
+        UserPoolId: userPoolId,
+      };
 
     await cognitoidentityserviceprovider
-      .adminConfirmSignUp(ConfirmUserRequest)
+      .adminSetUserPassword(setUserPasswordRequest)
       .promise();
+
+    // const ConfirmUserRequest: AWS.CognitoIdentityServiceProvider.AdminConfirmSignUpRequest =
+    //   { UserPoolId: userPoolId, Username: email };
+
+    // await cognitoidentityserviceprovider
+    //   .adminConfirmSignUp(ConfirmUserRequest)
+    //   .promise();
 
     return result;
   } catch (err) {
