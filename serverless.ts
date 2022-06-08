@@ -163,7 +163,7 @@ const serverlessConfiguration: AWS = {
   },
   package: { individually: true },
   custom: {
-    VPC: "${file(./config.${opt:stage, 'dev'}.json):VPC}",
+    // VPC: "${file(./config.${opt:stage, 'dev'}.json):VPC}",
     COGNITO_USER_POOL_ARN:
       "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ARN}",
     S3_BUCKET_NAME: "${file(./config.${opt:stage, 'dev'}.json):S3_BUCKET_NAME}",
