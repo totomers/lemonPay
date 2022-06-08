@@ -10,7 +10,6 @@
     ]
   },
   
-
   "STAGE":"PROD",
   "DB_NAME": "lemonPayDB",
   "EMAIL_ADDRESS":"no-reply@lemonpay.nl",

@@ -1,4 +1,4 @@
-import type { AWS } from '@serverless/typescript';
+import type { AWS, AwsLambdaVpcConfig } from '@serverless/typescript';
 import hello from 'src/lambdas/hello';
 import {
   getAllBusinesses,
@@ -79,7 +79,7 @@ const serverlessConfiguration: AWS = {
       },
     },
 
-    // vpc: '${self:custom.VPC}' as unknown as AwsLambdaVpcConfig,
+    vpc: '${self:custom.VPC}' as unknown as AwsLambdaVpcConfig,
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -155,7 +155,7 @@ const serverlessConfiguration: AWS = {
   },
   package: { individually: true },
   custom: {
-    // VPC: "${file(./config.${opt:stage, 'dev'}.json):VPC}",
+    VPC: "${file(./config.${opt:stage, 'dev'}.json):VPC}",
     COGNITO_USER_POOL_ARN:
       "${file(./config.${opt:stage, 'dev'}.json):COGNITO_USER_POOL_ARN}",
     S3_BUCKET_NAME: "${file(./config.${opt:stage, 'dev'}.json):S3_BUCKET_NAME}",
