@@ -39,6 +39,8 @@ export async function createTransactionHandler(
       origTransactionId,
     } = transaction;
 
+    console.log('attempting to add transaction with details:', params);
+
     const { bid, uid } = metadata;
     const userId = new mongoose.Types.ObjectId(uid);
     const businessId = new mongoose.Types.ObjectId(bid);
@@ -66,6 +68,8 @@ export async function createTransactionHandler(
     const result = await Transaction.create(newTransaction);
     return result;
   } catch (err) {
+    console.log('Oh no an error has occured: ', err);
+
     throw new MongoCustomError(err);
   }
 }

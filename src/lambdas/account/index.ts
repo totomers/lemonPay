@@ -63,6 +63,7 @@ export const uploadAdminPassport = {
 };
 export const signUpUser = {
   handler: `${handlerPath(__dirname)}/handler.signUpUser`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -75,6 +76,7 @@ export const signUpUser = {
 };
 export const resendConfirmationCode = {
   handler: `${handlerPath(__dirname)}/handler.resendConfirmationCode`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -86,6 +88,7 @@ export const resendConfirmationCode = {
 };
 export const confirmSignUp = {
   handler: `${handlerPath(__dirname)}/handler.confirmSignUp`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -97,6 +100,7 @@ export const confirmSignUp = {
 };
 export const setInitialPassword = {
   handler: `${handlerPath(__dirname)}/handler.setInitialPassword`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -111,6 +115,7 @@ export const setInitialPassword = {
 };
 export const resetUserPassword = {
   handler: `${handlerPath(__dirname)}/handler.resetUserPassword`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -126,6 +131,7 @@ export const resetUserPassword = {
 
 export const signInUser = {
   handler: `${handlerPath(__dirname)}/handler.signInUser`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -139,6 +145,7 @@ export const signInUser = {
 
 export const refreshTokenSignInUser = {
   handler: `${handlerPath(__dirname)}/handler.refreshTokenSignInUser`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -151,6 +158,7 @@ export const refreshTokenSignInUser = {
 };
 export const logoutUser = {
   handler: `${handlerPath(__dirname)}/handler.logoutUser`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -225,21 +233,25 @@ export const getBusinessAdminList = {
 
 export const defineAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.defineAuthChallenge`,
+  vpc: '~' as null,
   events: [],
 };
 
 export const createAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.createAuthChallenge`,
+  vpc: '~' as null,
   // role: 'arn:aws:iam::164864435727:role/lambda-email-ses',
   events: [],
 };
 
 export const verifyAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.verifyAuthChallenge`,
+  vpc: '~' as null,
   events: [],
 };
 export const initiateAuthChallengeWithEmail = {
   handler: `${handlerPath(__dirname)}/handler.initiateAuthWithEmail`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -251,6 +263,7 @@ export const initiateAuthChallengeWithEmail = {
 };
 export const initiateAuthChallengeWithToken = {
   handler: `${handlerPath(__dirname)}/handler.initiateAuthWithToken`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -266,6 +279,7 @@ export const initiateAuthChallengeWithToken = {
 
 export const respondToSignInAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.respondToSignInChallenge`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -279,6 +293,7 @@ export const respondToSignInAuthChallenge = {
 
 export const respondToCustomAuthChallenge = {
   handler: `${handlerPath(__dirname)}/handler.respondToResetPassChallenge`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -290,6 +305,7 @@ export const respondToCustomAuthChallenge = {
 };
 export const createLemonPayAdmin = {
   handler: `${handlerPath(__dirname)}/handler.createLemonPayAdmin`,
+  vpc: '~' as null,
   events: [
     {
       http: {
@@ -301,6 +317,7 @@ export const createLemonPayAdmin = {
 };
 export const signInLemonPayAdmin = {
   handler: `${handlerPath(__dirname)}/handler.signInLemonPayAdmin`,
+  vpc: '~' as null,
   events: [
     {
       http: {
