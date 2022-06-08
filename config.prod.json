@@ -1,8 +1,11 @@
 {
   "VPC":{
-    "securityGroupIds": [""],
+    "securityGroupIds": ["sg-06030a86bc849a781"],
     "subnetIds": [
-      ""
+      "subnet-04c0375ffa9973612",
+      "subnet-0656ec0592db4cdd5",
+      "subnet-080a7df49eaeb8415",
+      "subnet-0e652a7fc10ea203c"
     
     ]
   },
