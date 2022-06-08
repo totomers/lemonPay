@@ -1,4 +1,4 @@
-import type { AWS, AwsLambdaVpcConfig } from '@serverless/typescript';
+import type { AWS } from '@serverless/typescript';
 import hello from 'src/lambdas/hello';
 import {
   getAllBusinesses,
@@ -78,16 +78,8 @@ const serverlessConfiguration: AWS = {
         ],
       },
     },
-    // vpc: {
-    //   securityGroupIds: ["sg-083dfda18e37b6f16"],
-    //   subnetIds: [
-    //     "subnet-0057d89a2e6d126f4",
-    //     "subnet-042ef0140a82af9cd",
-    //     "subnet-0e1e25edcf598f0a5",
-    //     "subnet-09b199a4edcdc72a3",
-    //   ],
-    // },
-    vpc: '${self:custom.VPC}' as unknown as AwsLambdaVpcConfig,
+
+    // vpc: '${self:custom.VPC}' as unknown as AwsLambdaVpcConfig,
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
