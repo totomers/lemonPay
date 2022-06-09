@@ -8,6 +8,7 @@ import {
   declineBusiness,
   updateBusinessStatus,
 } from 'src/lambdas/business';
+import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
 import {
   createBusinessAccount,
   verifyUserDetails,
@@ -152,6 +153,9 @@ const serverlessConfiguration: AWS = {
     updateBusinessStatus,
     signInLemonPayAdmin,
     createLemonPayAdmin,
+    getCatalog,
+    updateCatalog,
+    createCatalog,
   },
   package: { individually: true },
   custom: {
