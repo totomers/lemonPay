@@ -8,5 +8,5 @@ type IItem = mongoose.Document & {
 export type ICatalogDocument = mongoose.Document & {
   name: string;
   items: IItem[];
-  subCatalogs: ICatalogDocument[];
+  subMenus: ICatalogDocument[];
 };

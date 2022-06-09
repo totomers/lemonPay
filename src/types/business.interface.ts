@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 export type IBusinessDocument = mongoose.Document & {
   businessName: string;
   businessTradeName: string;
-  // users: { user: mongoose.Schema.Types.ObjectId; role: IRole }[];
+  catalog: mongoose.Types.ObjectId;
   businessAdmin: mongoose.Types.ObjectId;
   businessType:
     | 'SoleTrader'

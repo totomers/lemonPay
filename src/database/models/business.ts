@@ -11,6 +11,7 @@ const BusinessSchema = new mongoose.Schema(
     //     role: { type: String, required: true },
     //   },
     // ],
+    catalog: { type: mongoose.Schema.Types.ObjectId, ref: 'catalog' },
     businessAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     businessType: {
       type: String,

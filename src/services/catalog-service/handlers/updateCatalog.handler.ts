@@ -1,5 +1,5 @@
 import { connectToDatabase } from 'src/database/db';
-import { Catalog } from 'src/database/models/catelog';
+import { Catalog } from 'src/database/models/catalog';
 import { ICatalogDocument } from 'src/types/catalog.interface';
 import { MongoCustomError } from 'src/utils/customError';
 
