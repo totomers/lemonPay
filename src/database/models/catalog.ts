@@ -13,7 +13,7 @@ const CatalogSchema = new mongoose.Schema();
 CatalogSchema.add({
   name: { type: String, required: true, default: 'no-name' },
   items: { type: [ItemSchema] },
-  subMenus: [CatalogSchema],
+  submenus: [CatalogSchema],
 });
 
 export const Catalog =
