@@ -18,9 +18,14 @@ export async function createCatalog(event?: any, context?: Context) {
       .claims as IClaimsIdToken;
     checkIfLemonPayAdmin(tokenClaims);
 
-    const params = event.body as Partial<ICatalogDocument>;
+    const { businessId, initialCatalog } = event.body;
+    if (!businessId || !initialCatalog)
+      throw new MissingParamsError('businessId, initialCatalog');
 
-    const data = await CatalogService.createCatalogHandler(params);
+    const data = await CatalogService.createCatalogHandler({
+      businessId,
+      initialCatalog,
+    });
     return { data };
   } catch (err) {
     return { err };

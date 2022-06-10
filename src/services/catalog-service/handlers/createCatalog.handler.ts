@@ -12,15 +12,15 @@ import { MongoCustomError } from 'src/utils/customError';
  */
 export async function createCatalogHandler(params: {
   businessId: string;
-  catalogDetails: Partial<ICatalogDocument>;
+  initialCatalog: Partial<ICatalogDocument>;
 }) {
   try {
     await connectToDatabase();
 
-    const { businessId, catalogDetails } = params;
-    console.log('catalog details:', catalogDetails);
+    const { businessId, initialCatalog } = params;
+    console.log('catalog details:', initialCatalog);
 
-    const catalog = await Catalog.create(catalogDetails);
+    const catalog = await Catalog.create(initialCatalog);
     if (catalog._id)
       await Business.findByIdAndUpdate(businessId, { catalog: catalog._id });
 
