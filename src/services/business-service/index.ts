@@ -5,6 +5,7 @@ import { getBusinessDetailsHandler } from './handlers/getBusinessDetails.handler
 import { approveBusinessHandler } from './handlers/approveBusiness.handler';
 import { declineBusinessHandler } from './handlers/declineBusiness.handler';
 import { updateBusinessStatus } from './handlers/updateBusinessStatus';
+import { getBusinessCatalogsHandler } from './handlers/getBusinessCatalogs';
 export const BusinessService = {
   createBusinessHandler,
   editBusinessHandler,
@@ -13,4 +14,5 @@ export const BusinessService = {
   approveBusinessHandler,
   declineBusinessHandler,
   updateBusinessStatus,
+  getBusinessCatalogsHandler,
 };

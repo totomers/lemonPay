@@ -7,6 +7,7 @@ import {
   approveBusiness,
   declineBusiness,
   updateBusinessStatus,
+  getBusinessCatalogs,
 } from 'src/lambdas/business';
 import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
 import {
@@ -153,6 +154,7 @@ const serverlessConfiguration: AWS = {
     updateBusinessStatus,
     signInLemonPayAdmin,
     createLemonPayAdmin,
+    getBusinessCatalogs,
     getCatalog,
     updateCatalog,
     createCatalog,

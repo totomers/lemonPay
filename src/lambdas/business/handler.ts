@@ -17,6 +17,16 @@ export const getAllBusinesses = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const getBusinessCatalogs = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await businessController.getBusinessCatalogs(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
 export const getBusinessDetails = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,

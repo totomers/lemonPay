@@ -25,6 +25,25 @@ export async function getAll(
     return { err };
   }
 }
+
+/**
+ * =======================================================================================================
+ * Get business catalogs list
+ * =======================================================================================================
+ */
+export async function getBusinessCatalogs(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    const data = await BusinessService.getBusinessCatalogsHandler();
+    return { data };
+  } catch (err) {
+    console.log('error:', err);
+    return { err };
+  }
+}
 /**
  * =======================================================================================================
  * Get business details
@@ -158,4 +177,5 @@ export const BusinessController = {
   approveBusiness,
   declineBusiness,
   updateBusinessStatus,
+  getBusinessCatalogs,
 };

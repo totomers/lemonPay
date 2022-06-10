@@ -5,7 +5,6 @@ import { handlerPath } from 'src/utils/handler-resolver';
 //consider removing handlerPath and using relative URL instead..
 export const getAllBusinesses = {
   handler: `${handlerPath(__dirname)}/handler.getAllBusinesses`,
-  // vpc: ('${self:custom.VPC}' as unknown as AwsLambdaVpcConfig),
   events: [
     {
       http: {
@@ -13,7 +12,21 @@ export const getAllBusinesses = {
         path: 'businesses/getAll',
         cors: true,
         authorizer: {
-          // name: "LemonPayCognitoAuthorizer",
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+export const getBusinessCatalogs = {
+  handler: `${handlerPath(__dirname)}/handler.getBusinessCatalogs`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'businesses/getBusinessCatalogs',
+        cors: true,
+        authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
