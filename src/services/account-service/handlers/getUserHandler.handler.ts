@@ -21,9 +21,15 @@ export async function getUserHandler(params: { email: string }) {
         populate: {
           path: 'business',
           model: 'business',
-          select: { businessName: 1, status: 1, referralCode: 1 },
+          select: { businessName: 1, status: 1, referralCode: 1, category: 1 },
+          populate: {
+            path: 'catalog',
+            model: 'catalog',
+            select: { __v: 0 },
+          },
         },
       })
+
       .exec()) as IUserDocument;
 
     return user;

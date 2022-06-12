@@ -26,6 +26,7 @@ export const createCatalog = {
       http: {
         method: 'post',
         path: 'catalogs/create',
+        cors: true,
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
@@ -38,8 +39,9 @@ export const updateCatalog = {
   events: [
     {
       http: {
-        method: 'post',
+        method: 'patch',
         path: 'catalogs/update',
+        cors: true,
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
