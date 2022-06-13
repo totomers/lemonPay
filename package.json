@@ -17,6 +17,7 @@
     "@middy/http-json-body-parser": "^2.5.3",
     "@types/mongoose": "^5.11.97",
     "aws-sdk": "^2.1114.0",
+    "axios": "^0.27.2",
     "dotenv": "^16.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
