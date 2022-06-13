@@ -6,6 +6,7 @@ import { approveBusinessHandler } from './handlers/approveBusiness.handler';
 import { declineBusinessHandler } from './handlers/declineBusiness.handler';
 import { updateBusinessStatus } from './handlers/updateBusinessStatus';
 import { getBusinessCatalogsHandler } from './handlers/getBusinessCatalogs';
+import { autocompleteHandler } from './handlers/autocomplete.handler';
 export const BusinessService = {
   createBusinessHandler,
   editBusinessHandler,
@@ -15,4 +16,5 @@ export const BusinessService = {
   declineBusinessHandler,
   updateBusinessStatus,
   getBusinessCatalogsHandler,
+  autocompleteHandler,
 };

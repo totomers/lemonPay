@@ -8,6 +8,7 @@ import {
   declineBusiness,
   updateBusinessStatus,
   getBusinessCatalogs,
+  getAutocomplete,
 } from 'src/lambdas/business';
 import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
 import {
@@ -152,6 +153,7 @@ const serverlessConfiguration: AWS = {
     approveBusiness,
     declineBusiness,
     updateBusinessStatus,
+    getAutocomplete,
     signInLemonPayAdmin,
     createLemonPayAdmin,
     getBusinessCatalogs,

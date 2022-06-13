@@ -21,10 +21,14 @@ const PHOS = {
   TOKEN_GEN_SECRET: process.env.PHOS_TOKEN_GEN_SECRET,
   PRE_SHARED_SECRET: process.env.PHOS_PRE_SHARED_SECRET,
 };
+const KVK = {
+  TOKEN: '',
+};
 export const CONFIG = {
   SERVERLESS,
   COGNITO,
   EMAIL,
   S3,
   PHOS,
+  KVK,
 };

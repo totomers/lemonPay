@@ -37,7 +37,16 @@ export const getBusinessDetails = middyfy(
     return formatJSONResponse(result.data);
   }
 );
-
+export const getAutocomplete = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await businessController.getAutocomplete(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
 export const createBusiness = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,

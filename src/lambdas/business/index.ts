@@ -50,6 +50,19 @@ export const getBusinessDetails = {
     },
   ],
 };
+export const getAutocomplete = {
+  handler: `${handlerPath(__dirname)}/handler.getAutocomplete`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'businesses/getAutocomplete/{name}',
+        request: { parameters: { paths: { name: true } } },
+        cors: true,
+      },
+    },
+  ],
+};
 
 export const createBusiness = {
   handler: `${handlerPath(__dirname)}/handler.createBusiness`,

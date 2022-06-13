@@ -67,6 +67,27 @@ export async function getBusinessDetails(
 
 /**
  * =======================================================================================================
+ * Get autocomplete results from kvk
+ * =======================================================================================================
+ */
+export async function getAutocomplete(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    const name = event.pathParameters.name;
+    if (!name) throw new MissingParamsError('name');
+    const data = await BusinessService.autocompleteHandler({ name });
+    return { data };
+  } catch (err) {
+    console.log('error:', err);
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
  * Create business
  * =======================================================================================================
  */
@@ -178,4 +199,5 @@ export const BusinessController = {
   declineBusiness,
   updateBusinessStatus,
   getBusinessCatalogs,
+  getAutocomplete,
 };

@@ -5,12 +5,6 @@ const BusinessSchema = new mongoose.Schema(
   {
     businessName: { type: String, required: true },
     businessTradeName: { type: String, required: true },
-    // users: [
-    //   {
-    //     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    //     role: { type: String, required: true },
-    //   },
-    // ],
     catalog: { type: mongoose.Schema.Types.ObjectId, ref: 'catalog' },
     businessAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     businessType: {
