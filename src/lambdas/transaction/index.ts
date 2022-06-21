@@ -23,9 +23,9 @@ export const addTransaction = {
       http: {
         method: 'post',
         path: 'transactions/addTransaction',
-        // authorizer: {
-        //   arn: '${self:custom.COGNITO_USER_POOL_ARN}',
-        // },
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
       },
     },
   ],

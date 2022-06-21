@@ -78,6 +78,15 @@ const serverlessConfiguration: AWS = {
             Action: ['s3:*'],
             Resource: '*',
           },
+          {
+            Effect: 'Allow',
+            Action: [
+              'ssm:GetParameters',
+              'ssm:GetParameter',
+              'ssm:GetParametersByPath',
+            ],
+            Resource: 'arn:aws:ssm:eu-central-1::parameter/*',
+          },
         ],
       },
     },
