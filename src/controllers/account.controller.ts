@@ -536,7 +536,10 @@ export async function initiateAuthChallengeWithEmail(
     const { email } = event.body;
 
     if (!email) throw new MissingParamsError('email');
-    const data = await CognitoService.initiateCustomAuthHandler({ email });
+    const data = await CognitoService.initiateCustomAuthHandler({
+      email,
+      currentAuthChallenge: 'RESETPASS',
+    });
     return { data };
   } catch (err) {
     return { err };
@@ -557,7 +560,10 @@ export async function initiateAuthChallengeWithToken(
   try {
     const email = event.requestContext.authorizer?.claims?.email;
     if (!email) throw new MissingParamsError('email');
-    const data = await CognitoService.initiateCustomAuthHandler({ email });
+    const data = await CognitoService.initiateCustomAuthHandler({
+      email,
+      currentAuthChallenge: 'RESETPASS',
+    });
     return { data };
   } catch (err) {
     return { err };

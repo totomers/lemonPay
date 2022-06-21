@@ -1,3 +1,4 @@
+import { CONFIG } from 'src/config';
 import { AWSCognitoError } from 'src/utils/customError';
 import { CognitoService } from '..';
 import { clientId, cognitoidentityserviceprovider } from '../common';
@@ -29,7 +30,10 @@ export async function signInCognitoHandler(params: {
       })
       .promise();
 
-    const data = await CognitoService.initiateCustomAuthHandler({ email });
+    const data = await CognitoService.initiateCustomAuthHandler({
+      email,
+      currentAuthChallenge: 'LOGIN',
+    });
 
     return { session: data.session };
   } catch (err) {

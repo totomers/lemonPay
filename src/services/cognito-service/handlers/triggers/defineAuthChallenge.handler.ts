@@ -12,6 +12,8 @@ export async function defineAuthChallengeHandler(params: {
 }): Promise<DefineAuthChallengeTriggerEvent> {
   try {
     const { event } = params;
+    console.log('event', event);
+
     console.log('event sessions: ', event.request.session);
     console.log('event sessions amount: ', event.request.session.length);
 

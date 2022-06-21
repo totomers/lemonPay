@@ -66,10 +66,10 @@ export async function emailReceipt(event?: any, context?: Context) {
 export async function getTransactionHistory(event?: any, context?: Context) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const tokenClaims = event.requestContext.authorizer
-      .claims as IClaimsIdToken;
+    // const tokenClaims = event.requestContext.authorizer
+    //   .claims as IClaimsIdToken;
 
-    checkIfVerified(tokenClaims);
+    // checkIfVerified(tokenClaims);
     const { userId, businessId } = event.body;
 
     if (!userId || !businessId)

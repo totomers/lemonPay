@@ -11,6 +11,7 @@ const COGNITO = {
   CLIENT_ID: process.env.COGNITO_CLIENT_ID,
   USER_POOL_ID: process.env.COGNITO_USER_POOL_ID,
   USER_POOL_ARN: process.env.COGNITO_USER_POOL_ARN,
+  CUSTOM_AUTH_TYPE: { LOGIN: 'LOGIN', RESETPASS: 'RESETPASS' },
 };
 
 const S3 = {
@@ -22,7 +23,7 @@ const PHOS = {
   PRE_SHARED_SECRET: process.env.PHOS_PRE_SHARED_SECRET,
 };
 const KVK = {
-  TOKEN: '',
+  TOKEN: 'l7ca3ee185bcdf4541be22d08b9cb839ba',
 };
 export const CONFIG = {
   SERVERLESS,

@@ -76,7 +76,9 @@ export async function getAutocomplete(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const name = event.pathParameters.name;
+    // const name = event.pathParameters.name;
+    const querystring = event?.queryStringParameters;
+    const name = querystring?.name;
     if (!name) throw new MissingParamsError('name');
     const data = await BusinessService.autocompleteHandler({ name });
     return { data };

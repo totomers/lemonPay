@@ -89,12 +89,12 @@ export async function deleteUninitiatedUser(params: { email: string }) {
     );
 
     if (isUninitiatedAttr.Value === '0') {
-      _deleteCognitoUser(email);
+      await _deleteCognitoUser(email);
       return;
     }
 
     const mongoUser = await User.findOne({ email });
-    if (mongoUser._id) _deleteCognitoUser(email);
+    if (mongoUser._id) await _deleteCognitoUser(email);
   } catch (err) {
     throw new AWSCognitoError(err);
   }

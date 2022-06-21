@@ -1,5 +1,7 @@
 import { InitiateAuthRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
+import { IAuthChallenge } from 'src/types/authChallenge.interface';
 import { AWSCognitoError } from 'src/utils/customError';
+import { CognitoService } from '..';
 import { clientId, cognitoidentityserviceprovider } from '../common';
 /**
  * =======================================================================================================
@@ -10,9 +12,20 @@ import { clientId, cognitoidentityserviceprovider } from '../common';
 
 export async function initiateCustomAuthHandler(params: {
   email: string;
+  currentAuthChallenge: IAuthChallenge;
 }): Promise<{ session: string }> {
   try {
-    const { email } = params;
+    const { email, currentAuthChallenge } = params;
+
+    await CognitoService.updateUserAttributes({
+      attributes: [
+        {
+          Name: 'custom:currentAuthChallenge',
+          Value: currentAuthChallenge,
+        },
+      ],
+      email,
+    });
 
     const InitiateCustomAuthRequest: InitiateAuthRequest = {
       AuthFlow: 'CUSTOM_AUTH',

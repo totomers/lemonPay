@@ -52,12 +52,18 @@ export const getBusinessDetails = {
 };
 export const getAutocomplete = {
   handler: `${handlerPath(__dirname)}/handler.getAutocomplete`,
+
   events: [
     {
       http: {
         method: 'get',
-        path: 'businesses/getAutocomplete/{name}',
-        request: { parameters: { paths: { name: true } } },
+        path: 'businesses/getAutocomplete/',
+        request: {
+          parameters: {
+            querystrings: { name: true },
+            // paths: { name: true },
+          },
+        },
         cors: true,
       },
     },

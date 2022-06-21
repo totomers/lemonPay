@@ -1,6 +1,7 @@
 import { CreateAuthChallengeTriggerEvent } from 'aws-lambda';
 import { EmailService } from 'src/services/email-service';
-
+import { _getCustomAttribute } from '../../utils/_getCustomAttr';
+import { IAuthChallenge } from '../../../../types/authChallenge.interface';
 /**
  * =======================================================================================================
  *  Creating Auth Challange Handler To Send OTP For User Auth.
@@ -16,16 +17,21 @@ export async function createAuthChallengeHandler(params: {
     let secretLoginCode;
     console.log('session:', event.request.session);
     console.log(event);
-
+    console.log('clientMetadata', event.request.clientMetadata);
     if (!event.request.session || !event.request.session.length) {
       // Generate a new secret login code and send it to the user
       secretLoginCode = Date.now().toString().slice(-6);
       console.log('OTP / Secret Password Reset Code: ' + secretLoginCode);
       try {
-        const html = `<html><body><p>This is your secret password reset code:</p>
+        const authChallengeType = event.request.userAttributes[
+          'custom:currentAuthChallenge'
+        ] as IAuthChallenge;
+        const authChallengeLabel =
+          authChallengeType === 'LOGIN' ? 'login' : 'password reset';
+        const html = `<html><body><p>This is your secret ${authChallengeLabel} code:</p>
           <h3>${secretLoginCode}</h3></body></html>`;
-        const text = `Your secret password reset code: ${secretLoginCode}`;
-        const subject = 'Your secret password reset code';
+        const text = `Your secret ${authChallengeLabel}  code: ${secretLoginCode}`;
+        const subject = `Your secret ${authChallengeLabel}  code`;
         const to = event.request.userAttributes.email;
 
         const emailResult = await EmailService.sendEmailHandler({
