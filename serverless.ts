@@ -80,11 +80,21 @@ const serverlessConfiguration: AWS = {
           },
           {
             Effect: 'Allow',
+            Action: ['ssm:DescribeParameters'],
+            Resource: '*',
+          },
+          {
+            Effect: 'Allow',
             Action: [
               'ssm:GetParameters',
-              'ssm:GetParameter',
+              'ssm:GetParameter*',
               'ssm:GetParametersByPath',
             ],
+            Resource: '*',
+          },
+          {
+            Effect: 'Allow',
+            Action: ['kms:Decrypt'],
             Resource: '*',
           },
         ],
