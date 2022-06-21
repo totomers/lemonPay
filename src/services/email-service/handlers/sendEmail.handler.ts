@@ -27,13 +27,7 @@ export async function sendEmailHandler(params: {
 }): Promise<{} | AWS.AWSError> {
   try {
     const defaultHTML = `<html><head><title>Your Token</title><style>h1{color:#f00;}</style></head><body><h1>Hello </h1><div>Your Device Validation Token is YYY<br/>Simply copy this token and paste it into the device validation input field.</div></body></html>`;
-    const {
-      to,
-      from = 'no-reply@lemonpay.nl',
-      text,
-      subject,
-      html = defaultHTML,
-    } = params;
+    const { to, from = 'no-reply@lemonpay.nl', text, subject, html } = params;
 
     const result = await transporter.sendMail({
       to,
