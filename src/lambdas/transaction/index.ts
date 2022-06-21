@@ -16,6 +16,8 @@ export const emailReceipt = {
   ],
 };
 
+//TBD: How do we secure this endpoint and verify that it is made by PHOS
+
 export const addTransaction = {
   handler: `${handlerPath(__dirname)}/handler.addTransaction`,
   events: [
@@ -23,9 +25,9 @@ export const addTransaction = {
       http: {
         method: 'post',
         path: 'transactions/addTransaction',
-        authorizer: {
-          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
-        },
+        // authorizer: {
+        //   arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        // },
       },
     },
   ],
