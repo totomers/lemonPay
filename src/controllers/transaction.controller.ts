@@ -1,8 +1,7 @@
 import { Context } from 'aws-lambda';
 import { TransactionService } from 'src/services/transaction-service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
-import { IPhosTransactionPayload } from 'src/types/phosTransPayload.interface';
-import { ITransactionDocument } from 'src/types/transaction.interface';
+import { IPhosTransPayloadV2 } from 'src/types/phosTransPayloadV2.interface';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/customError';
 import { checkIfVerified } from 'src/utils/validators/validate-if-verified';
@@ -20,17 +19,9 @@ export async function addTransaction(event?: any, context?: Context) {
 
     // checkIfVerified(tokenClaims);
 
-    const {
-      merchantIdentifier,
-      transaction,
-      userIdentifier,
-      terminalIdentifier,
-    } = event.body as Partial<IPhosTransactionPayload>;
-    const data = await TransactionService.createTransactionHandler({
-      merchantIdentifier,
-      transaction,
-      userIdentifier,
-      terminalIdentifier,
+    const transaction = event.body as Partial<IPhosTransPayloadV2>;
+    const data = await TransactionService.saveTransactionHandler({
+      ...transaction,
     });
     return { data };
   } catch (err) {

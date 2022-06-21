@@ -1,23 +1,36 @@
 import mongoose from 'mongoose';
-import { ICurrencyCodes } from './currencyCodes.interface';
-import { ITransactionStatus } from './transactionStatus.interface';
 
 export type ITransactionDocument = mongoose.Document & {
-  businessId: mongoose.Schema.Types.ObjectId;
-  userId: mongoose.Schema.Types.ObjectId;
-  phosTerminalIdentifier: string; // "16P12022",
-  phosMerchantIdentifier: string; // "1602011247",
-  phosUserIdentifier: string; // a@a.a,
+  businessId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
+  phosTerminalToken: string; // "16P12022",
+  phosMerchantToken: string; // "1602011247",
+  phosUserToken: string; // a@a.a,
   transactionType: 'sale' | 'refund' | 'void'; // "sale",
-  phosTransactionId: string; //"123",
-  approvedAmount: string; //"1.23",
-  approvalNumber: number; // "078206",
-  approvalTime: string; //"2021-11-30 09:27:55",
-  responseCode?: string; // "00",
-  origTransactionId?: string;
-  batchNumber: number; // 0,
+  phosTransactionToken: string; //"123",
+  amount: number; //"1.23",
+  tip: number;
+  responseCode: string; // "00",
+  originalTransactionToken: string; // "sodsd123",
   transactionNumber: string; // 'fd1cdab34e813acfeca0a86924b2dc6f'
   cardNumber: string; // '516895XXXXXX5807';
   cardType: 'Visa' | 'Mastercard'; // 'Visa';
-  status: '-1' | '0' | '1'; // successful | pending | declined
+  status: -1 | 0 | 1; // successful | pending | declined
+  instance: string;
+  affiliate: string;
+  midToken: string;
+  storeToken: string;
+  userEmail: string;
+  deviceId: string;
+  tid: string; //??
+  mid: string; //??
+  currency: 'EUR';
+  authorizationCode: string;
+  stan: string;
+  rrn: string;
+  transactionTime: string;
+  transactionTimeUTC: string;
+  scaType: number;
+  latitude: string;
+  longitude: string;
 };
