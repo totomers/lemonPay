@@ -85,7 +85,7 @@ const serverlessConfiguration: AWS = {
               'ssm:GetParameter',
               'ssm:GetParametersByPath',
             ],
-            Resource: 'arn:aws:ssm:eu-central-1::parameter/*',
+            Resource: '*',
           },
         ],
       },
