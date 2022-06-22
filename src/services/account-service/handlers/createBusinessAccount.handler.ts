@@ -6,6 +6,9 @@ import { BusinessService } from '../../business-service';
 import { AccountService } from '..';
 import { CognitoService } from 'src/services/cognito-service';
 import mongoose from 'mongoose';
+import { IPhosOnboardingRequest } from 'src/types/phosOnboardingRequest.interface';
+import { IPhosOnboardingResponse } from 'src/types/phosOnboardingResponse.interface';
+import axios from 'axios';
 /**
  * ====================================================================================================
  * Create new user
@@ -19,9 +22,7 @@ export async function createBusinessAccountHandler(params: {
 }): Promise<Partial<IUserDocument>> {
   try {
     await connectToDatabase();
-    // const conn = mongoose.connection;
-    // const session = await conn.startSession();
-    // const user = await session.withTransaction(async () => {
+
     const { user, business } = params;
     const newUserId = new mongoose.Types.ObjectId();
 
@@ -37,10 +38,6 @@ export async function createBusinessAccountHandler(params: {
     });
     console.log('newUser', newUser);
 
-    //   return newUser;
-    // });
-
-    // await session.endSession();
     await CognitoService.updateUserAttributes({
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
@@ -50,5 +47,40 @@ export async function createBusinessAccountHandler(params: {
     return newUser;
   } catch (err) {
     throw new MongoCustomError(err);
+  }
+}
+
+async function createMerchantAccount(
+  props: IPhosOnboardingRequest
+): Promise<IPhosOnboardingResponse> {
+  try {
+    const apiKey = '';
+    const apiSecret = '';
+    const content = '';
+
+    const ts = Math.floor(Date.now() / 1000);
+
+    // const hash = CryptoJS.HmacSHA256(
+    //   apiKey +
+    //     ts +
+    //     'https://external.integration.phos.dev/api/v1/account/onboarding' +
+    //     content,
+    //   apiSecret
+    // ).toString();
+    const result = await axios.post<IPhosOnboardingResponse>(
+      'https://external.integration.phos.dev/api/v1/create-single-merchant-user',
+      props,
+      {
+        headers: {
+          'x-api-key': apiKey,
+          'x-api-request-date': ts,
+          'x-api-hash': '',
+        },
+      }
+    );
+
+    return result.data;
+  } catch (err) {
+    throw err;
   }
 }

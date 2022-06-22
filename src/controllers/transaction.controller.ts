@@ -19,7 +19,7 @@ export async function addTransaction(event?: any, context?: Context) {
 
     // checkIfVerified(tokenClaims);
 
-    const transaction = event.body as Partial<IPhosTransPayloadV2>;
+    const transaction = event.body as IPhosTransPayloadV2;
     const data = await TransactionService.saveTransactionHandler({
       ...transaction,
     });
