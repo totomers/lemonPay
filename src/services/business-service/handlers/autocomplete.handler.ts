@@ -30,8 +30,9 @@ export async function autocompleteHandler(params: { name: string }) {
       GetParamRequest
     ).promise();
 
+    const resultsPerPage = 100;
     const kvkTestUrl = `https://developers.kvk.nl/test/api/v1/zoeken?handelsnaam=${name}&pagina=1&aantal=50`;
-    const kvkUrl = `https://api.kvk.nl/api/v1/zoeken?handelsnaam=${name}&pagina=1&aantal=50&user_key=${kvkToken}`;
+    const kvkUrl = `https://api.kvk.nl/api/v1/zoeken?handelsnaam=${name}&pagina=1&aantal=${resultsPerPage}&user_key=${kvkToken}`;
     console.log('env:', kvk_autocomplete_pem);
 
     const httpsAgent = new https.Agent({
