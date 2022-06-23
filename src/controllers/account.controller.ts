@@ -41,32 +41,6 @@ export async function createBusinessAccount(
 
 /**
  * =======================================================================================================
- * Add Referrer To User
- * =======================================================================================================
- */
-export async function addReferrerToUser(
-  event: ParsedAPIGatewayProxyEvent,
-  context?: Context
-) {
-  try {
-    context.callbackWaitsForEmptyEventLoop = false;
-    const { userId, referralCode } = event.body;
-    if (!userId || !referralCode)
-      throw new MissingParamsError('userId, referralCode');
-
-    const data = await AccountService.addReferrerToUserHandler({
-      userId,
-      referralCode,
-    });
-
-    return { data };
-  } catch (err) {
-    return { err };
-  }
-}
-
-/**
- * =======================================================================================================
  * Verify User Details
  * =======================================================================================================
  */
@@ -687,7 +661,6 @@ export const AccountController = {
   resendConfirmationCode,
   resetUserPassword,
   uploadAdminPassport,
-  addReferrerToUser,
   getUserStatus,
   getUser,
   getUserFullDetails,

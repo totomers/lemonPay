@@ -17,20 +17,6 @@ export const createBusinessAccount = {
     },
   ],
 };
-export const addReferrerToUser = {
-  handler: `${handlerPath(__dirname)}/handler.addReferrerToUser`,
-  events: [
-    {
-      http: {
-        method: 'post',
-        path: 'account/addReferrerToUser',
-        authorizer: {
-          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
-        },
-      },
-    },
-  ],
-};
 
 export const verifyUserDetails = {
   handler: `${handlerPath(__dirname)}/handler.verifyUserDetails`,

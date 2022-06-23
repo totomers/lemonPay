@@ -9,7 +9,9 @@ import {
   updateBusinessStatus,
   getBusinessCatalogs,
   getAutocomplete,
+  addReferrer,
 } from 'src/lambdas/business';
+import { addBusinessesFromWaitlist } from 'src/lambdas/waitlist';
 import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
 import {
   createBusinessAccount,
@@ -22,7 +24,6 @@ import {
   resendConfirmationCode,
   resetUserPassword,
   uploadAdminPassport,
-  addReferrerToUser,
   getUser,
   getUserFullDetails,
   getUserStatus,
@@ -151,7 +152,6 @@ const serverlessConfiguration: AWS = {
     emailReceipt,
     resetUserPassword,
     uploadAdminPassport,
-    addReferrerToUser,
     getUser,
     getUserFullDetails,
     getUserStatus,
@@ -169,6 +169,7 @@ const serverlessConfiguration: AWS = {
     validatePhosToken,
     getBusinessAdminList,
     getBusinessDetails,
+    addReferrer,
     approveBusiness,
     declineBusiness,
     updateBusinessStatus,
@@ -179,6 +180,7 @@ const serverlessConfiguration: AWS = {
     getCatalog,
     updateCatalog,
     createCatalog,
+    addBusinessesFromWaitlist,
   },
   package: { individually: true },
   custom: {

@@ -57,6 +57,20 @@ export const createBusiness = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+
+export const addReferrerToBusiness = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await businessController.addReferrerToBusiness(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
 export const approveBusiness = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,

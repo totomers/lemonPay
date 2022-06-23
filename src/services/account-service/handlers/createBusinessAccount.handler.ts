@@ -6,6 +6,8 @@ import { BusinessService } from '../../business-service';
 import { AccountService } from '..';
 import { CognitoService } from 'src/services/cognito-service';
 import mongoose from 'mongoose';
+import { WaitListBusiness } from 'src/database/models/waitlistBusiness';
+import { Business } from 'src/database/models/business';
 /**
  * ====================================================================================================
  * Create new user
@@ -19,36 +21,45 @@ export async function createBusinessAccountHandler(params: {
 }): Promise<Partial<IUserDocument>> {
   try {
     await connectToDatabase();
-    // const conn = mongoose.connection;
-    // const session = await conn.startSession();
-    // const user = await session.withTransaction(async () => {
+
     const { user, business } = params;
     const newUserId = new mongoose.Types.ObjectId();
+
+    const waitListBusiness = await WaitListBusiness.findOne({
+      email: user.email,
+    });
+
+    const waitListReferralCode = waitListBusiness?.referralCode;
+    const businessesRegisteredWithRefCode = await _getReferredBusinesses(
+      waitListReferralCode
+    );
 
     const newBusiness = await BusinessService.createBusinessHandler({
       ...business,
       businessAdmin: newUserId,
+      referralCode: waitListReferralCode ? waitListReferralCode : null,
+      businessesReferred: businessesRegisteredWithRefCode,
     });
-    console.log('newBusiness', newBusiness);
 
     const newUser = await AccountService.createAdminUserHandler({
       user: { ...user, _id: newUserId },
       business: newBusiness,
     });
-    console.log('newUser', newUser);
 
-    //   return newUser;
-    // });
-
-    // await session.endSession();
     await CognitoService.updateUserAttributes({
       email: user.email,
       attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
     });
-    console.log('user returned', user);
 
     return newUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }
+}
+
+async function _getReferredBusinesses(referralCode: string) {
+  const businesses = await Business.find({ referrerCode: referralCode });
+  if (businesses.length > 0)
+    businesses.map((b) => ({ business: b._id, wasRedeemed: false }));
+  return businesses as { business: string; wasRedeemed: boolean }[] | null;
 }

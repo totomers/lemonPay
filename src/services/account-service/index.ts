@@ -5,7 +5,6 @@ import { editUserAccountHandler } from './handlers/editUserAccount.handler';
 import { isUserABusinessAdmin } from './handlers/isUserBusinessAdmin.handler';
 import { getUserHandler } from './handlers/getUserHandler.handler';
 import { uploadAdminPassportHandler } from './handlers/uploadAdminPassport.handler';
-import { addReferrerToUserHandler } from './handlers/addReferrerToUser.handler';
 import { getBusinessAdminListHandler } from './handlers/getBusinessAdminList.handler';
 import { getUserFullDetailsHandler } from './handlers/getUserFullDetails.handler';
 
@@ -17,7 +16,6 @@ export const AccountService = {
   isUserABusinessAdmin,
   getUserHandler,
   uploadAdminPassportHandler,
-  addReferrerToUserHandler,
   getBusinessAdminListHandler,
   getUserFullDetailsHandler,
 };

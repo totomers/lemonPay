@@ -110,6 +110,32 @@ export async function create(
 
 /**
  * =======================================================================================================
+ * Add Referrer To Business
+ * =======================================================================================================
+ */
+export async function addReferrerToBusiness(
+  event: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  try {
+    context.callbackWaitsForEmptyEventLoop = false;
+    const { businessId, referralCode } = event.body;
+    if (!businessId || !referralCode)
+      throw new MissingParamsError('businessId, referralCode');
+
+    const data = await BusinessService.addReferrerToBusinesssHandler({
+      businessId,
+      referralCode,
+    });
+
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+
+/**
+ * =======================================================================================================
  * Approve business
  * =======================================================================================================
  */
@@ -196,6 +222,7 @@ export async function updateBusinessStatus(
 export const BusinessController = {
   getAll,
   create,
+  addReferrerToBusiness,
   getBusinessDetails,
   approveBusiness,
   declineBusiness,

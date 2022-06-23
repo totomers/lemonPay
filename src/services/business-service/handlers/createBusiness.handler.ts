@@ -9,11 +9,13 @@ export async function createBusinessHandler(
 ): Promise<IBusinessDocument> {
   try {
     await connectToDatabase();
-    // const { businessRegistrationNumber } = params;
+    const { referralCode } = params;
     // await _validateBusinessDetails({ businessRegistrationNumber });   TBD: Guy needs to decide if he wants this validation
 
-    const referralCode = await _generateUserRefCode();
-    const result = await Business.create({ ...params, referralCode });
+    const result = await Business.create({
+      ...params,
+      referralCode: referralCode ? referralCode : generateRefCode(),
+    });
 
     return result;
   } catch (err) {
@@ -22,11 +24,13 @@ export async function createBusinessHandler(
   }
 }
 
-async function _generateUserRefCode(): Promise<string> {
+async function _getBusinessRefCode(): Promise<string> {
   try {
+    // check if this business admin already has referral code in the waitinglist collection
+
     const referralCode = generateRefCode();
     const businessFound = await Business.findOne({ referralCode });
-    if (businessFound?._id) await _generateUserRefCode();
+    if (businessFound?._id) await _getBusinessRefCode();
     return referralCode;
   } catch (err) {
     throw new MongoCustomError(err);

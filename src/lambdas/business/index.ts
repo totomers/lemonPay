@@ -86,6 +86,21 @@ export const createBusiness = {
   ],
 };
 
+export const addReferrer = {
+  handler: `${handlerPath(__dirname)}/handler.addReferrer`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'businesses/addReferrer',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+
 export const approveBusiness = {
   handler: `${handlerPath(__dirname)}/handler.approveBusiness`,
   events: [
