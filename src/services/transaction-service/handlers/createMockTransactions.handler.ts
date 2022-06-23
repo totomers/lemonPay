@@ -1,75 +1,81 @@
+import { connectToDatabase } from 'src/database/db';
+import { Business } from 'src/database/models/business';
+import { Transaction } from 'src/database/models/transaction';
+import { User } from 'src/database/models/user';
+import { MongoCustomError } from 'src/utils/customError';
 /**
  * ====================================================================================================
- * Create mock transactions in DB.
+ * Save transaction in DB.
  * @param params
  * ====================================================================================================
  */
-
-import mongoose from 'mongoose';
-import { connectToDatabase } from 'src/database/db';
-import { Transaction } from 'src/database/models/transaction';
-import { IPhosTransactionPayload } from 'src/types/phosTransPayload.interface';
-import { ITransactionDocument } from 'src/types/transaction.interface';
-import { MongoCustomError } from 'src/utils/customError';
-
-export async function createTransactionHandler(
-  params: Partial<IPhosTransactionPayload>
-): Promise<ITransactionDocument> {
+export async function createMockTransactions() {
   try {
     await connectToDatabase();
-    const {
-      merchantIdentifier,
-      terminalIdentifier,
-      userIdentifier,
-      transaction,
-    } = params;
-    const {
-      approvalNumber,
-      approvedAmount,
-      approvalTime,
-      batchNumber,
-      cardType,
-      cardNumber,
-      metadata,
-      status,
-      transactionId,
-      transactionNumber,
-      responseCode,
-      transactionType,
-      origTransactionId,
-    } = transaction;
+    const mockTransactions = await _generateMockTransactions();
 
-    console.log('attempting to add transaction with details:', params);
+    const result = await Transaction.collection.insertMany(mockTransactions);
 
-    const { bid, uid } = metadata;
-    const userId = new mongoose.Types.ObjectId(uid);
-    const businessId = new mongoose.Types.ObjectId(bid);
-    //@ts-ignore
-    const newTransaction = {
-      phosMerchantIdentifier: merchantIdentifier,
-      phosUserIdentifier: userIdentifier,
-      phosTransactionId: transactionId,
-      phosTerminalIdentifier: terminalIdentifier,
-      businessId,
-      userId,
-      approvalNumber,
-      approvedAmount,
-      approvalTime,
-      responseCode,
-      batchNumber,
-      cardType,
-      cardNumber,
-      status,
-      transactionNumber,
-      transactionType,
-      origTransactionId,
-    } as Partial<ITransactionDocument>;
-
-    const result = await Transaction.create(newTransaction);
     return result;
   } catch (err) {
     console.log('Oh no an error has occured: ', err);
-
     throw new MongoCustomError(err);
   }
 }
+
+async function _generateMockTransactions() {
+  const businesses = await Business.find();
+  const users = await User.find();
+
+  businesses.map((b) => b._id);
+  users.map((u) => u._id);
+
+  const amountOfTransactions = 30;
+  const mockTransactions = Array.from(
+    Array(amountOfTransactions).keys()
+  ) as any[];
+
+  mockTransactions.map(() => {
+    const amount = _randomIntFromInterval(1, 100);
+    const businessId = businesses[_randomIntFromInterval(0, businesses.length)];
+    const userId = users[_randomIntFromInterval(0, users.length)];
+    return { ...mockTransaction, amount, businessId, userId };
+  });
+  return mockTransactions;
+}
+
+function _randomIntFromInterval(min, max) {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+const mockTransaction = {
+  instance: 'instance1',
+  affiliate: 'affiliate1',
+  terminalToken: 'fd1cdab34e813acfeca0a86924b2dc22',
+  midToken: '423c9b6c1969480bc12c74bc0962a89c',
+  storeToken: '423c9b6c1969480bc12c74bc0962a89c',
+  merchantToken: '60cd19bfaffd27d64bd108f06001bf6e',
+  userEmail: 'a@a.a',
+  userToken: 'a9bab96cb02095824481e7e1971542e3',
+  deviceId: 'af33b09dcf952e7d',
+  transactionToken: '0be71afd0bb8ed645251b1ab80b78914',
+  transactionType: 'sale',
+  tid: '16P12022',
+  mid: '1602011247',
+  originalTransactionToken: '61e7cc07e60bca6cd5448bc0a4de459b',
+  tip: 0.5,
+  currency: 'EUR',
+  authorizationCode: '078206',
+  stan: '000057',
+  rrn: '99620d9b6fb0',
+  transactionTime: '2021-11-30 11:27:55',
+  transactionTimeUTC: '2021-11-30 09:27:55',
+  cardNumber: '516895XXXXXX5807',
+  cardType: 'Visa',
+  status: 1,
+  scaType: 1,
+  responseCode: '00',
+  latitude: '13.123',
+  longitude: '13.123',
+};

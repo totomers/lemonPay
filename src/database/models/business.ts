@@ -47,7 +47,6 @@ const BusinessSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Note: OverwriteModelError: Cannot overwrite `Books` model once compiled. error
 export const Business =
   mongoose.models.businesses ||
   mongoose.model<IBusinessDocument>('business', BusinessSchema, 'businesses');

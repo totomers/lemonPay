@@ -3,10 +3,12 @@ import { getTransactionHistoryHandler } from './handlers/getTransactionHistory.h
 import { emailReceiptHandler } from './handlers/emaiReceipt.handler';
 import { createPhosTokenHandler } from './handlers/createPhosToken.handler';
 import { validatePhosTokenHandler } from './handlers/validatePhosToken.handler';
+import { saveTransactionHandler } from './handlers/saveTransaction.handler';
 export const TransactionService = {
   createTransactionHandler,
   getTransactionHistoryHandler,
   emailReceiptHandler,
   createPhosTokenHandler,
   validatePhosTokenHandler,
+  saveTransactionHandler,
 };
