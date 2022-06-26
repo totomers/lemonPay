@@ -235,8 +235,6 @@ export async function getBusinessesToBeRewarded(
     //   .claims as IClaimsIdToken;
     // checkIfLemonPayAdmin(tokenClaims);
     // const { _id, status } = event?.body;
-    console.log('entered');
-
     const data = await BusinessService.getBusinessesToBeRewardedHandler();
     return { data };
   } catch (err) {

@@ -38,6 +38,7 @@ export async function createMockBusinessAccounts(params: {
       const newBusiness = {
         _id: new mongoose.Types.ObjectId(),
         businessAdmin: a._id,
+        businessName: `${a.name}'s Business`,
         businessTradeName: `${a.name}'s Business`,
         businessType: 'CommercialPartnership',
         industry: 'KitchenTools',
@@ -58,7 +59,7 @@ export async function createMockBusinessAccounts(params: {
           'verified',
           'pendingAction',
           'pendingVerification',
-          'declined',
+          'unverified',
         ][randomIntFromInterval(0, 3)],
       };
 
