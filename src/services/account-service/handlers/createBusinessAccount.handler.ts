@@ -11,6 +11,7 @@ import { Business } from 'src/database/models/business';
 import { IPhosOnboardingRequest } from 'src/types/phosOnboardingRequest.interface';
 import { IPhosOnboardingResponse } from 'src/types/phosOnboardingResponse.interface';
 import axios from 'axios';
+import { generateRefCode } from 'src/services/business-service/utils/referralCodeGen';
 /**
  * ====================================================================================================
  * Create new user
@@ -37,10 +38,14 @@ export async function createBusinessAccountHandler(params: {
       waitListReferralCode
     );
 
+    console.log('waitListReferralCode:', waitListReferralCode);
+
     const newBusiness = await BusinessService.createBusinessHandler({
       ...business,
       businessAdmin: newUserId,
-      referralCode: waitListReferralCode ? waitListReferralCode : null,
+      referralCode: waitListReferralCode
+        ? waitListReferralCode
+        : generateRefCode(),
       businessesReferred: businessesRegisteredWithRefCode,
     });
 
