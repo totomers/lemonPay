@@ -1,6 +1,5 @@
 import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
-import { Transaction } from 'src/database/models/transaction';
 
 export async function getBusinessesToBeRewardedHandler() {
   try {
@@ -8,51 +7,10 @@ export async function getBusinessesToBeRewardedHandler() {
     const rewardedForReferring = await getRewardedForReferring();
 
     const result = {
-      referrred: rewardedForBeingReferred,
+      referred: rewardedForBeingReferred,
       referrers: rewardedForReferring,
     };
     return result;
-  } catch (error) {
-    return error;
-  }
-}
-
-async function getRewardedForBeingReferred1() {
-  try {
-    await connectToDatabase();
-    const rewardedForBeingReferred = await Transaction.aggregate([
-      {
-        $group: {
-          _id: '$businessId',
-          totalAmount: { $sum: '$amount' },
-          userId: { $first: '$userId' },
-          // businessId: { $first: '$businessId' },
-          // transactions: { $push: '$$ROOT' },
-        },
-      },
-
-      { $match: { totalAmount: { $gte: 200 } } },
-      {
-        $lookup: {
-          from: 'businesses',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'business',
-        },
-      },
-      {
-        $project: {
-          bankAccountIban: { $first: '$business.bankAccountIban' },
-          totalAmount: 1,
-          referrerCode: { $first: '$business.referrerCode' },
-          wasReferredAndRedeemed: {
-            $first: '$business.wasReferredAndRedeemed',
-          },
-        },
-      },
-    ]);
-
-    return rewardedForBeingReferred;
   } catch (error) {
     return error;
   }
@@ -174,6 +132,11 @@ async function getRewardedForReferring() {
           localField: 'businessesReferred.business',
           pipeline: [{ $project: { businessTradeName: 1 } }],
           as: 'businessReferred',
+        },
+      },
+      {
+        $unwind: {
+          path: '$businessReferred',
         },
       },
       {

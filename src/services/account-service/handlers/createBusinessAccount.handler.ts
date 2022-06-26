@@ -38,8 +38,6 @@ export async function createBusinessAccountHandler(params: {
       waitListReferralCode
     );
 
-    console.log('waitListReferralCode:', waitListReferralCode);
-
     const newBusiness = await BusinessService.createBusinessHandler({
       ...business,
       businessAdmin: newUserId,
