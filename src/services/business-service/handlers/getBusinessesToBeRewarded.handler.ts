@@ -11,7 +11,7 @@ export async function getBusinessesToBeRewardedHandler() {
       referrred: rewardedForBeingReferred,
       referrers: rewardedForReferring,
     };
-    return rewardedForReferring;
+    return result;
   } catch (error) {
     return error;
   }

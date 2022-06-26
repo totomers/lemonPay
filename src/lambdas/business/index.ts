@@ -108,6 +108,7 @@ export const getBusinessesToBeRewarded = {
       http: {
         method: 'get',
         path: 'businesses/toBeRewarded',
+        cors: true,
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
