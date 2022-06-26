@@ -17,6 +17,17 @@ export const createBusinessAccount = {
     },
   ],
 };
+export const createMockBusinessAccounts = {
+  handler: `${handlerPath(__dirname)}/handler.createMockBusinessAccounts`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/createMockBusinessAccounts',
+      },
+    },
+  ],
+};
 
 export const verifyUserDetails = {
   handler: `${handlerPath(__dirname)}/handler.verifyUserDetails`,

@@ -3,13 +3,14 @@ import { Business } from 'src/database/models/business';
 import { Transaction } from 'src/database/models/transaction';
 import { User } from 'src/database/models/user';
 import { MongoCustomError } from 'src/utils/customError';
+import { randomIntFromInterval } from 'src/utils/tests/randomIntFromInterval';
 /**
  * ====================================================================================================
  * Save transaction in DB.
  * @param params
  * ====================================================================================================
  */
-export async function createMockTransactions() {
+export async function createMockTransactionsHandler() {
   try {
     await connectToDatabase();
     const mockTransactions = await _generateMockTransactions();
@@ -27,26 +28,25 @@ async function _generateMockTransactions() {
   const businesses = await Business.find();
   const users = await User.find();
 
-  businesses.map((b) => b._id);
-  users.map((u) => u._id);
+  console.log(businesses);
+  console.log(users);
 
-  const amountOfTransactions = 30;
+  const businessIds = businesses.map((b) => b._id);
+  const userIds = users.map((u) => u._id);
+
+  const amountOfTransactions = 200;
   const mockTransactions = Array.from(
     Array(amountOfTransactions).keys()
   ) as any[];
 
-  mockTransactions.map(() => {
-    const amount = _randomIntFromInterval(1, 100);
-    const businessId = businesses[_randomIntFromInterval(0, businesses.length)];
-    const userId = users[_randomIntFromInterval(0, users.length)];
+  const result = mockTransactions.map(() => {
+    const amount = randomIntFromInterval(1, 100);
+    const businessId =
+      businessIds[randomIntFromInterval(0, businessIds.length)];
+    const userId = userIds[randomIntFromInterval(0, userIds.length)];
     return { ...mockTransaction, amount, businessId, userId };
   });
-  return mockTransactions;
-}
-
-function _randomIntFromInterval(min, max) {
-  // min and max included
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  return result;
 }
 
 const mockTransaction = {

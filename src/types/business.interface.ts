@@ -20,7 +20,7 @@ export type IBusinessDocument = mongoose.Document & {
   bankAccountIban: string;
   bankAccountSwift: string;
   referralCode: string;
-  reffererCode: string;
+  referrerCode: string;
   businessesReferred: { business: string; wasRedeemed?: boolean }[];
   status: 'pendingAction' | 'pendingVerification' | 'verified' | 'unverified';
 };

@@ -7,7 +7,7 @@ import { getUserHandler } from './handlers/getUserHandler.handler';
 import { uploadAdminPassportHandler } from './handlers/uploadAdminPassport.handler';
 import { getBusinessAdminListHandler } from './handlers/getBusinessAdminList.handler';
 import { getUserFullDetailsHandler } from './handlers/getUserFullDetails.handler';
-
+import { createMockBusinessAccounts } from './handlers/createMockBusinessAccounts.handler';
 export const AccountService = {
   createBusinessAccountHandler,
   createAdminUserHandler,
@@ -18,4 +18,5 @@ export const AccountService = {
   uploadAdminPassportHandler,
   getBusinessAdminListHandler,
   getUserFullDetailsHandler,
+  createMockBusinessAccounts,
 };

@@ -104,3 +104,16 @@ export const updateBusinessStatus = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const getBusinessesToBeRewarded = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await businessController.getBusinessesToBeRewarded(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);

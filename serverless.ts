@@ -10,11 +10,13 @@ import {
   getBusinessCatalogs,
   getAutocomplete,
   addReferrer,
+  getBusinessesToBeRewarded,
 } from 'src/lambdas/business';
 import { addBusinessesFromWaitlist } from 'src/lambdas/waitlist';
 import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
 import {
   createBusinessAccount,
+  createMockBusinessAccounts,
   verifyUserDetails,
   signInUser,
   logoutUser,
@@ -45,6 +47,7 @@ import {
   getTransactionHistory,
   createPhosToken,
   validatePhosToken,
+  createMockTransactions,
 } from 'src/lambdas/transaction';
 
 const serverlessConfiguration: AWS = {
@@ -164,6 +167,7 @@ const serverlessConfiguration: AWS = {
     respondToCustomAuthChallenge,
     respondToSignInAuthChallenge,
     addTransaction,
+    createMockTransactions,
     getTransactionHistory,
     createPhosToken,
     validatePhosToken,
@@ -181,6 +185,8 @@ const serverlessConfiguration: AWS = {
     updateCatalog,
     createCatalog,
     addBusinessesFromWaitlist,
+    getBusinessesToBeRewarded,
+    createMockBusinessAccounts,
   },
   package: { individually: true },
   custom: {

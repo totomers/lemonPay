@@ -41,6 +41,30 @@ export async function createBusinessAccount(
 
 /**
  * =======================================================================================================
+ * Create Business Account
+ * =======================================================================================================
+ */
+export async function createMockBusinessAccounts(
+  event: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  try {
+    context.callbackWaitsForEmptyEventLoop = false;
+    const emailNameList = event.body as { email: string; name: string }[];
+
+    if (!emailNameList) throw new MissingParamsError('emailNameList');
+
+    const data = await AccountService.createMockBusinessAccounts({
+      emailNameList,
+    });
+
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
+/**
+ * =======================================================================================================
  * Verify User Details
  * =======================================================================================================
  */
@@ -674,4 +698,5 @@ export const AccountController = {
   getBusinessAdminList,
   createLemonPayAdmin,
   signInLemonPayAdmin,
+  createMockBusinessAccounts,
 };

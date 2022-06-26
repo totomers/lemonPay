@@ -64,8 +64,10 @@ export async function createBusinessAccountHandler(params: {
 async function _getReferredBusinesses(referralCode: string) {
   const businesses = await Business.find({ referrerCode: referralCode });
   if (businesses.length > 0)
-    businesses.map((b) => ({ business: b._id, wasRedeemed: false }));
-  return businesses as { business: string; wasRedeemed: boolean }[] | null;
+    businesses.map((b) => ({ business: b._id, wasReferrerRedeemed: false }));
+  return businesses as
+    | { business: string; wasReferrerRedeemed: boolean }[]
+    | null;
 }
 async function createMerchantAccount(
   props: IPhosOnboardingRequest

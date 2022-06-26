@@ -219,6 +219,30 @@ export async function updateBusinessStatus(
   }
 }
 
+/**
+ * =======================================================================================================
+ * Update business status (pendingAction or pendingVerification)
+ * =======================================================================================================
+ */
+export async function getBusinessesToBeRewarded(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    // const tokenClaims = event.requestContext.authorizer
+    //   .claims as IClaimsIdToken;
+    // checkIfLemonPayAdmin(tokenClaims);
+    // const { _id, status } = event?.body;
+    const data = await BusinessService.getBusinessesToBeRewardedHandler();
+    return { data };
+  } catch (err) {
+    console.log('error:', err);
+    return { err };
+  }
+}
+
 export const BusinessController = {
   getAll,
   create,
@@ -229,4 +253,5 @@ export const BusinessController = {
   updateBusinessStatus,
   getBusinessCatalogs,
   getAutocomplete,
+  getBusinessesToBeRewarded,
 };

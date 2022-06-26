@@ -24,10 +24,11 @@ const BusinessSchema = new mongoose.Schema(
     },
     referralCode: { type: String, required: true, unique: true },
     referrerCode: { type: String },
+    wasReferredAndRedeemed: { type: Boolean, required: true, default: false },
     businessesReferred: [
       {
         business: { type: mongoose.Schema.Types.ObjectId, ref: 'business' },
-        wasRedeemed: { type: Boolean, default: false },
+        wasReferrerRedeemed: { type: Boolean, default: false },
       },
     ],
     businessAddress: { type: String, required: true },

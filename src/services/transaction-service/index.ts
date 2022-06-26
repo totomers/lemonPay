@@ -4,6 +4,8 @@ import { emailReceiptHandler } from './handlers/emaiReceipt.handler';
 import { createPhosTokenHandler } from './handlers/createPhosToken.handler';
 import { validatePhosTokenHandler } from './handlers/validatePhosToken.handler';
 import { saveTransactionHandler } from './handlers/saveTransaction.handler';
+import { createMockTransactionsHandler } from './handlers/createMockTransactions.handler';
+
 export const TransactionService = {
   createTransactionHandler,
   getTransactionHistoryHandler,
@@ -11,4 +13,5 @@ export const TransactionService = {
   createPhosTokenHandler,
   validatePhosTokenHandler,
   saveTransactionHandler,
+  createMockTransactionsHandler,
 };

@@ -101,6 +101,21 @@ export const addReferrer = {
   ],
 };
 
+export const getBusinessesToBeRewarded = {
+  handler: `${handlerPath(__dirname)}/handler.getBusinessesToBeRewarded`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'businesses/toBeRewarded',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+
 export const approveBusiness = {
   handler: `${handlerPath(__dirname)}/handler.approveBusiness`,
   events: [

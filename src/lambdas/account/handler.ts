@@ -28,6 +28,21 @@ export const createBusinessAccount = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const createMockBusinessAccounts = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await accountController.createMockBusinessAccounts(
+      event,
+      context
+    );
+
+    if (result.err) return formatErrorResponse(result.err);
+
+    return formatJSONResponse(result.data);
+  }
+);
 
 export const verifyUserDetails = middyfy(
   async (

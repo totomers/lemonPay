@@ -8,6 +8,7 @@ import { updateBusinessStatus } from './handlers/updateBusinessStatus';
 import { getBusinessCatalogsHandler } from './handlers/getBusinessCatalogs';
 import { autocompleteHandler } from './handlers/autocomplete.handler';
 import { addReferrerToBusinesssHandler } from './handlers/addReferrerToUser.handler';
+import { getBusinessesToBeRewardedHandler } from './handlers/getBusinessesToBeRewarded.handler';
 export const BusinessService = {
   createBusinessHandler,
   editBusinessHandler,
@@ -19,4 +20,5 @@ export const BusinessService = {
   getBusinessCatalogsHandler,
   autocompleteHandler,
   addReferrerToBusinesssHandler,
+  getBusinessesToBeRewardedHandler,
 };

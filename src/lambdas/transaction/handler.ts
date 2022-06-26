@@ -23,6 +23,16 @@ export const addTransaction = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const createMockTransactions = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await transactionController.createMockTransactions(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
 export const getTransactionHistory = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
     const result = await transactionController.getTransactionHistory(

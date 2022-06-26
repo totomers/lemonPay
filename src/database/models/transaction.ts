@@ -26,7 +26,7 @@ const TransactionSchema = new mongoose.Schema(
     deviceId: { type: String },
     tid: { type: String }, //??
     mid: { type: String }, //??
-    currency: 'EUR',
+    currency: { type: String, enum: ['EUR'] },
     authorizationCode: { type: String },
     stan: { type: String },
     rrn: { type: String },

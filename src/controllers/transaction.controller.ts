@@ -28,6 +28,25 @@ export async function addTransaction(event?: any, context?: Context) {
     return { err };
   }
 }
+/**
+ * =======================================================================================================
+ * Add Transaction Details To DB.
+ * =======================================================================================================
+ */
+export async function createMockTransactions(event?: any, context?: Context) {
+  context.callbackWaitsForEmptyEventLoop = false;
+  try {
+    // const tokenClaims = event.requestContext.authorizer
+    //   .claims as IClaimsIdToken;
+
+    // checkIfVerified(tokenClaims);
+
+    const data = await TransactionService.createMockTransactionsHandler();
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}
 
 /**
  * =======================================================================================================
@@ -103,7 +122,7 @@ export async function createPhosToken(
 
 /**
  * =======================================================================================================
- * Generate Token For Phos
+ * Validate Token For Phos
  * =======================================================================================================
  */
 export async function validatePhosToken(
@@ -132,4 +151,5 @@ export const TransactionController = {
   getTransactionHistory,
   createPhosToken,
   validatePhosToken,
+  createMockTransactions,
 };
