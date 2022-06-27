@@ -12,7 +12,7 @@ export async function getBusinessDetailsHandler(params: { _id: string }) {
         __v: 0,
       })
       .populate({
-        path: 'businessAdmin',
+        path: 'rootUser',
         model: 'user',
         select: { createdAt: 0, updatedAt: 0, __v: 0, businesses: 0 },
       });

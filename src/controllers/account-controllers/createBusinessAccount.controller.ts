@@ -22,7 +22,7 @@ export async function createBusinessAccount(
     const user = { ...event.body.user, email, name };
     const business = event.body.business;
     //ADD PARAM VALIDATION FOR USER AND BUSINESS
-    const data = await AccountService.createBusinessAccountHandler({
+    const data = await AccountService.createBusinessRootAccountHandler({
       user,
       business,
     });

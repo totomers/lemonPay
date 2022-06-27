@@ -25,7 +25,7 @@ export async function approveBusinessHandler(params: {
       },
       { new: true }
     )
-      .populate('businessAdmin')
+      .populate('rootUser')
       .exec();
 
     await _sendBusinessApprovalEmail(email);

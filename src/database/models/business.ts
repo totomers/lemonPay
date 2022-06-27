@@ -6,7 +6,7 @@ const BusinessSchema = new mongoose.Schema(
     businessName: { type: String, required: true },
     businessTradeName: { type: String, required: true },
     catalog: { type: mongoose.Schema.Types.ObjectId, ref: 'catalog' },
-    businessAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+    rootUser: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     businessType: {
       type: String,
       enum: [

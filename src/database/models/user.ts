@@ -6,7 +6,7 @@ const subSchemaUserBusiness = new mongoose.Schema(
     business: { type: mongoose.Schema.Types.ObjectId, ref: 'Business' },
     role: {
       type: String,
-      enum: ['USER', 'ADMIN'],
+      enum: ['USER', 'ADMIN', 'ROOT'],
       default: 'USER',
     },
   },

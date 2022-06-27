@@ -19,7 +19,7 @@ import { generateRefCode } from 'src/services/business-service/utils/referralCod
  * ====================================================================================================
  */
 
-export async function createBusinessAccountHandler(params: {
+export async function createBusinessRootAccountHandler(params: {
   user: Partial<IUserDocument>;
   business: Partial<IBusinessDocument>;
 }): Promise<Partial<IUserDocument>> {
@@ -27,7 +27,8 @@ export async function createBusinessAccountHandler(params: {
     await connectToDatabase();
 
     const { user, business } = params;
-    const newUserId = new mongoose.Types.ObjectId();
+
+    //TBD: Validate root user email to check if it does not already exist in DB
 
     const waitListBusiness = await WaitListBusiness.findOne({
       email: user.email,
@@ -37,17 +38,18 @@ export async function createBusinessAccountHandler(params: {
     const businessesRegisteredWithRefCode = await _getReferredBusinesses(
       waitListReferralCode
     );
+    const newUserId = new mongoose.Types.ObjectId();
 
     const newBusiness = await BusinessService.createBusinessHandler({
       ...business,
-      businessAdmin: newUserId,
+      rootUser: newUserId,
       referralCode: waitListReferralCode
         ? waitListReferralCode
         : generateRefCode(),
       businessesReferred: businessesRegisteredWithRefCode,
     });
 
-    const newUser = await AccountService.createAdminUserHandler({
+    const newUser = await AccountService.createBusinessRootUserHandler({
       user: { ...user, _id: newUserId },
       business: newBusiness,
     });

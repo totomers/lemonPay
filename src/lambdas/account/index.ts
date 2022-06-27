@@ -87,18 +87,3 @@ export const getUserFullDetails = {
     },
   ],
 };
-export const getBusinessAdminList = {
-  handler: `${handlerPath(__dirname)}/handler.getBusinessAdminList`,
-  events: [
-    {
-      http: {
-        method: 'get',
-        path: 'account/getBusinessAdminList',
-        cors: true,
-        authorizer: {
-          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
-        },
-      },
-    },
-  ],
-};

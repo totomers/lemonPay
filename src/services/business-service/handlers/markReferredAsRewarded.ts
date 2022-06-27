@@ -14,7 +14,7 @@ export async function markReferredAsRewarded(params: {
       {},
       { new: true }
     )
-      .populate('businessAdmin')
+      .populate('rootUser')
       .exec();
 
     return updatedBusiness;

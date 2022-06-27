@@ -7,7 +7,7 @@ export async function getBusinessCatalogsHandler() {
     return await Business.find()
       .select({ _id: 1, businessName: 1, catalog: 1 })
       .populate({
-        path: 'businessAdmin',
+        path: 'rootUser',
         model: 'user',
         select: { email: 1, name: 1 },
       });

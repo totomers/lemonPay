@@ -17,7 +17,7 @@ export async function updateBusinessStatus(params: {
       },
       { new: true }
     )
-      .populate('businessAdmin')
+      .populate('rootUser')
       .exec();
 
     return updatedBusiness;

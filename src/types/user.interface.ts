@@ -5,7 +5,7 @@ export type IUserDocument = mongoose.Document & {
   defaultBusiness: mongoose.Schema.Types.ObjectId[] | null;
   businesses: {
     business: mongoose.Schema.Types.ObjectId;
-    role: 'USER' | 'ADMIN';
+    role: 'USER' | 'ADMIN' | 'ROOT';
   }[];
   dateofbirth: string;
   homeAddress: string;

@@ -13,7 +13,7 @@ export async function getUserFullDetailsHandler(params: { email: string }) {
   try {
     await connectToDatabase();
 
-    const { email = 'tomere@moveo.co.il' } = params;
+    const { email } = params;
     const user = (await User.findOne({ email })
       .select({ createdAt: 0, updatedAt: 0, __v: 0 })
       .populate({

@@ -11,7 +11,7 @@ import { generateRefCode } from 'src/services/business-service/utils/referralCod
  * @param params
  * ====================================================================================================
  */
-export async function createAdminUserHandler(params: {
+export async function createBusinessRootUserHandler(params: {
   user: Partial<IUserDocument>;
   business: Partial<IBusinessDocument>;
 }): Promise<{
@@ -26,24 +26,24 @@ export async function createAdminUserHandler(params: {
 
     const newUser = (await User.create({
       ...user,
-      businesses: [{ business: business._id, role: 'ADMIN' }],
+      businesses: [{ business: business._id, role: 'ROOT' }],
     })) as IUserDocument;
 
-    const adminBusiness = {
+    const rootUsersBusiness = {
       business: {
         _id: business._id,
         businessName: business.businessName,
         status: business.status,
         referralCode: business.referralCode,
       },
-      role: 'ADMIN',
+      role: 'ROOT',
     };
 
     const newAdminUser = {
       _id: newUser._id,
       email: newUser.email,
       name: user.name,
-      businesses: [adminBusiness],
+      businesses: [rootUsersBusiness],
     };
 
     // const populatedUser = (await User.populate(newUser, {

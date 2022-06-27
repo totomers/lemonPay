@@ -3,7 +3,6 @@ import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/customError';
 import { checkIfLemonPayAdmin } from 'src/utils/validators/validate-if-lemonpay-admin';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
-import { ICatalogDocument } from 'src/types/catalog.interface';
 import { CatalogService } from 'src/services/catalog-service';
 
 /**

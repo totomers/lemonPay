@@ -21,9 +21,7 @@ import {
   uploadAdminPassport,
   getUser,
   getUserFullDetails,
-  getBusinessAdminList,
 } from 'src/lambdas/account';
-
 import {
   signInUser,
   logoutUser,
@@ -174,7 +172,6 @@ const serverlessConfiguration: AWS = {
     getTransactionHistory,
     createPhosToken,
     validatePhosToken,
-    getBusinessAdminList,
     getBusinessDetails,
     addReferrer,
     approveBusiness,

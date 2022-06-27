@@ -7,7 +7,7 @@ export async function getAllBusinessesHandler() {
     return await Business.find()
       .select({ _id: 1, businessName: 1, status: 1 })
       .populate({
-        path: 'businessAdmin',
+        path: 'rootUser',
         model: 'user',
         select: { email: 1, name: 1 },
       });

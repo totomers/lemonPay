@@ -23,7 +23,7 @@ export async function declineBusinessHandler(params: {
       },
       { new: true }
     )
-      .populate('businessAdmin')
+      .populate('rootUser')
       .exec();
 
     await _sendBusinessDeclineEmail(email);

@@ -37,7 +37,7 @@ export async function createMockBusinessAccounts(params: {
     const businessesList = adminsList.reduce((prev, a, index) => {
       const newBusiness = {
         _id: new mongoose.Types.ObjectId(),
-        businessAdmin: a._id,
+        rootUser: a._id,
         businessName: `${a.name}'s Business`,
         businessTradeName: `${a.name}'s Business`,
         businessType: 'CommercialPartnership',
@@ -84,10 +84,10 @@ export async function createMockBusinessAccounts(params: {
     );
 
     const adminsListWithBusinesses = adminsList.map((a) => {
-      const businessOfAdmin = businessesList.find(
-        (b: IBusinessDocument) => b.businessAdmin === a._id
+      const businessOfRootUser = businessesList.find(
+        (b: IBusinessDocument) => b.rootUser === a._id
       );
-      const businesses = [{ business: businessOfAdmin._id, role: 'ADMIN' }];
+      const businesses = [{ business: businessOfRootUser._id, role: 'ROOT' }];
 
       return { ...a, businesses };
     });
