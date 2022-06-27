@@ -13,5 +13,4 @@ export type IUserDocument = mongoose.Document & {
   homeZipCode: string;
   email: string;
   verificationImage?: string;
-  referrer: mongoose.Schema.Types.ObjectId[] | null;
 };
