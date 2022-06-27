@@ -5,14 +5,14 @@ import {
   ParsedAPIGatewayProxyEvent,
 } from 'src/utils/api-gateway';
 import { middyfy } from 'src/utils/lambda';
-import { businessController } from '../../controllers';
+import { BusinessController } from 'src/controllers/business-controllers/_index';
 
 export const getAllBusinesses = middyfy(
   async (
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.getAll(event, context);
+    const result = await BusinessController.getAll(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -22,7 +22,7 @@ export const getBusinessCatalogs = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.getBusinessCatalogs(event, context);
+    const result = await BusinessController.getBusinessCatalogs(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -32,7 +32,7 @@ export const getBusinessDetails = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.getBusinessDetails(event, context);
+    const result = await BusinessController.getBusinessDetails(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -42,7 +42,7 @@ export const getAutocomplete = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.getAutocomplete(event, context);
+    const result = await BusinessController.getAutocomplete(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -52,7 +52,7 @@ export const createBusiness = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.create(event, context);
+    const result = await BusinessController.create(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -63,7 +63,7 @@ export const addReferrerToBusiness = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.addReferrerToBusiness(
+    const result = await BusinessController.addReferrerToBusiness(
       event,
       context
     );
@@ -76,7 +76,7 @@ export const approveBusiness = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.approveBusiness(event, context);
+    const result = await BusinessController.approveBusiness(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -86,7 +86,7 @@ export const declineBusiness = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.declineBusiness(event, context);
+    const result = await BusinessController.declineBusiness(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -96,7 +96,7 @@ export const updateBusinessStatus = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.updateBusinessStatus(
+    const result = await BusinessController.updateBusinessStatus(
       event,
       context
     );
@@ -109,7 +109,18 @@ export const getBusinessesToBeRewarded = middyfy(
     event: ParsedAPIGatewayProxyEvent,
     context
   ): Promise<APIGatewayProxyResult> => {
-    const result = await businessController.getBusinessesToBeRewarded(
+    const result = await BusinessController.getBusinessesToBeRewarded(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+
+export const addBusinessesFromWaitlist = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await BusinessController.addWaitlistBusinesses(
       event,
       context
     );

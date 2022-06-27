@@ -1,16 +1,15 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { TransactionController } from 'src/controllers/transaction.controller';
 import {
   formatErrorResponse,
   formatJSONResponse,
   ParsedAPIGatewayProxyEvent,
 } from 'src/utils/api-gateway';
 import { middyfy } from 'src/utils/lambda';
-import { transactionController } from '../../controllers';
+import { TransactionController } from 'src/controllers/transaction-controllers/_index';
 
 export const emailReceipt = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const result = await transactionController.emailReceipt(event, context);
+    const result = await TransactionController.emailReceipt(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
@@ -18,14 +17,14 @@ export const emailReceipt = middyfy(
 
 export const addTransaction = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const result = await transactionController.addTransaction(event, context);
+    const result = await TransactionController.addTransaction(event, context);
     if (result.err) return formatErrorResponse(result.err);
     return formatJSONResponse(result.data);
   }
 );
 export const createMockTransactions = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const result = await transactionController.createMockTransactions(
+    const result = await TransactionController.createMockTransactions(
       event,
       context
     );
@@ -35,7 +34,7 @@ export const createMockTransactions = middyfy(
 );
 export const getTransactionHistory = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const result = await transactionController.getTransactionHistory(
+    const result = await TransactionController.getTransactionHistory(
       event,
       context
     );

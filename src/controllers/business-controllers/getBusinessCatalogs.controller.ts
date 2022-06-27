@@ -1,21 +1,23 @@
 import { Context } from 'aws-lambda';
-import { MissingParamsError } from 'src/utils/customError';
-import { WaitlistService } from 'src/services/waitlist-service';
+import { BusinessService } from 'src/services/business-service';
+import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
+
+
 /**
  * =======================================================================================================
- * Add waitlist to db
+ * Get business catalogs list
  * =======================================================================================================
  */
-export async function addBusinesses(event?: any, context?: Context) {
+export async function getBusinessCatalogs(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const data = await WaitlistService.createWaitlistBusinesses();
+    const data = await BusinessService.getBusinessCatalogsHandler();
     return { data };
   } catch (err) {
+    console.log('error:', err);
     return { err };
   }
 }
-
-export const WaitlistController = {
-  addBusinesses,
-};

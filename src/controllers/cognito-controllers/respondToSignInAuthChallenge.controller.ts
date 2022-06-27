@@ -1,0 +1,31 @@
+import { Context } from 'aws-lambda';
+import { CognitoService } from 'src/services/cognito-service';
+import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
+import { MissingParamsError } from 'src/utils/customError';
+
+/**
+ * =======================================================================================================
+ * Respond To Sign In Auth Challenge
+ * =======================================================================================================
+ */
+export async function respondToSignInAuthChallenge(
+  event?: ParsedAPIGatewayProxyEvent,
+  context?: Context
+) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const { session, confirmationCode, username } = event.body;
+
+    if (!session || !confirmationCode || !username)
+      throw new MissingParamsError('session, confirmationCode,username');
+    const data = await CognitoService.respondToSignInChallengeHandler({
+      session,
+      confirmationCode,
+      username,
+    });
+    return { data };
+  } catch (err) {
+    return { err };
+  }
+}

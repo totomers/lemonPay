@@ -11,13 +11,20 @@ import {
   getAutocomplete,
   addReferrer,
   getBusinessesToBeRewarded,
+  addBusinessesFromWaitlist,
 } from 'src/lambdas/business';
-import { addBusinessesFromWaitlist } from 'src/lambdas/waitlist';
 import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
 import {
   createBusinessAccount,
   createMockBusinessAccounts,
   verifyUserDetails,
+  uploadAdminPassport,
+  getUser,
+  getUserFullDetails,
+  getBusinessAdminList,
+} from 'src/lambdas/account';
+
+import {
   signInUser,
   logoutUser,
   signUpUser,
@@ -25,9 +32,6 @@ import {
   setInitialPassword,
   resendConfirmationCode,
   resetUserPassword,
-  uploadAdminPassport,
-  getUser,
-  getUserFullDetails,
   getUserStatus,
   refreshTokenSignInUser,
   defineAuthChallenge,
@@ -37,10 +41,9 @@ import {
   initiateAuthChallengeWithToken,
   respondToCustomAuthChallenge,
   respondToSignInAuthChallenge,
-  getBusinessAdminList,
   signInLemonPayAdmin,
   createLemonPayAdmin,
-} from 'src/lambdas/account';
+} from 'src/lambdas/cognito';
 import {
   emailReceipt,
   addTransaction,
