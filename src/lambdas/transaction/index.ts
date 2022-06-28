@@ -46,13 +46,27 @@ export const createMockTransactions = {
     },
   ],
 };
-export const getTransactionHistory = {
-  handler: `${handlerPath(__dirname)}/handler.getTransactionHistory`,
+export const getBusinessTransactionsHistory = {
+  handler: `${handlerPath(__dirname)}/handler.getBusinessTransactionsHistory`,
   events: [
     {
       http: {
         method: 'post',
-        path: 'transactions/getTransactionHistory',
+        path: 'transactions/getBusinessTransactionsHistory',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+export const getUserTransactionsHistory = {
+  handler: `${handlerPath(__dirname)}/handler.getUserTransactionsHistory`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'transactions/getUserTransactionsHistory',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },

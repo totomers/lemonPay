@@ -2,6 +2,8 @@ import { connectToDatabase } from 'src/database/db';
 import { User } from 'src/database/models/user';
 import { IUserDocument } from 'src/types/user.interface';
 import { MongoCustomError } from 'src/utils/customError';
+import { Catalog } from 'src/database/models/catalog';
+import { IBusinessDocument } from 'src/types/business.interface';
 
 /**
  * ====================================================================================================
@@ -21,16 +23,16 @@ export async function getUserHandler(params: { email: string }) {
         populate: {
           path: 'business',
           model: 'business',
-          select: { businessName: 1, status: 1, referralCode: 1, category: 1 },
-          populate: {
-            path: 'catalog',
-            model: 'catalog',
-            select: { __v: 0 },
-          },
+          select: { businessName: 1, status: 1, referralCode: 1, catalog: 1 },
         },
       })
-
       .exec()) as IUserDocument;
+
+    const catalogId = (user.businesses[0].business as any).catalog;
+    if (catalogId) {
+      const catalog = await Catalog.findById(catalogId);
+      (user.businesses[0].business as any).catalog = catalog;
+    }
 
     return user;
   } catch (err) {

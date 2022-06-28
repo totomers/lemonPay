@@ -8,7 +8,7 @@ import { MissingParamsError } from 'src/utils/customError';
  * Get User Transactions History From DB.
  * =======================================================================================================
  */
-export async function getTransactionHistory(
+export async function getUserTransactionsHistory(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
@@ -23,7 +23,7 @@ export async function getTransactionHistory(
     if (!userId || !businessId)
       throw new MissingParamsError('userId, businessId');
 
-    const data = await TransactionService.getTransactionHistoryHandler({
+    const data = await TransactionService.getUserTransactionsHistoryHandler({
       userId,
       businessId,
     });

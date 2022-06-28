@@ -45,10 +45,11 @@ import {
 import {
   emailReceipt,
   addTransaction,
-  getTransactionHistory,
+  getBusinessTransactionsHistory,
   createPhosToken,
   validatePhosToken,
   createMockTransactions,
+  getUserTransactionsHistory,
 } from 'src/lambdas/transaction';
 
 const serverlessConfiguration: AWS = {
@@ -169,7 +170,8 @@ const serverlessConfiguration: AWS = {
     respondToSignInAuthChallenge,
     addTransaction,
     createMockTransactions,
-    getTransactionHistory,
+    getBusinessTransactionsHistory,
+    getUserTransactionsHistory,
     createPhosToken,
     validatePhosToken,
     getBusinessDetails,

@@ -57,7 +57,11 @@ export async function createBusinessRootAccountHandler(params: {
 
     await CognitoService.updateUserAttributes({
       email: user.email,
-      attributes: [{ Name: 'custom:isKnownDetails', Value: '1' }],
+      attributes: [
+        { Name: 'custom:isKnownDetails', Value: '1' },
+        { Name: 'custom:isAdmin', Value: '1' },
+        { Name: 'custom:isRootUser', Value: '1' },
+      ],
     });
 
     return newUser;

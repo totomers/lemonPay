@@ -1,24 +1,20 @@
+import { connectToDatabase } from 'src/database/db';
+import { Transaction } from 'src/database/models/transaction';
+import { ITransactionDocument } from 'src/types/transaction.interface';
+import { MongoCustomError } from 'src/utils/customError';
 /**
  * ====================================================================================================
  * Get All User Transaction History in DB.
  * @param params
  * ====================================================================================================
  */
-
-import { connectToDatabase } from 'src/database/db';
-import { Transaction } from 'src/database/models/transaction';
-import { ITransactionDocument } from 'src/types/transaction.interface';
-import { MongoCustomError } from 'src/utils/customError';
-
-export async function getTransactionHistoryHandler(params: {
-  userId: string;
+export async function getBusinessTransactionsHistoryHandler(params: {
   businessId: string;
 }): Promise<{ transactions: ITransactionDocument[] }> {
   try {
     await connectToDatabase();
-    const { userId, businessId } = params;
+    const { businessId } = params;
     const result = await Transaction.find({
-      userId,
       businessId,
     }).select({
       _id: 1,
@@ -39,5 +35,3 @@ export async function getTransactionHistoryHandler(params: {
     throw new MongoCustomError(err);
   }
 }
-
-//_id,businessId,userId,transactionType,approvedAmount,approvalTime,transactionNumber,cardNumber,cardType,status,createdAt,updatedAt

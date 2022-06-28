@@ -32,9 +32,19 @@ export const createMockTransactions = middyfy(
     return formatJSONResponse(result.data);
   }
 );
-export const getTransactionHistory = middyfy(
+export const getBusinessTransactionsHistory = middyfy(
   async (event, context): Promise<APIGatewayProxyResult> => {
-    const result = await TransactionController.getTransactionHistory(
+    const result = await TransactionController.getBusinessTransactionsHistory(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+export const getUserTransactionsHistory = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await TransactionController.getUserTransactionsHistory(
       event,
       context
     );
