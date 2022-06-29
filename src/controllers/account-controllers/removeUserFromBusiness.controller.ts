@@ -1,27 +1,30 @@
 import { Context } from 'aws-lambda';
+import { AccountService } from 'src/services/account-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/customError';
-import { checkIfLemonPayAdmin } from 'src/utils/validators/validate-if-lemonpay-admin';
-import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
-import { CatalogService } from 'src/services/catalog-service';
+import { checkIfAdmin } from 'src/utils/validators/validate-if-admin';
 
 /**
  * =======================================================================================================
- * Get Catalog From DB.
+ * Remove User From Business
  * =======================================================================================================
  */
-export async function getCatalog(
+export async function removeUserFromBusiness(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
+
+  checkIfAdmin(event);
+
   try {
-    checkIfLemonPayAdmin(event);
-
-    const _id = event.pathParameters._id;
-    if (!_id) throw new MissingParamsError('_id');
-
-    const data = await CatalogService.getCatalogHandler({ _id });
+    const { userId, businessId } = event.body;
+    if (!userId || !businessId)
+      throw new MissingParamsError('_userId, businessId');
+    const data = await AccountService.removeUserFromBusinessHandler({
+      userId,
+      businessId,
+    });
     return { data };
   } catch (err) {
     return { err };

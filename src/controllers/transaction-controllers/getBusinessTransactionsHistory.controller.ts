@@ -16,10 +16,7 @@ export async function getBusinessTransactionsHistory(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const tokenClaims = event.requestContext.authorizer
-      .claims as IClaimsIdToken;
-
-    checkIfRootUser(tokenClaims);
+    checkIfRootUser(event);
     const { businessId } = event.body;
 
     if (!businessId) throw new MissingParamsError('businessId');

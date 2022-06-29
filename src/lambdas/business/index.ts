@@ -43,7 +43,22 @@ export const getBusinessDetails = {
         request: { parameters: { paths: { _id: true } } },
         cors: true,
         authorizer: {
-          // name: "LemonPayCognitoAuthorizer",
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+export const getBusinessUsers = {
+  handler: `${handlerPath(__dirname)}/handler.getBusinessUsers`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'businesses/getBusinessUsers/{_id}',
+        request: { parameters: { paths: { _id: true } } },
+        cors: true,
+        authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
       },
@@ -87,12 +102,12 @@ export const createBusiness = {
 };
 
 export const addReferrer = {
-  handler: `${handlerPath(__dirname)}/handler.addReferrer`,
+  handler: `${handlerPath(__dirname)}/handler.addReferrerToBusiness`,
   events: [
     {
       http: {
         method: 'post',
-        path: 'businesses/addReferrer',
+        path: 'businesses/redeemCode',
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },

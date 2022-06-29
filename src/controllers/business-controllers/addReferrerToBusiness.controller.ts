@@ -14,13 +14,12 @@ export async function addReferrerToBusiness(
 ) {
   try {
     context.callbackWaitsForEmptyEventLoop = false;
-    const { businessId, referralCode } = event.body;
-    if (!businessId || !referralCode)
-      throw new MissingParamsError('businessId, referralCode');
+    const { businessId, code } = event.body;
+    if (!businessId || !code) throw new MissingParamsError('businessId, code');
 
     const data = await BusinessService.addReferrerToBusinesssHandler({
       businessId,
-      referralCode,
+      referralCode: code,
     });
 
     return { data };

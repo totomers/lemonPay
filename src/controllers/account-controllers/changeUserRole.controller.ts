@@ -1,30 +1,36 @@
 import { Context } from 'aws-lambda';
+import { AccountService } from 'src/services/account-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/customError';
-import { checkIfLemonPayAdmin } from 'src/utils/validators/validate-if-lemonpay-admin';
-import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
-import { CatalogService } from 'src/services/catalog-service';
+import { CustomError } from 'src/utils/customError';
 
 /**
  * =======================================================================================================
- * Add Catalog To DB.
+ * Change User Role
  * =======================================================================================================
  */
-export async function createCatalog(
+export async function changeUserRole(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
+
   try {
-    checkIfLemonPayAdmin(event);
+    const { userId, businessId, role } = event.body;
 
-    const { businessId, initialCatalog } = event.body;
-    if (!businessId || !initialCatalog)
-      throw new MissingParamsError('businessId, initialCatalog');
+    if (!userId || !businessId || !role)
+      throw new MissingParamsError('userId, businessId, role');
 
-    const data = await CatalogService.createCatalogHandler({
+    if (!(role === 'ADMIN' || role === 'USER'))
+      throw new CustomError(
+        "Invalid value given for 'role'",
+        400,
+        'InvalidRoleException'
+      );
+    const data = await AccountService.changeUserRoleHandler({
+      userId,
       businessId,
-      initialCatalog,
+      role,
     });
     return { data };
   } catch (err) {

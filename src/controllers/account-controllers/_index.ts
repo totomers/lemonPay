@@ -4,6 +4,9 @@ import { getUser } from './getUser.controller';
 import { getUserFullDetails } from './getUserFullDetails.controller';
 import { uploadAdminPassport } from './uploadAdminPassport.controller';
 import { verifyUserDetails } from './verifyUserDetails.controller';
+import { fetchInvitedUser } from './fetchInvitedUsed.controller';
+import { changeUserRole } from './changeUserRole.controller';
+import { removeUserFromBusiness } from './removeUserFromBusiness.controller';
 
 export const AccountController = {
   createBusinessAccount,
@@ -12,4 +15,7 @@ export const AccountController = {
   getUserFullDetails,
   uploadAdminPassport,
   verifyUserDetails,
+  fetchInvitedUser,
+  changeUserRole,
+  removeUserFromBusiness,
 };

@@ -17,9 +17,7 @@ export async function updateBusinessStatus(
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    const tokenClaims = event.requestContext.authorizer
-      .claims as IClaimsIdToken;
-    checkIfLemonPayAdmin(tokenClaims);
+    checkIfLemonPayAdmin(event);
     const { _id, status } = event?.body;
     if (!_id || !status) throw new MissingParamsError('_id, status');
     const data = await BusinessService.updateBusinessStatus({

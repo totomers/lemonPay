@@ -128,3 +128,10 @@ export const addBusinessesFromWaitlist = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const getBusinessUsers = middyfy(
+  async (event, context): Promise<APIGatewayProxyResult> => {
+    const result = await BusinessController.getBusinessUsers(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);

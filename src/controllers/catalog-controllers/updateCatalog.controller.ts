@@ -16,9 +16,7 @@ export async function updateCatalog(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const tokenClaims = event.requestContext.authorizer
-      .claims as IClaimsIdToken;
-    checkIfLemonPayAdmin(tokenClaims);
+    checkIfLemonPayAdmin(event);
 
     const params = event.body as Partial<ICatalogDocument>;
 

@@ -12,7 +12,10 @@ import {
   addReferrer,
   getBusinessesToBeRewarded,
   addBusinessesFromWaitlist,
+  getBusinessUsers,
 } from 'src/lambdas/business';
+
+import { sendInvitation } from 'src/lambdas/invitation';
 import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
 import {
   createBusinessAccount,
@@ -21,6 +24,9 @@ import {
   uploadAdminPassport,
   getUser,
   getUserFullDetails,
+  fetchInvitedUser,
+  changeUserRole,
+  removeUserFromBusiness,
 } from 'src/lambdas/account';
 import {
   signInUser,
@@ -189,6 +195,11 @@ const serverlessConfiguration: AWS = {
     addBusinessesFromWaitlist,
     getBusinessesToBeRewarded,
     createMockBusinessAccounts,
+    sendInvitation,
+    fetchInvitedUser,
+    getBusinessUsers,
+    changeUserRole,
+    removeUserFromBusiness,
   },
   package: { individually: true },
   custom: {

@@ -9,7 +9,7 @@ import { getBusinessDetails } from './getBusinessDetails.controller';
 import { getBusinessesToBeRewarded } from './getBusinessesToBeRewarded.controller';
 import { updateBusinessStatus } from './updateBusinessStatus.controller';
 import { addWaitlistBusinesses } from './addWaitlistBusinesses.controller';
-
+import { getBusinessUsers } from './getBusinessUsers.controller';
 export const BusinessController = {
   getAll,
   create,
@@ -22,4 +22,5 @@ export const BusinessController = {
   getAutocomplete,
   getBusinessesToBeRewarded,
   addWaitlistBusinesses,
+  getBusinessUsers,
 };

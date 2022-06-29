@@ -87,3 +87,45 @@ export const getUserFullDetails = {
     },
   ],
 };
+export const fetchInvitedUser = {
+  handler: `${handlerPath(__dirname)}/handler.fetchInvitedUser`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'account/fetchInvitedUser',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+export const changeUserRole = {
+  handler: `${handlerPath(__dirname)}/handler.changeUserRole`,
+  events: [
+    {
+      http: {
+        method: 'post',
+        path: 'account/changeUserRole',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};
+export const removeUserFromBusiness = {
+  handler: `${handlerPath(__dirname)}/handler.removeUserFromBusiness`,
+  events: [
+    {
+      http: {
+        method: 'patch',
+        path: 'account/removeUserFromBusiness',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};

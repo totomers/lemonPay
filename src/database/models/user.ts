@@ -21,15 +21,14 @@ const UserSchema = new mongoose.Schema(
       default: null,
     },
     name: { type: String, required: true },
-    dateofbirth: { type: Date, required: true },
-    homeAddress: { type: String, required: true },
+    dateofbirth: { type: Date },
+    homeAddress: { type: String },
     homeHouseNumber: { type: String },
     homeZipCode: { type: String },
     email: { type: String, required: true, unique: true },
     businesses: [subSchemaUserBusiness],
     verificationImage: { type: String },
   },
-
   { timestamps: true }
 );
 

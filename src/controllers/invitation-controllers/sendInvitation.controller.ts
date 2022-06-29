@@ -1,31 +1,32 @@
 import { Context } from 'aws-lambda';
-import { BusinessService } from 'src/services/business-service';
+import { InvitationService } from 'src/services/invitation-service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/customError';
-import { checkIfLemonPayAdmin } from 'src/utils/validators/validate-if-lemonpay-admin';
+import { checkIfAdmin } from 'src/utils/validators/validate-if-admin';
+
 /**
  * =======================================================================================================
- * Decline business
+ * Create a new employee invitation and email the invite.
  * =======================================================================================================
  */
-export async function declineBusiness(
+export async function sendInvitation(
   event?: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
-
   try {
-    checkIfLemonPayAdmin(event);
-    const { _id, email } = event?.body;
-    if (!_id || !email) throw new MissingParamsError('_id, email');
-    const data = await BusinessService.declineBusinessHandler({
-      _id,
+    checkIfAdmin(event);
+    const email = event.body?.email;
+    const businessId = event.body?.businessId;
+    if (!email || !businessId)
+      throw new MissingParamsError('email, businessId');
+    const data = await InvitationService.sendInvitationHandler({
+      businessId,
       email,
     });
     return { data };
   } catch (err) {
-    console.log('error:', err);
     return { err };
   }
 }

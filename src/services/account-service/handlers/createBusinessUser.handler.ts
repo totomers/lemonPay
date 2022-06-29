@@ -1,4 +1,5 @@
 import { connectToDatabase } from 'src/database/db';
+import { Business } from 'src/database/models/business';
 import { User } from 'src/database/models/user';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { IUserDocument } from 'src/types/user.interface';
@@ -6,13 +7,13 @@ import { MongoCustomError } from 'src/utils/customError';
 
 /**
  * ====================================================================================================
- * Create Root User
+ * Create Business User
  * @param params
  * ====================================================================================================
  */
-export async function createBusinessRootUserHandler(params: {
+export async function createBusinessUserHandler(params: {
   user: Partial<IUserDocument>;
-  business: Partial<IBusinessDocument>;
+  businessId: string;
 }): Promise<{
   _id: string;
   email: string;
@@ -21,40 +22,24 @@ export async function createBusinessRootUserHandler(params: {
 }> {
   try {
     await connectToDatabase();
-    const { user, business } = params;
+    const { user, businessId } = params;
 
     const newUser = (await User.create({
       ...user,
-      businesses: [{ business: business._id, role: 'ROOT' }],
+      businesses: [{ business: businessId, role: 'USER' }],
     })) as IUserDocument;
 
-    const rootUsersBusiness = {
-      business: {
-        _id: business._id,
-        businessName: business.businessName,
-        status: business.status,
-        referralCode: business.referralCode,
-      },
-      role: 'ROOT',
-    };
+    const business = await Business.findById(businessId)
+      .select({ _id: 1, catalog: 1, referralCode: 1 })
+      .populate('catalog');
 
-    const newAdminUser = {
+    const newUserFormatted = {
       _id: newUser._id,
       email: newUser.email,
       name: user.name,
-      businesses: [rootUsersBusiness],
+      businesses: [{ business, role: 'USER' }],
     };
-
-    // const populatedUser = (await User.populate(newUser, {
-    //   path: 'businesses',
-    //   populate: {
-    //     path: 'business',
-    //     model: 'business',
-    //     select: { businessName: 1, status: 1, referralCode: 1 },
-    //   },
-    // })) as IUserDocument;
-
-    return newAdminUser;
+    return newUserFormatted;
   } catch (err) {
     throw new MongoCustomError(err);
   }

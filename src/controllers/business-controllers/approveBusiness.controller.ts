@@ -16,9 +16,7 @@ export async function approveBusiness(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const tokenClaims = event.requestContext.authorizer
-      .claims as IClaimsIdToken;
-    checkIfLemonPayAdmin(tokenClaims);
+    checkIfLemonPayAdmin(event);
     const { _id, merchantId, email } = event?.body;
     if (!_id || !merchantId || !email)
       throw new MissingParamsError('_id, merchantId, email');

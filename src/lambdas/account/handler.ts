@@ -79,3 +79,36 @@ export const getUserFullDetails = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+export const fetchInvitedUser = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await AccountController.fetchInvitedUser(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+export const changeUserRole = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await AccountController.changeUserRole(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
+export const removeUserFromBusiness = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await AccountController.removeUserFromBusiness(
+      event,
+      context
+    );
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);
