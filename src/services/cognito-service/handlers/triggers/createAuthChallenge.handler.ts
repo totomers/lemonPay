@@ -34,14 +34,15 @@ export async function createAuthChallengeHandler(params: {
         const subject = `Your secret ${authChallengeLabel}  code`;
         const to = event.request.userAttributes.email;
 
-        const emailResult = await EmailService.sendEmailHandler({
-          text,
-          subject,
-          to,
-          html,
-        });
-
-        console.log(emailResult);
+        if (!(process.env.STAGE === 'DEV')) {
+          const emailResult = await EmailService.sendEmailHandler({
+            text,
+            subject,
+            to,
+            html,
+          });
+          console.log(emailResult);
+        }
       } catch (error) {
         // Handle SMS Failure
         console.log(error);
