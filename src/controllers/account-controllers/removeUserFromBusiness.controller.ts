@@ -15,12 +15,11 @@ export async function removeUserFromBusiness(
 ) {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  checkIfAdmin(event);
-
   try {
+    // checkIfAdmin(event);
     const { userId, businessId } = event.body;
     if (!userId || !businessId)
-      throw new MissingParamsError('_userId, businessId');
+      throw new MissingParamsError('userId, businessId');
     const data = await AccountService.removeUserFromBusinessHandler({
       userId,
       businessId,

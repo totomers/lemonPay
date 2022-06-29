@@ -22,7 +22,7 @@ export async function removeUserFromBusinessHandler(params: {
     await _blockUpdateIfRootUser(userId);
 
     const user = await User.findByIdAndUpdate(userId, {
-      $pull: { businesses: { _id: businessId } },
+      $pull: { businesses: { business: businessId } },
     });
 
     // add user to inactiveAccounts Collection?
@@ -36,7 +36,7 @@ export async function removeUserFromBusinessHandler(params: {
 async function _blockUpdateIfRootUser(userId: string) {
   try {
     const business = await Business.findOne({ rootUser: userId });
-    if (business._id)
+    if (business?._id)
       throw new CustomError(
         'Deletion of root users business is not allowed',
         400,

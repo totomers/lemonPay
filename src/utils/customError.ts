@@ -6,6 +6,7 @@ export const ERROR_TYPES = {
   NODEMAILER_OUTLOOK: 'B',
   MONGO: 'C',
   FAULTY_PARAMS: 'D',
+  FAULT_TOKEN: 'D',
   UNPROCESSABLE_PARAM_FORMAT: 'D',
   DATA_NOT_FOUND: 'D',
   ADMIN_ONLY: 'D',
@@ -44,6 +45,16 @@ export class MissingParamsError extends CustomError {
       400,
       'FaultyParams',
       ERROR_TYPES.FAULTY_PARAMS
+    );
+  }
+}
+export class MissingTokenClaimsError extends CustomError {
+  constructor() {
+    super(
+      `Invalid token or missing token claims. Please check request.`,
+      400,
+      'FaultyToken',
+      ERROR_TYPES.FAULT_TOKEN
     );
   }
 }
