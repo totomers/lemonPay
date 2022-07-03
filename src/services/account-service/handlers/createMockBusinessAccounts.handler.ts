@@ -8,6 +8,8 @@ import { Business } from 'src/database/models/business';
 import { generateRefCode } from 'src/services/business-service/utils/referralCodeGen';
 import { randomIntFromInterval } from 'src/utils/tests/randomIntFromInterval';
 import { User } from 'src/database/models/user';
+import { IPromotionDocument } from 'src/types/promotion.interface';
+import { Promotion } from 'src/database/models/promotion';
 /**
  * ====================================================================================================
  * Create new mock businesses and admins with referral codes
@@ -79,9 +81,33 @@ export async function createMockBusinessAccounts(params: {
       }
     );
 
+    let promotions = [];
+    businessesList.forEach((b: IBusinessDocument) => {
+      if (b.referrerCode)
+        promotions.push({
+          businessId: b._id,
+          type: 'referredByBusiness',
+          referredBy: b.referrerCode,
+          status: 'open',
+        } as Partial<IPromotionDocument>);
+      businessesList.forEach((c: IBusinessDocument) => {
+        if (b.referralCode === c.referrerCode)
+          promotions.push({
+            businessId: b._id,
+            type: 'referredABusiness',
+            businessReferred: c._id,
+            status: 'open',
+          } as Partial<IPromotionDocument>);
+      });
+    });
+
+    console.log(promotions, 'promotions');
+
     const newMockBusinesses = await Business.collection.insertMany(
       businessesListWithReferred
     );
+
+    const newMockPromotions = await Promotion.collection.insertMany(promotions);
 
     const adminsListWithBusinesses = adminsList.map((a) => {
       const businessOfRootUser = businessesList.find(

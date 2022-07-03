@@ -51,8 +51,13 @@ export const getBusinessTransactionsHistory = {
   events: [
     {
       http: {
-        method: 'post',
+        method: 'get',
         path: 'transactions/getBusinessTransactionsHistory',
+        request: {
+          parameters: {
+            querystrings: { businessId: true },
+          },
+        },
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },
@@ -65,8 +70,13 @@ export const getUserTransactionsHistory = {
   events: [
     {
       http: {
-        method: 'post',
+        method: 'get',
         path: 'transactions/getUserTransactionsHistory',
+        request: {
+          parameters: {
+            querystrings: { businessId: true, userId: true },
+          },
+        },
         authorizer: {
           arn: '${self:custom.COGNITO_USER_POOL_ARN}',
         },

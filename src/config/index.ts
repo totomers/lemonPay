@@ -25,6 +25,12 @@ const PHOS = {
 const KVK = {
   TOKEN: 'l7ca3ee185bcdf4541be22d08b9cb839ba',
 };
+
+const PROMOTION_TYPES = {
+  REFERRED_BY_BUSINESS: 'referredByBusiness' as 'referredByBusiness',
+  REFERRED_A_BUSINESS: 'referredABusiness' as 'referredABusiness',
+};
+
 export const CONFIG = {
   SERVERLESS,
   COGNITO,
@@ -32,4 +38,5 @@ export const CONFIG = {
   S3,
   PHOS,
   KVK,
+  PROMOTION_TYPES,
 };

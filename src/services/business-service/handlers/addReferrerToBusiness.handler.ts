@@ -4,6 +4,7 @@ import { IBusinessDocument } from 'src/types/business.interface';
 import { CustomError, MongoCustomError } from 'src/utils/customError';
 import { WaitListBusiness } from 'src/database/models/waitlistBusiness';
 import { Transaction } from 'src/database/models/transaction';
+import { PromotionService } from 'src/services/promotion-service';
 /**
  * ====================================================================================================
  * Add referrer to business
@@ -20,13 +21,13 @@ export async function addReferrerToBusinesssHandler(params: {
 
     const { businessId, referralCode } = params;
 
-    await _inhibitIfBusinessTransactionOccured(businessId);
+    await _inhibitIfBusinessAlreadyHasReferrer(businessId);
 
     const registeredReferrer = (await Business.findOne({
       referralCode,
     })) as IBusinessDocument;
 
-    const waitingListReferrer = !registeredReferrer._id
+    const waitingListReferrer = !registeredReferrer?._id
       ? await _getBusinessFromWaitingList(referralCode)
       : null;
 
@@ -37,10 +38,11 @@ export async function addReferrerToBusinesssHandler(params: {
         'InvalidCodeException'
       );
 
+    await _inhibitIfBusinessTransactionOccured(businessId);
+
     if (registeredReferrer._id)
       _inhibitSelfReferring(registeredReferrer?._id, businessId);
 
-    //update referredBusiness
     const updatedBusiness = await Business.findOneAndUpdate(
       { businessId },
       {
@@ -49,14 +51,27 @@ export async function addReferrerToBusinesssHandler(params: {
       { new: true }
     );
 
+    await PromotionService.addPromotionHandler({
+      businessId,
+      type: 'referredByBusiness',
+      referredBy: referralCode,
+    });
+
     //update referringBusiness if he registered
-    if (registeredReferrer?._id)
+    if (registeredReferrer?._id) {
+      //--------------------DELETE ----------------------------------
       await Business.findByIdAndUpdate(registeredReferrer._id, {
         $addToSet: {
           businessesReferred: { business: businessId, wasReedemed: false },
         },
       });
-
+      //-----------------------------------------------------
+      await PromotionService.addPromotionHandler({
+        businessId: registeredReferrer?._id,
+        type: 'referredABusiness',
+        businessReferred: businessId,
+      });
+    }
     return {};
   } catch (err) {
     throw new MongoCustomError(err);
@@ -101,6 +116,20 @@ async function _inhibitIfBusinessTransactionOccured(businessId: string) {
         'Business is not eligible to redeem code.',
         400,
         'NotEligibleException'
+      );
+  } catch (error) {
+    throw error;
+  }
+}
+async function _inhibitIfBusinessAlreadyHasReferrer(businessId: string) {
+  try {
+    const business = await Business.findById(businessId);
+
+    if (business.referrerCode)
+      throw new CustomError(
+        'Business has already been referred.',
+        400,
+        'BusinessReferredException'
       );
   } catch (error) {
     throw error;

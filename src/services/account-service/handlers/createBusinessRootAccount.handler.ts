@@ -13,6 +13,8 @@ import { IPhosOnboardingResponse } from 'src/types/phosOnboardingResponse.interf
 import axios from 'axios';
 import { generateRefCode } from 'src/services/business-service/utils/referralCodeGen';
 import { User } from 'src/database/models/user';
+import { IPromotionDocument } from 'src/types/promotion.interface';
+import { Promotion } from 'src/database/models/promotion';
 /**
  * ====================================================================================================
  * Create new Business Account - Will Create A Business With A Root User
@@ -39,6 +41,7 @@ export async function createBusinessRootAccountHandler(params: {
     const businessesRegisteredWithRefCode = await _getReferredBusinesses(
       waitListReferralCode
     );
+
     const newUserId = new mongoose.Types.ObjectId();
 
     const newBusiness = await BusinessService.createBusinessHandler({
@@ -48,6 +51,11 @@ export async function createBusinessRootAccountHandler(params: {
         ? waitListReferralCode
         : generateRefCode(),
       businessesReferred: businessesRegisteredWithRefCode,
+    });
+
+    await _addPromotionsForReferring({
+      businessId: newBusiness._id,
+      referralCode: newBusiness.referralCode,
     });
 
     const newUser = await AccountService.createBusinessRootUserHandler({
@@ -80,60 +88,25 @@ async function _getReferredBusinesses(referralCode: string) {
     | null;
 }
 
-/**
- * ====================================================================================================
- * Create Root User
- * @param params
- * ====================================================================================================
- */
-export async function createBusinessRootUserHandler(params: {
-  user: Partial<IUserDocument>;
-  business: Partial<IBusinessDocument>;
-}): Promise<{
-  _id: string;
-  email: string;
-  name: string;
-  businesses: any;
-}> {
-  try {
-    await connectToDatabase();
-    const { user, business } = params;
+async function _addPromotionsForReferring(props: {
+  businessId: string;
+  referralCode: string;
+}) {
+  const { referralCode, businessId } = props;
+  const referredBusinesses = (await Business.find({
+    referrerCode: referralCode,
+  })) as IBusinessDocument[];
+  const promotions = referredBusinesses.map(
+    (b) =>
+      ({
+        businessId,
+        type: 'referredABusiness',
+        businessReferred: b._id,
+      } as Partial<IPromotionDocument>)
+  );
 
-    const newUser = (await User.create({
-      ...user,
-      businesses: [{ business: business._id, role: 'ROOT' }],
-    })) as IUserDocument;
-
-    const rootUsersBusiness = {
-      business: {
-        _id: business._id,
-        businessName: business.businessName,
-        status: business.status,
-        referralCode: business.referralCode,
-      },
-      role: 'ROOT',
-    };
-
-    const newAdminUser = {
-      _id: newUser._id,
-      email: newUser.email,
-      name: user.name,
-      businesses: [rootUsersBusiness],
-    };
-
-    // const populatedUser = (await User.populate(newUser, {
-    //   path: 'businesses',
-    //   populate: {
-    //     path: 'business',
-    //     model: 'business',
-    //     select: { businessName: 1, status: 1, referralCode: 1 },
-    //   },
-    // })) as IUserDocument;
-
-    return newAdminUser;
-  } catch (err) {
-    throw new MongoCustomError(err);
-  }
+  const promotionsDB = await Promotion.collection.insertMany(promotions);
+  console.log('promotionsDB', promotionsDB);
 }
 
 async function createMerchantAccount(
