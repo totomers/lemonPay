@@ -11,7 +11,7 @@ import { Transaction } from 'src/database/models/transaction';
 import { CustomError } from 'src/services/cognito-service/common';
 import { IPhosTransPayloadV2 } from 'src/types/phosTransPayloadV2.interface';
 import { ITransactionDocument } from 'src/types/transaction.interface';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 
 export async function saveTransactionHandler(
   params: IPhosTransPayloadV2

@@ -1,6 +1,6 @@
 import { connectToDatabase } from 'src/database/db';
 import { WaitListBusiness } from 'src/database/models/waitlistBusiness';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 import { waitlingList } from 'src/temp/waitingListData';
 import { waitlingListMock } from 'src/temp/waitingListDataMock';
 import { IWaitListBusinessDocument } from 'src/types/waitingListBusiness.interface';

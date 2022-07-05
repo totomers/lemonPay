@@ -2,7 +2,7 @@ import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
 import { Transaction } from 'src/database/models/transaction';
 import { User } from 'src/database/models/user';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 import { randomIntFromInterval } from 'src/utils/tests/randomIntFromInterval';
 /**
  * ====================================================================================================

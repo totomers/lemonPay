@@ -1,6 +1,6 @@
 import { AWS, userPoolId, cognitoidentityserviceprovider } from '../common';
 
-import { AWSCognitoError } from 'src/utils/customError';
+import { AWSCognitoError } from 'src/utils/Errors';
 /**
  * =======================================================================================================
  * Gets User From Cognito

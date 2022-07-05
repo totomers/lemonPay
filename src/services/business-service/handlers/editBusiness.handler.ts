@@ -2,7 +2,7 @@ import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
 import { AccountService } from 'src/services/account-service';
 import { IBusinessDocument } from 'src/types/business.interface';
-import { AdminOnlyError, MongoCustomError } from 'src/utils/customError';
+import { AdminOnlyError, MongoCustomError } from 'src/utils/Errors';
 
 export async function editBusinessHandler(params: {
   edittedBusiness: Partial<IBusinessDocument>;

@@ -14,6 +14,7 @@ import {
   addBusinessesFromWaitlist,
   getBusinessUsers,
 } from 'src/lambdas/business';
+import { redeemCode, updatePromotionsStatus } from 'src/lambdas/promotion';
 
 import { sendInvitation } from 'src/lambdas/invitation';
 import { getCatalog, updateCatalog, createCatalog } from 'src/lambdas/catalog';
@@ -200,6 +201,8 @@ const serverlessConfiguration: AWS = {
     getBusinessUsers,
     changeUserRole,
     removeUserFromBusiness,
+    redeemCode,
+    updatePromotionsStatus,
   },
   package: { individually: true },
   custom: {

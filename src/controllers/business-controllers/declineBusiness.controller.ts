@@ -2,7 +2,7 @@ import { Context } from 'aws-lambda';
 import { BusinessService } from 'src/services/business-service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 import { checkIfLemonPayAdmin } from 'src/utils/validators/validate-if-lemonpay-admin';
 /**
  * =======================================================================================================

@@ -7,7 +7,7 @@ import {
   AdminOnlyError,
   MongoCustomError,
   NodeMailerOutlookError,
-} from 'src/utils/customError';
+} from 'src/utils/Errors';
 
 export async function approveBusinessHandler(params: {
   _id: string;
@@ -41,7 +41,7 @@ async function _sendBusinessApprovalEmail(email: string) {
   try {
     const to = email;
     const subject = 'Succesful Business Verification';
-    const html = `<html><head><title> Your Business</title><style>h1{color:#ff0;}</style></head><body><h1>Hello </h1><div>Your business has been confirmed<br/> You may now start carrying out transactions.</div></body></html>`;
+    const html = `<html><head><title> Your Business</title></head><body><h1>Hello </h1><div>Your business has been confirmed<br/> You may now start carrying out transactions.</div></body></html>`;
     const text = '';
     await EmailService.sendEmailHandler({ to, subject, html, text });
 

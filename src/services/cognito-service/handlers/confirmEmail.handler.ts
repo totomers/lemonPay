@@ -1,4 +1,4 @@
-import { AWSCognitoError } from 'src/utils/customError';
+import { AWSCognitoError } from 'src/utils/Errors';
 import {
   clientId,
   cognitoidentityserviceprovider,
@@ -11,7 +11,6 @@ export async function confirmEmailCognitoHandler(params: {
 }): Promise<{}> {
   try {
     const { email, confirmationCode } = params;
-    console.log('process.env.STAGE:', process.env.STAGE);
 
     if (
       process.env.STAGE === 'DEV' &&

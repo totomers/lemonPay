@@ -2,7 +2,7 @@ import { Context } from 'aws-lambda';
 import { InvitationService } from 'src/services/invitation-service';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 import { checkIfAdmin } from 'src/utils/validators/validate-if-admin';
 
 /**
@@ -19,11 +19,13 @@ export async function sendInvitation(
     checkIfAdmin(event);
     const email = event.body?.email;
     const businessId = event.body?.businessId;
-    if (!email || !businessId)
-      throw new MissingParamsError('email, businessId');
+    const role = event.body?.role;
+    if (!email || !businessId || !role)
+      throw new MissingParamsError('email, businessId, role');
     const data = await InvitationService.sendInvitationHandler({
       businessId,
       email,
+      role,
     });
     return { data };
   } catch (err) {

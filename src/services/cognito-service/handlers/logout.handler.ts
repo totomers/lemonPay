@@ -1,5 +1,5 @@
 import { RevokeTokenRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
-import { AWSCognitoError } from 'src/utils/customError';
+import { AWSCognitoError } from 'src/utils/Errors';
 import { clientId, cognitoidentityserviceprovider } from '../common';
 /**
  * =======================================================================================================

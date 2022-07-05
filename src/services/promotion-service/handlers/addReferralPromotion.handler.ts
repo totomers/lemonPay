@@ -1,6 +1,7 @@
 import { CONFIG } from 'src/config';
 import { Business } from 'src/database/models/business';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { Transaction } from 'src/database/models/transaction';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 import { PromotionService } from '..';
 
 export async function addReferralPromotionHandler(params: {
@@ -10,6 +11,8 @@ export async function addReferralPromotionHandler(params: {
 }) {
   try {
     const { businessId, referralCode, isWaitlistReferrer } = params;
+    await _blockIfBusinessHasTransactions(businessId);
+
     await _handleReferred({ businessId, referralCode });
     if (!isWaitlistReferrer)
       await _handleReferrer({ businessId, referralCode });
@@ -55,4 +58,19 @@ async function _handleReferrer(params: {
     type: CONFIG.PROMOTION_TYPES.REFERRED_A_BUSINESS,
     businessReferred: businessId,
   });
+}
+
+async function _blockIfBusinessHasTransactions(businessId: string) {
+  try {
+    const transaction = await Transaction.find({ businessId });
+
+    if (transaction.length > 0)
+      throw new CustomError(
+        'Business is not eligible to redeem code.',
+        400,
+        'NotEligibleException'
+      );
+  } catch (error) {
+    throw error;
+  }
 }

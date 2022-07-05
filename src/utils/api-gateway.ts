@@ -4,7 +4,7 @@ import type {
   Handler,
 } from 'aws-lambda';
 import type { FromSchema } from 'json-schema-to-ts';
-import { CustomError } from 'src/utils/customError';
+import { CustomError } from 'src/utils/Errors';
 import { setCookieString } from './setCookieString';
 
 type ValidatedAPIGatewayProxyEvent<S> = Omit<APIGatewayProxyEvent, 'body'> & {

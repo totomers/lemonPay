@@ -4,22 +4,27 @@ import { Invitation } from 'src/database/models/invitation';
 import { EmailService } from 'src/services/email-service';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { IInvitationDocument } from 'src/types/invitation.interface';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 
 export async function sendInvitationHandler(params: {
   businessId: string;
   email: string;
+  role: 'USER' | 'ADMIN';
 }): Promise<{}> {
   try {
     await connectToDatabase();
-    const { businessId, email } = params;
+    const { businessId, email, role } = params;
 
     await _validateInvitationEmail({ email, businessId });
 
-    const newInvitation = { businessId, email } as Partial<IInvitationDocument>;
+    const newInvitation = {
+      businessId,
+      email,
+      role,
+    } as Partial<IInvitationDocument>;
 
     const result = await Invitation.findOneAndUpdate(
-      { email, businessId },
+      { email, businessId, role },
       newInvitation,
       { new: true, upsert: true }
     );

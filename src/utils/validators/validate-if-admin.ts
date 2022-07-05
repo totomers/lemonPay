@@ -1,6 +1,6 @@
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { ParsedAPIGatewayProxyEvent } from '../api-gateway';
-import { AdminOnlyError, MissingTokenClaimsError } from '../customError';
+import { AdminOnlyError, MissingTokenClaimsError } from '../Errors';
 
 export const checkIfAdmin = (event: ParsedAPIGatewayProxyEvent) => {
   const tokenClaims = event.requestContext.authorizer.claims as IClaimsIdToken;

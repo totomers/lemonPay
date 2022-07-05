@@ -1,5 +1,5 @@
 import { connectToDatabase } from 'src/database/db';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 import { IInvitationDocument } from 'src/types/invitation.interface';
 import { Invitation } from 'src/database/models/invitation';
 import { AccountService } from '..';
@@ -34,6 +34,7 @@ export async function fetchInvitedUserHandler(params: {
     const user = await AccountService.createBusinessUserHandler({
       user: { email, name },
       businessId,
+      role: invitation.role,
     });
 
     await Invitation.findByIdAndUpdate(invitation._id, { status: 'accepted' });

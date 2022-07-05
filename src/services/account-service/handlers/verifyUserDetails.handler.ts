@@ -1,5 +1,5 @@
 import { CognitoService } from '../../cognito-service';
-import { AWSCognitoError, CustomError } from 'src/utils/customError';
+import { AWSCognitoError, CustomError } from 'src/utils/Errors';
 
 /**
  * ====================================================================================================

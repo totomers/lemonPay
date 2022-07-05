@@ -1,7 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { IUserDocument } from 'src/types/user.interface';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 import mongoose from 'mongoose';
 
 import { Business } from 'src/database/models/business';

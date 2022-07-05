@@ -1,5 +1,5 @@
 import { User } from 'src/database/models/user';
-import { AWSCognitoError } from 'src/utils/customError';
+import { AWSCognitoError } from 'src/utils/Errors';
 import {
   AWS,
   clientId,

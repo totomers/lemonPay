@@ -14,7 +14,7 @@ const TransactionSchema = new mongoose.Schema(
     tip: { type: Number },
     responseCode: { type: String }, // "00",
     originalTransactionToken: { type: String }, // "sodsd123",
-    transactionNumber: { type: String, required: true }, // 'fd1cdab34e813acfeca0a86924b2dc6f'
+    // transactionNumber: { type: String, required: true }, // 'fd1cdab34e813acfeca0a86924b2dc6f'
     cardNumber: { type: String, required: true }, // '516895XXXXXX5807';
     cardType: { type: String, enum: ['Visa', 'Mastercard'] }, // 'Visa';
     status: { type: String, enum: ['-1', '0', '1'], required: true }, // successful | pending | declined

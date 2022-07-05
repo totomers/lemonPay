@@ -1,5 +1,5 @@
 import { Promotion } from 'src/database/models/promotion';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 
 export async function markPromotionAsPendingHandler(params: {
   promotionIds: string[];

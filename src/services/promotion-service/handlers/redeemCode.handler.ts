@@ -1,6 +1,6 @@
 import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 import { WaitListBusiness } from 'src/database/models/waitlistBusiness';
 import { addReferralPromotionHandler } from './addReferralPromotion.handler';
 /**

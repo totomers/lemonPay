@@ -1,7 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
 import { IBusinessDocument } from 'src/types/business.interface';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 import { WaitListBusiness } from 'src/database/models/waitlistBusiness';
 import { Transaction } from 'src/database/models/transaction';
 import { PromotionService } from 'src/services/promotion-service';

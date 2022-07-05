@@ -1,6 +1,6 @@
 import { CONFIG } from 'src/config';
 import jwt from 'jsonwebtoken';
-import { InvalidPhosTokenOrKeyError } from 'src/utils/customError';
+import { InvalidPhosTokenOrKeyError } from 'src/utils/Errors';
 export async function validatePhosTokenHandler(params: {
   token: string;
   preSharedPhosKey: string;

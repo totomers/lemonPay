@@ -1,4 +1,4 @@
-import { AWSCognitoError } from 'src/utils/customError';
+import { AWSCognitoError } from 'src/utils/Errors';
 import {
   AWS,
   clientId,

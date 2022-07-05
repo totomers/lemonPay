@@ -1,7 +1,7 @@
 import { Context } from 'aws-lambda';
 import { BusinessService } from 'src/services/business-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 /**
  * =======================================================================================================
  * Get autocomplete results from kvk

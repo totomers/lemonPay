@@ -1,7 +1,7 @@
 import { RespondToAuthChallengeRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { IUserDocument } from 'src/types/user.interface';
-import { AWSCognitoError, CustomError } from 'src/utils/customError';
+import { AWSCognitoError, CustomError } from 'src/utils/Errors';
 import { clientId, cognitoidentityserviceprovider } from '../common';
 import jwt_decode from 'jwt-decode';
 import { AccountService } from '../../account-service';

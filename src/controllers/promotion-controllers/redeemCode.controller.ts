@@ -1,26 +1,28 @@
 import { Context } from 'aws-lambda';
-import { AccountService } from 'src/services/account-service';
+import { BusinessService } from 'src/services/business-service';
+import { PromotionService } from 'src/services/promotion-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/Errors';
 
 /**
  * =======================================================================================================
- * Get User Full Details And Businesses
+ * Redeem Code
  * =======================================================================================================
  */
-export async function getUserFullDetails(
-  event?: ParsedAPIGatewayProxyEvent,
+export async function redeemCode(
+  event: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
   try {
-    const email =
-      event.requestContext.authorizer?.claims?.email || 'tomere@moveo.co.il';
-    if (!email) throw new MissingParamsError('email');
-    const data = await AccountService.getUserFullDetailsHandler({
-      email,
+    context.callbackWaitsForEmptyEventLoop = false;
+    const { businessId, code } = event.body;
+    if (!businessId || !code) throw new MissingParamsError('businessId, code');
+
+    const data = await PromotionService.redeemCodeHandler({
+      businessId,
+      code,
     });
+
     return { data };
   } catch (err) {
     return { err };

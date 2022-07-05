@@ -1,6 +1,6 @@
 import { Context, DefineAuthChallengeTriggerEvent } from 'aws-lambda';
 import { CognitoService } from 'src/services/cognito-service';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 
 /**
  * =======================================================================================================

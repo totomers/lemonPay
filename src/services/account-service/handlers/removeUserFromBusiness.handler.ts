@@ -1,6 +1,6 @@
 import { connectToDatabase } from 'src/database/db';
 import { User } from 'src/database/models/user';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 import { Business } from 'src/database/models/business';
 // import { IBusinessDocument } from 'src/types/business.interface';
 
@@ -40,7 +40,7 @@ async function _blockUpdateIfRootUser(userId: string) {
       throw new CustomError(
         'Deletion of root users business is not allowed',
         400,
-        'RootUserBusinessDeletionException'
+        'RootUserDeletionException'
       );
   } catch (error) {
     throw error;

@@ -1,5 +1,5 @@
 import { AccountService } from '../../services/account-service';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { Context } from 'aws-lambda';
 

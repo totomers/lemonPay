@@ -1,6 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
 import { Promotion } from 'src/database/models/promotion';
+import { IPromotionDocument } from 'src/types/promotion.interface';
 
 export async function getBusinessesToBeRewardedHandler() {
   try {
@@ -11,6 +12,7 @@ export async function getBusinessesToBeRewardedHandler() {
     // const referralRewards = await getReferralRewards();
 
     const result = rewardedForBeingReferred.concat(rewardedForReferring);
+
     return result;
   } catch (error) {
     return error;
@@ -270,6 +272,7 @@ async function getRewardedForReferring() {
 async function getRewardedForReferring1() {
   try {
     await connectToDatabase();
+
     const rewardedForBeingReferred = await Business.aggregate([
       {
         $match: {

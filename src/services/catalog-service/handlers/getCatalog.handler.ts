@@ -1,6 +1,6 @@
 import { connectToDatabase } from 'src/database/db';
 import { Catalog } from 'src/database/models/catalog';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 
 /**
  * ====================================================================================================

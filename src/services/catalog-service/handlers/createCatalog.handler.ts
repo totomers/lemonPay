@@ -2,7 +2,7 @@ import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
 import { Catalog } from 'src/database/models/catalog';
 import { ICatalogDocument } from 'src/types/catalog.interface';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 
 /**
  * ====================================================================================================

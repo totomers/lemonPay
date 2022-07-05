@@ -1,7 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
 import { IBusinessDocument } from 'src/types/business.interface';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 
 export async function markReferredAsRewarded(params: {
   _id: string;

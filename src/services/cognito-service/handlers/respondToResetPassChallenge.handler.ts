@@ -1,5 +1,5 @@
 import { RespondToAuthChallengeRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
-import { AWSCognitoError } from 'src/utils/customError';
+import { AWSCognitoError } from 'src/utils/Errors';
 import { CognitoService } from '..';
 import {
   clientId,

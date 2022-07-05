@@ -1,7 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { IUserDocument } from 'src/types/user.interface';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 import { BusinessService } from '../../business-service';
 import { AccountService } from '..';
 import { CognitoService } from 'src/services/cognito-service';
@@ -104,9 +104,10 @@ async function _addPromotionsForReferring(props: {
         businessReferred: b._id,
       } as Partial<IPromotionDocument>)
   );
-
-  const promotionsDB = await Promotion.collection.insertMany(promotions);
-  console.log('promotionsDB', promotionsDB);
+  if (promotions.length > 0) {
+    const promotionsDB = await Promotion.collection.insertMany(promotions);
+    console.log('promotionsDB', promotionsDB);
+  }
 }
 
 async function createMerchantAccount(

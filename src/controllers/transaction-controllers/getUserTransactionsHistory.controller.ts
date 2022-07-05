@@ -1,7 +1,7 @@
 import { Context } from 'aws-lambda';
 import { TransactionService } from 'src/services/transaction-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 
 /**
  * =======================================================================================================
@@ -18,7 +18,10 @@ export async function getUserTransactionsHistory(
     //   .claims as IClaimsIdToken;
 
     // checkIfVerified(tokenClaims);
-    const { userId, businessId } = event.body;
+
+    const querystring = event?.queryStringParameters;
+    const businessId = querystring?.businessId;
+    const userId = querystring?.userId;
 
     if (!userId || !businessId)
       throw new MissingParamsError('userId, businessId');

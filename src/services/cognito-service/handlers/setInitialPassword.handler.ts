@@ -1,4 +1,4 @@
-import { AWSCognitoError, CustomError } from 'src/utils/customError';
+import { AWSCognitoError, CustomError } from 'src/utils/Errors';
 import { CognitoService } from '..';
 import { cognitoidentityserviceprovider } from '../common';
 import { isAlphaNumericalWithSpecialChar } from '../utils/_validatePassword';

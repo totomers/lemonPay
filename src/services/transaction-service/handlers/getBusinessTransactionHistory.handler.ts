@@ -1,7 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { Transaction } from 'src/database/models/transaction';
 import { ITransactionDocument } from 'src/types/transaction.interface';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 /**
  * ====================================================================================================
  * Get All User Transaction History in DB.

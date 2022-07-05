@@ -1,5 +1,5 @@
 import { CONFIG } from 'src/config';
-import { AWSCognitoError } from 'src/utils/customError';
+import { AWSCognitoError } from 'src/utils/Errors';
 import { CognitoService } from '..';
 import { clientId, cognitoidentityserviceprovider } from '../common';
 

@@ -1,5 +1,5 @@
 import { CONFIG } from 'src/config';
-import { NodeMailerOutlookError } from 'src/utils/customError';
+import { NodeMailerOutlookError } from 'src/utils/Errors';
 import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'hotmail',

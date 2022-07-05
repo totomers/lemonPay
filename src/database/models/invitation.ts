@@ -5,6 +5,7 @@ const InvitationSchema = new mongoose.Schema(
   {
     businessId: { type: mongoose.Schema.Types.ObjectId, ref: 'business' },
     email: { type: String, required: true, unique: true },
+    role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
     status: {
       type: String,
       enum: ['accepted', 'pending', 'declined'],

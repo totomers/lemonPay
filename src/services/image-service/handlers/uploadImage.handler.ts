@@ -1,7 +1,7 @@
 import * as fileType from 'file-type';
 import { v4 as uuid } from 'uuid';
 import { S3 } from 'aws-sdk';
-import { CustomError, ImageManagerError } from 'src/utils/customError';
+import { CustomError, ImageManagerError } from 'src/utils/Errors';
 import { CONFIG } from 'src/config';
 
 type Base64EncodedString = string;

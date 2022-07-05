@@ -2,7 +2,7 @@ import { connectToDatabase } from 'src/database/db';
 import { Invitation } from 'src/database/models/invitation';
 import { Promotion } from 'src/database/models/promotion';
 import { PromoTypes } from 'src/types/promotion.interface';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 
 export async function addPromotionHandler(params: {
   businessId: string;

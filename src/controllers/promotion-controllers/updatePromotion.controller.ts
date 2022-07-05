@@ -1,26 +1,28 @@
 import { Context } from 'aws-lambda';
-import { AccountService } from 'src/services/account-service';
+import { PromotionService } from 'src/services/promotion-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
 import { MissingParamsError } from 'src/utils/Errors';
 
 /**
  * =======================================================================================================
- * Get User Full Details And Businesses
+ * Update Promotions Status
  * =======================================================================================================
  */
-export async function getUserFullDetails(
-  event?: ParsedAPIGatewayProxyEvent,
+export async function updatePromotionsStatus(
+  event: ParsedAPIGatewayProxyEvent,
   context?: Context
 ) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
   try {
-    const email =
-      event.requestContext.authorizer?.claims?.email || 'tomere@moveo.co.il';
-    if (!email) throw new MissingParamsError('email');
-    const data = await AccountService.getUserFullDetailsHandler({
-      email,
+    context.callbackWaitsForEmptyEventLoop = false;
+    const { promotionIds, status } = event.body;
+    if (!promotionIds || !status)
+      throw new MissingParamsError('promotionIds, status');
+
+    const data = await PromotionService.updatePromotionsStatusHandler({
+      promotionIds,
+      status,
     });
+
     return { data };
   } catch (err) {
     return { err };

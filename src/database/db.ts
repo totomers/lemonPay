@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { MongoCustomError } from 'src/utils/customError';
+import { MongoCustomError } from 'src/utils/Errors';
 mongoose.Promise = global.Promise;
 let isConnected;
 

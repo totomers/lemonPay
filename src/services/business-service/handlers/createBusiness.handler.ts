@@ -2,7 +2,7 @@ import { connectToDatabase } from 'src/database/db';
 import { Business } from 'src/database/models/business';
 import { generateRefCode } from '../utils/referralCodeGen';
 import { IBusinessDocument } from 'src/types/business.interface';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 
 export async function createBusinessHandler(
   params: Partial<IBusinessDocument>

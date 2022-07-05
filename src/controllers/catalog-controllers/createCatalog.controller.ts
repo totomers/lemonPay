@@ -1,6 +1,6 @@
 import { Context } from 'aws-lambda';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 import { checkIfLemonPayAdmin } from 'src/utils/validators/validate-if-lemonpay-admin';
 import { IClaimsIdToken } from 'src/types/claimsIdToken.interface';
 import { CatalogService } from 'src/services/catalog-service';

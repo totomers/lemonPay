@@ -3,7 +3,7 @@ import { connectToDatabase } from 'src/database/db';
 import { User } from 'src/database/models/user';
 import { CognitoService } from 'src/services/cognito-service';
 import { IUserDocument } from 'src/types/user.interface';
-import { CustomError, MongoCustomError } from 'src/utils/customError';
+import { CustomError, MongoCustomError } from 'src/utils/Errors';
 
 /**
  * ====================================================================================================

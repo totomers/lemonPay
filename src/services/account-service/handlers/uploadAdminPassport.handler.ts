@@ -1,7 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { User } from 'src/database/models/user';
 import { ImageService } from '../../image-service';
-import { ImageManagerError, MongoCustomError } from 'src/utils/customError';
+import { ImageManagerError, MongoCustomError } from 'src/utils/Errors';
 
 /**
  * ====================================================================================================

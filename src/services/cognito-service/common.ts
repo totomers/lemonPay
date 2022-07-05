@@ -1,7 +1,7 @@
 import aws from 'aws-sdk';
 import { CONFIG } from 'src/config';
-import { AWSCognitoError as _AWSCognitoError } from '../../utils/customError';
-import { CustomError as _CustomError } from '../../utils/customError';
+import { AWSCognitoError as _AWSCognitoError } from '../../utils/Errors';
+import { CustomError as _CustomError } from '../../utils/Errors';
 
 aws.config.update({ region: CONFIG.SERVERLESS.REGION });
 export const AWS = aws;

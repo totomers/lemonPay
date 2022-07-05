@@ -7,7 +7,7 @@ import {
   AdminOnlyError,
   MongoCustomError,
   NodeMailerOutlookError,
-} from 'src/utils/customError';
+} from 'src/utils/Errors';
 
 export async function declineBusinessHandler(params: {
   _id: string;
@@ -39,7 +39,7 @@ async function _sendBusinessDeclineEmail(email: string) {
   try {
     const to = email;
     const subject = 'Unsuccessful Business Verification';
-    const html = `<html><head><title> Your Business</title><style>h1{color:#ff0;}</style></head><body><h1>Hello </h1><div>Your business was not successfully verified<br/> You may contact us for further details.</div></body></html>`;
+    const html = `<html><head><title> Your Business</title></head><body><h1>Hello </h1><div>Your business was not successfully verified<br/> You may contact us for further details.</div></body></html>`;
     const text = '';
     await EmailService.sendEmailHandler({ to, subject, html, text });
 

@@ -6,7 +6,7 @@
  */
 
 import { EmailService } from 'src/services/email-service';
-import { NodeMailerOutlookError } from 'src/utils/customError';
+import { NodeMailerOutlookError } from 'src/utils/Errors';
 
 export async function emailReceiptHandler(params: {
   name: string;

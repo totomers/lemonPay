@@ -1,7 +1,7 @@
 import { Context } from 'aws-lambda';
 import { CognitoService } from 'src/services/cognito-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 
 /**
  * =======================================================================================================

@@ -1,7 +1,7 @@
 import { Context } from 'aws-lambda';
 import { TransactionService } from 'src/services/transaction-service';
 import { ParsedAPIGatewayProxyEvent } from 'src/utils/api-gateway';
-import { MissingParamsError } from 'src/utils/customError';
+import { MissingParamsError } from 'src/utils/Errors';
 
 /**
  * =======================================================================================================
