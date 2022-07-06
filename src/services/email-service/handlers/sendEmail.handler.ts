@@ -1,6 +1,7 @@
 import { CONFIG } from 'src/config';
 import { NodeMailerOutlookError } from 'src/utils/Errors';
 import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 const transporter = nodemailer.createTransport({
   service: 'hotmail',
   host: 'smtp.office365.com',
@@ -26,19 +27,33 @@ export async function sendEmailHandler(params: {
   html?: string;
 }): Promise<{} | AWS.AWSError> {
   try {
-    const defaultHTML = `<html><head><title>Your Token</title><style>h1{color:#f00;}</style></head><body><h1>Hello </h1><div>Your Device Validation Token is YYY<br/>Simply copy this token and paste it into the device validation input field.</div></body></html>`;
-    const { to, from = 'no-reply@lemonpay.nl', text, subject, html } = params;
+    console.log('CONFIG.SENDGRID.APIKEY', CONFIG.SENDGRID.APIKEY);
 
-    const result = await transporter.sendMail({
+    sgMail.setApiKey(CONFIG.SENDGRID.APIKEY);
+
+    const { to, from = 'no-reply@lemonpay.nl', text, subject, html } = params;
+    const msg = {
       to,
-      from,
+      from: CONFIG.SENDGRID.FROM_ADDRESS,
       text,
       html,
       subject,
-    });
+    };
+
+    // const result = await transporter.sendMail({
+    //   to,
+    //   from: CONFIG.SENDGRID.FROM_ADDRESS,
+    //   text,
+    //   html,
+    //   subject,
+    // });
+    const result = await sgMail.send(msg);
+    console.log('email result:', result);
 
     return result;
   } catch (err) {
+    console.log(err);
+
     throw new NodeMailerOutlookError(err);
   }
 }

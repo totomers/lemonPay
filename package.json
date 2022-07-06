@@ -15,6 +15,7 @@
   "dependencies": {
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
+    "@sendgrid/mail": "^7.7.0",
     "@types/mongoose": "^5.11.97",
     "aws-sdk": "^2.1114.0",
     "axios": "^0.27.2",

@@ -1,4 +1,5 @@
 import { CONFIG } from 'src/config';
+import { EmailService } from 'src/services/email-service';
 import { AWSCognitoError } from 'src/utils/Errors';
 import { CognitoService } from '..';
 import { clientId, cognitoidentityserviceprovider } from '../common';
@@ -18,6 +19,14 @@ export async function signInCognitoHandler(params: {
 }> {
   try {
     const { email, password } = params;
+    // const msg = {
+    //   to: 'tomere@moveo.co.il', // Change to your recipient
+    //   from: 'test@example.com', // Change to your verified sender
+    //   subject: 'Sending with SendGrid is Fun',
+    //   text: 'and easy to do anywhere, even with Node.js',
+    //   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    // };
+    // await EmailService.sendEmailHandler(msg);
 
     await cognitoidentityserviceprovider
       .initiateAuth({
