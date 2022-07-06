@@ -27,7 +27,6 @@ export async function signInCognitoHandler(params: {
     //   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
     // };
     // await EmailService.sendEmailHandler(msg);
-
     await cognitoidentityserviceprovider
       .initiateAuth({
         AuthFlow: 'USER_PASSWORD_AUTH',
