@@ -15,7 +15,7 @@ export async function getBusinessUsers(params: { _id: string }) {
       status: 'pending',
     }).select({ email: 1, createdAt: 1 });
 
-    return _formatAllUsers({ approvedUsers, invitedUsers });
+    return { users: _formatAllUsers({ approvedUsers, invitedUsers }) };
   } catch (error) {
     return error;
   }
@@ -36,8 +36,6 @@ function _formatAllUsers(props: {
   const { invitedUsers, approvedUsers } = props;
   let formattedInvitedUsers = _formatInvitedUsers(invitedUsers);
   let formattedApprovedUsers = _formatApprovedUsers(approvedUsers);
-
-  console.log(formattedInvitedUsers);
 
   return formattedApprovedUsers.concat(formattedInvitedUsers);
 }

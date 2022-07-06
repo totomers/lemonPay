@@ -31,6 +31,19 @@ const PROMOTION_TYPES = {
   REFERRED_A_BUSINESS: 'referredABusiness' as 'referredABusiness',
 };
 
+const PIPEDRIVE = {
+  TOKEN: 'ac5d6af36d808382625db579fc7dec6b3103b401',
+  STAGES: { WAITLIST: { id: 45, name: 'Waiting list' } },
+  PIPELINES: {
+    INDIVIDUALS_FREELANCERS: { id: 3, name: 'Indivials / freelancers' },
+  },
+};
+
+const SENDGRID = {
+  APIKEY: process.env.SENDGRID_API_KEY,
+  FROM_ADDRESS: 'no-reply@lemonpayapp.com',
+};
+
 export const CONFIG = {
   SERVERLESS,
   COGNITO,
@@ -39,4 +52,6 @@ export const CONFIG = {
   PHOS,
   KVK,
   PROMOTION_TYPES,
+  PIPEDRIVE,
+  SENDGRID,
 };

@@ -28,6 +28,7 @@ import {
   fetchInvitedUser,
   changeUserRole,
   removeUserFromBusiness,
+  pipedriveTester,
 } from 'src/lambdas/account';
 import {
   signInUser,
@@ -141,6 +142,7 @@ const serverlessConfiguration: AWS = {
       COGNITO_USER_DUMMY_PASSWORD: '${ssm:/lemonpay-dummy-password}',
       PHOS_TOKEN_GEN_SECRET: '${ssm:/lemonpay-phos-gen-token-secret}',
       PHOS_PRE_SHARED_SECRET: '${ssm:/lemonpay-phos-pre-shared-secret}',
+      SENDGRID_API_KEY: '${ssm:/lemonpay-sendgrid-apikey}',
       STAGE: "${file(./config.${opt:stage, 'dev'}.json):STAGE}",
       FAKE_CONFIRMATION_CODE_DEV_TESTING:
         "${file(./config.${opt:stage, 'dev'}.json):FAKE_CONFIRMATION_CODE_DEV_TESTING}",
@@ -203,6 +205,7 @@ const serverlessConfiguration: AWS = {
     removeUserFromBusiness,
     redeemCode,
     updatePromotionsStatus,
+    pipedriveTester,
   },
   package: { individually: true },
   custom: {

@@ -112,3 +112,14 @@ export const removeUserFromBusiness = middyfy(
     return formatJSONResponse(result.data);
   }
 );
+
+export const pipedriveTester = middyfy(
+  async (
+    event: ParsedAPIGatewayProxyEvent,
+    context
+  ): Promise<APIGatewayProxyResult> => {
+    const result = await AccountController.pipedriveTester(event, context);
+    if (result.err) return formatErrorResponse(result.err);
+    return formatJSONResponse(result.data);
+  }
+);

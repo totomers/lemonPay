@@ -28,9 +28,6 @@ async function _generateMockTransactions() {
   const businesses = await Business.find();
   const users = await User.find();
 
-  console.log(businesses);
-  console.log(users);
-
   const businessIds = businesses.map((b) => b._id);
   const userIds = users.map((u) => u._id);
 

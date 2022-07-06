@@ -7,7 +7,7 @@ import { verifyUserDetails } from './verifyUserDetails.controller';
 import { fetchInvitedUser } from './fetchInvitedUsed.controller';
 import { changeUserRole } from './changeUserRole.controller';
 import { removeUserFromBusiness } from './removeUserFromBusiness.controller';
-
+import { pipedriveTester } from './pipedriveTester.controller';
 export const AccountController = {
   createBusinessAccount,
   createMockBusinessAccounts,
@@ -18,4 +18,5 @@ export const AccountController = {
   fetchInvitedUser,
   changeUserRole,
   removeUserFromBusiness,
+  pipedriveTester,
 };

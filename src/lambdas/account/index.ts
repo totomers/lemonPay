@@ -129,3 +129,17 @@ export const removeUserFromBusiness = {
     },
   ],
 };
+export const pipedriveTester = {
+  handler: `${handlerPath(__dirname)}/handler.pipedriveTester`,
+  events: [
+    {
+      http: {
+        method: 'get',
+        path: 'account/pipedriveTester',
+        authorizer: {
+          arn: '${self:custom.COGNITO_USER_POOL_ARN}',
+        },
+      },
+    },
+  ],
+};

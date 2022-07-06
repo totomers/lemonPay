@@ -1,5 +1,7 @@
 import { connectToDatabase } from 'src/database/db';
 import { User } from 'src/database/models/user';
+import { PipedriveService } from 'src/services/pipedrive-service';
+import { AddToPipedriveRequest } from 'src/services/pipedrive-service/handlers/addToPipedrive.handler';
 import { IBusinessDocument } from 'src/types/business.interface';
 import { IUserDocument } from 'src/types/user.interface';
 import { MongoCustomError } from 'src/utils/Errors';
@@ -45,17 +47,18 @@ export async function createBusinessRootUserHandler(params: {
       businesses: [rootUsersBusiness],
     };
 
-    // const populatedUser = (await User.populate(newUser, {
-    //   path: 'businesses',
-    //   populate: {
-    //     path: 'business',
-    //     model: 'business',
-    //     select: { businessName: 1, status: 1, referralCode: 1 },
-    //   },
-    // })) as IUserDocument;
-
+    // await _addUserToPipeDrive({
+    //   name: user.name,
+    //   email: user.email,
+    //   promoCode: business.referralCode,
+    // });
     return newAdminUser;
   } catch (err) {
     throw new MongoCustomError(err);
   }
+}
+
+async function _addUserToPipeDrive(props: AddToPipedriveRequest) {
+  const { name, email, promoCode } = props;
+  await PipedriveService.addToPipedriveHandler({ name, email, promoCode });
 }
